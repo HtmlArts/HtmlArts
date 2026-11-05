@@ -626,31 +626,60 @@ updateCheck();
     if (frame.contentWindow) frame.contentWindow.print();
   };
 
-  // Send to HtmlArtsServer library via IndexedDB
+  // Send to HtmlArtsServer library via postMessage (if embedded) or IndexedDB v2 (if standalone)
   document.getElementById('btnSendToLibrary').onclick = async () => {
     const title = docTitleInput.value.trim() || 'Architecture Field Guide';
     const html = generateFieldGuideHTML(title, docCategoryInput.value, docLeadInput.value, activeAccent);
-    try {
-      const req = indexedDB.open('htmlarts-local-library', 1);
-      req.onsuccess = () => {
-        const db = req.result;
-        if (!db.objectStoreNames.contains('books')) {
-          alert('Saved standalone HTML. Open HtmlArtsServer to view library.');
-          return;
-        }
-        const tx = db.transaction('books', 'readwrite').objectStore('books');
-        tx.put({
-          id: `book-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,
+
+    // If embedded in HtmlArtsServer / HTMLPAGE shell, send over postMessage
+    if (window.parent && window.parent !== window) {
+      window.parent.postMessage({
+        type: 'PAGESERVER_EXPORT_BOOK',
+        payload: {
           title,
           category: 'Architecture Guide',
           genre: 'Spec',
           kind: 'created',
-          template: 'Field Guide',
-          html,
+          template: 'Swiss Grid',
+          html
+        }
+      }, '*');
+      alert(`“${title}” sent to your HtmlArts library shelf!`);
+      return;
+    }
+
+    // Standalone fallback: Dual-Store IndexedDB v2
+    try {
+      const req = indexedDB.open('htmlarts-local-library', 2);
+      req.onupgradeneeded = e => {
+        const d = req.result;
+        if (!d.objectStoreNames.contains('books_meta')) d.createObjectStore('books_meta', { keyPath: 'id' });
+        if (!d.objectStoreNames.contains('books_content')) d.createObjectStore('books_content', { keyPath: 'id' });
+        if (!d.objectStoreNames.contains('books')) d.createObjectStore('books', { keyPath: 'id' });
+      };
+      req.onsuccess = () => {
+        const db = req.result;
+        const tx = db.transaction(['books_meta', 'books_content', 'books'], 'readwrite');
+        const bookId = `book-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+        const meta = {
+          id: bookId,
+          title,
+          category: 'Architecture Guide',
+          genre: 'Spec',
+          kind: 'created',
+          template: 'Swiss Grid',
+          color: activeAccent,
+          sizeBytes: html.length,
           createdAt: Date.now(),
-          updatedAt: Date.now()
-        });
-        alert(`“${title}” saved to your local HtmlArts library shelf!`);
+          updatedAt: Date.now(),
+          visitCount: 1
+        };
+        tx.objectStore('books_meta').put(meta);
+        tx.objectStore('books_content').put({ id: bookId, html, rawHtml: html });
+        tx.objectStore('books').put({ ...meta, html });
+        tx.oncomplete = () => {
+          alert(`“${title}” saved to your local HtmlArts library shelf!`);
+        };
       };
     } catch(e) {
       alert('Could not save to library directly. Use Export HTML.');

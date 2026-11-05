@@ -1133,25 +1133,44 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   activeBook=null;
  }
 
- /* Listen for postMessage from HtmlArtsClient */
+ /* Listen for postMessage from HtmlArtsClient and PageServer */
  window.addEventListener('message',async(e)=>{
   const d=e.data;
-  if(!d||d.type!=='HTMLARTS_EVENT')return;
-  const p=d.payload||{};
-
-  if(p.event==='book-ready'){
-   $('readerStatus').textContent='Client reader active · strokes synchronized';
-  }else if(p.event==='annotations-updated'){
-   if(p.bookId&&p.data&&Array.isArray(p.data.strokes)){
-    await queryStore(INK_STORE).put({
-     bookId:p.bookId,
-     strokes:p.data.strokes,
-     updatedAt:Date.now()
-    });
-    $('readerStatus').textContent=`Annotations saved · ${p.data.strokes.length} stroke(s)`;
+  if(!d)return;
+  if(d.type==='HTMLARTS_EVENT'){
+   const p=d.payload||{};
+   if(p.event==='book-ready'){
+    $('readerStatus').textContent='Client reader active · strokes synchronized';
+   }else if(p.event==='annotations-updated'){
+    if(p.bookId&&p.data&&Array.isArray(p.data.strokes)){
+     await queryStore(INK_STORE).put({
+      bookId:p.bookId,
+      strokes:p.data.strokes,
+      updatedAt:Date.now()
+     });
+     $('readerStatus').textContent=`Annotations saved · ${p.data.strokes.length} stroke(s)`;
+    }
+   }else if(p.event==='close'){
+    closeReader();
    }
-  }else if(p.event==='close'){
-   closeReader();
+  }else if(d.type==='PAGESERVER_EXPORT_BOOK'){
+   const p = d.payload||{};
+   if (p.title && p.html) {
+    const bookId = `book-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
+    await saveBook({
+     id: bookId,
+     title: p.title,
+     category: p.category || 'Architecture Guide',
+     genre: p.genre || 'Spec',
+     kind: 'created',
+     template: p.template || 'Swiss Grid',
+     html: p.html,
+     rawHtml: p.html,
+     createdAt: Date.now(),
+     updatedAt: Date.now()
+    });
+    toast(`“${p.title}” saved from Page Studio to your library!`);
+   }
   }
  });
 
