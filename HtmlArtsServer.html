@@ -90,45 +90,6 @@
   border-color: var(--brown);
   box-shadow: 0 0 0 2px rgba(121,82,52,.2);
 }
-.pen-toolbar-floating {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  z-index: 40;
-  background: rgba(251,248,241,.96);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
-  border-radius: 30px;
-  padding: 6px 12px;
-  display: none;
-  align-items: center;
-  gap: 8px;
-  animation: fade .2s ease;
-}
-.pen-toolbar-floating.show {
-  display: flex;
-}
-.pen-toolbar-floating button {
-  border: 1px solid var(--line);
-  background: #fffaf1;
-  color: var(--brown);
-  border-radius: 18px;
-  padding: 6px 11px;
-  font-size: 11px;
-  font-weight: 800;
-  cursor: pointer;
-}
-.pen-toolbar-floating button:hover {
-  background: #f0e4ce;
-}
-.pen-toolbar-floating button.active {
-  background: var(--brown);
-  color: #fff;
-  border-color: var(--brown);
-}
-
-/* --- Classic Fountain Pen & Infographic Toolbar Styling --- */
 .pen-dock {
   position: fixed;
   bottom: 24px;
@@ -196,8 +157,6 @@
   transform: scale(1.25);
   box-shadow: 0 0 0 2px var(--brown);
 }
-
-/* Infographic Nib Card Overlay */
 .infographic-pen-modal {
   position: fixed;
   bottom: 84px;
@@ -304,16 +263,19 @@
 <section class="page" id="templates"><div class="page-title"><div><div class="eyebrow">A starting point, not a limitation</div><h1>Page Templates</h1><p>Visual directions for expressive HTML pages.</p></div><button class="primary" id="createBook">＋ Create Book</button></div><div class="book-grid" id="templateGrid"></div><p class="lead" style="margin-top:18px">Choose a page style to start a new HTML book. Templates are editable after creation.</p></section>
 <section class="page" id="studio"><div class="page-title"><div><div class="eyebrow">Make a page your own</div><h1>Design Studio</h1><p>A calm space for arranging content, visuals and page structure.</p></div><button class="primary" id="studioCreate">＋ Create Book</button></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">＋</span><div><b>New composition</b><small>Start with a blank page</small></div></div><div class="feature"><span class="feature-icon">▧</span><div><b>Media placement</b><small>Arrange local images and art</small></div></div><div class="feature"><span class="feature-icon">⌘</span><div><b>Page components</b><small>Build reusable sections</small></div></div></div><p class="lead">The studio workspace is reserved for Stage 2. This foundation keeps its place in the navigation without pretending the editor is already connected.</p></section>
 <section class="page" id="analytics"><div class="page-title"><div><div class="eyebrow">Your library, at a glance</div><h1>Analytics</h1><p>Simple local-library indicators.</p></div></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">▤</span><div><b id="bookMetric">8</b><small>Sample catalog items</small></div></div><div class="feature"><span class="feature-icon">◷</span><div><b>Local first</b><small>No account required</small></div></div><div class="feature"><span class="feature-icon">♡</span><div><b>Private by design</b><small>Browser-based foundation</small></div></div></div><p class="lead">Detailed reading trends and IndexedDB diagnostics will be added with the Vault implementation in Stage 3.</p></section>
+</main>
+<footer class="shell footer"><span>HtmlArts · A local library for beautiful HTML books</span><span>Designed with a little ink and a lot of care · <a href="#home" data-go="home">Back to top ↑</a></span></footer>
+<div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="modal"><button class="close" id="closeAbout" aria-label="Close">×</button><div class="eyebrow">A note about this place</div><h2 id="aboutTitle">Welcome to HtmlArts.</h2><p>HtmlArts is a local-first library for reading, creating and collecting self-contained HTML books. It brings books, visual page styles and a quiet writing space into one thoughtful interface.</p><div class="about-list"><div><b>Local by nature</b>Designed to work from your own files and browser.</div><div><b>Open format</b>Books remain portable HTML documents.</div><div><b>Reader first</b>Simple navigation and a distraction-light surface.</div><div><b>Made to grow</b>Creation, annotation and library tools arrive in stages.</div></div><p class="about-license">GNU AGPLv3 <span aria-hidden="true">·</span> Open-source software</p></div></div>
+
+<input id="htmlImportInput" type="file" accept=".html,.htm,text/html" multiple hidden>
+<div class="modal-backdrop" id="createModal" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="modal"><button class="close" data-close="createModal" aria-label="Close">×</button><div class="eyebrow">A fresh page begins</div><h2 id="createTitle">Create a little book.</h2><label class="field-label" for="newBookTitle">Book title</label><input class="field-input" id="newBookTitle" maxlength="90" placeholder="e.g. Notes on the Natural World"><label class="field-label" for="newBookCategory">Category</label><input class="field-input" id="newBookCategory" maxlength="40" value="Personal"><label class="field-label" for="newBookTemplate">Starting style</label><select class="field-input" id="newBookTemplate"><option>Editorial</option><option>Swiss Grid</option><option>Botanical</option><option>Geometric</option><option>Comic</option><option>Watercolour</option></select><div class="modal-actions"><button class="soft-btn" data-close="createModal">Cancel</button><button class="primary" id="saveNewBook">Create & Open ↗</button></div></div></div>
 <!-- Transparent Drawing Layer over entire document -->
 <canvas id="pageInkCanvas" aria-label="Transparent drawing screen"></canvas>
-<!-- Classic Pen & Infographic Dock -->
 <div class="pen-dock" id="pagePenToolbar" role="toolbar" aria-label="Classic Pen Station">
  <button id="btnInfographic" title="Inspect Fountain Pen Anatomy">🖋️ Anatomy</button>
- 
  <button id="pagePenTool" class="active" title="Vintage Fountain Pen">Nib</button>
  <button id="pageChiselTool" title="Calligraphy Italic Stub">Chisel</button>
  <button id="pageEraserTool" title="Blotting Eraser">Eraser</button>
- 
  <div class="inkwell-group" title="Archival Inkwell Palette">
   <div class="ink-drop active" data-color="#261a12" title="Iron Gall Sepia" style="background:#261a12"></div>
   <div class="ink-drop" data-color="#5a3d24" title="Walnut Husk" style="background:#5a3d24"></div>
@@ -321,35 +283,27 @@
   <div class="ink-drop" data-color="#4f6154" title="Sage Verdigris" style="background:#4f6154"></div>
   <div class="ink-drop" data-color="#2b3a4a" title="Dusk Indigo" style="background:#2b3a4a"></div>
  </div>
-
  <button id="pageUndoTool" title="Undo stroke">↶</button>
  <button id="pageClearTool" title="Blot All Ink">Clear</button>
 </div>
 
-<!-- Infographic Nib Anatomy Card -->
 <div class="infographic-pen-modal" id="penInfographicCard">
  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
   <h3>Fountain Pen Anatomy</h3>
   <button id="closeInfographic" style="border:none;background:none;color:var(--brown);cursor:pointer;font-size:16px">✕</button>
  </div>
  <p>Crafted for tactile physical-book fidelity.</p>
- 
  <div class="nib-diagram">
   <svg width="220" height="110" viewBox="0 0 220 110" fill="none" stroke="#795234" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-   <!-- Nib Contour -->
    <path d="M20 55 L75 25 L150 25 L195 55 L150 85 L75 85 Z" fill="#fffcf7" />
-   <!-- Tine Slit & Breather Hole -->
    <line x1="20" y1="55" x2="115" y2="55" stroke="#795234" stroke-width="1.5" />
    <circle cx="118" cy="55" r="4.5" fill="#f4ead8" stroke="#795234" stroke-width="1.5" />
-   <!-- Feed Fins Lines -->
    <line x1="145" y1="35" x2="145" y2="75" stroke="#a66d45" stroke-dasharray="2 3" />
    <line x1="160" y1="38" x2="160" y2="72" stroke="#a66d45" stroke-dasharray="2 3" />
    <line x1="175" y1="42" x2="175" y2="68" stroke="#a66d45" stroke-dasharray="2 3" />
-   <!-- Engraving -->
    <text x="75" y="58" font-family="'Playfair Display', Georgia, serif" font-size="9" fill="#805b3d" stroke="none">HtmlArts · 14K</text>
   </svg>
  </div>
-
  <div class="nib-parts-list">
   <div class="nib-part-item"><span><b>1. Tipping:</b> Iridium glide</span><span>Smooth drag</span></div>
   <div class="nib-part-item"><span><b>2. Breather:</b> Capillary balance</span><span>Pressure flex</span></div>
@@ -358,14 +312,7 @@
  </div>
 </div>
 
-
-</main>
-<footer class="shell footer"><span>HtmlArts · A local library for beautiful HTML books</span><span>Designed with a little ink and a lot of care · <a href="#home" data-go="home">Back to top ↑</a></span></footer>
-<div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="modal"><button class="close" id="closeAbout" aria-label="Close">×</button><div class="eyebrow">A note about this place</div><h2 id="aboutTitle">Welcome to HtmlArts.</h2><p>HtmlArts is a local-first library for reading, creating and collecting self-contained HTML books. It brings books, visual page styles and a quiet writing space into one thoughtful interface.</p><div class="about-list"><div><b>Local by nature</b>Designed to work from your own files and browser.</div><div><b>Open format</b>Books remain portable HTML documents.</div><div><b>Reader first</b>Simple navigation and a distraction-light surface.</div><div><b>Made to grow</b>Creation, annotation and library tools arrive in stages.</div></div><p class="about-license">GNU AGPLv3 <span aria-hidden="true">·</span> Open-source software</p></div></div>
-
-<input id="htmlImportInput" type="file" accept=".html,.htm,text/html" multiple hidden>
-<div class="modal-backdrop" id="createModal" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="modal"><button class="close" data-close="createModal" aria-label="Close">×</button><div class="eyebrow">A fresh page begins</div><h2 id="createTitle">Create a little book.</h2><label class="field-label" for="newBookTitle">Book title</label><input class="field-input" id="newBookTitle" maxlength="90" placeholder="e.g. Notes on the Natural World"><label class="field-label" for="newBookCategory">Category</label><input class="field-input" id="newBookCategory" maxlength="40" value="Personal"><label class="field-label" for="newBookTemplate">Starting style</label><select class="field-input" id="newBookTemplate"><option>Editorial</option><option>Swiss Grid</option><option>Botanical</option><option>Geometric</option><option>Comic</option><option>Watercolour</option></select><div class="modal-actions"><button class="soft-btn" data-close="createModal">Cancel</button><button class="primary" id="saveNewBook">Create & Open ↗</button></div></div></div>
-<div class="reader-overlay" id="readerOverlay" aria-label="HtmlArts reading workspace"><div class="reader-bar"><div><b id="readerBookTitle">Reading</b><small>HtmlArts Server · client-hosted reader</small></div><div class="reader-tools"><button class="reader-tool" id="readerClose" title="Close reader">✕ Close</button></div></div><div class="reader-stage"><iframe id="readerFrame" title="HtmlArts Client Reader" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe></div><div class="reader-status" id="readerStatus">Connecting to reader...</div></div>
+<div class="reader-overlay" id="readerOverlay" aria-label="HtmlArts reading workspace"><div class="reader-bar"><div><b id="readerBookTitle">Reading</b><small>HtmlArts Server · client-hosted reader</small></div><div class="reader-tools"><button class="reader-tool" id="readerClose" title="Close reader">✕ Close</button></div></div><div class="reader-stage"><iframe id="readerFrame" title="HtmlArts Client Reader" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe></div><div class="reader-status" id="readerStatus">Ready</div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 const books=[
@@ -422,7 +369,6 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  function tx(store,mode='readonly'){return db.transaction(store,mode).objectStore(store);}
  function req(r){return new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
 
- /* Functional query schema */
  const queryStore=(storeName)=>({
   getAll: ()=>req(tx(storeName).getAll()),
   get: (key)=>req(tx(storeName).get(key)),
@@ -446,7 +392,209 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  function templateHTML(title,category,style){
   const t=templates[style]||templates.Editorial;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeText(title)}</title><style>*{box-sizing:border-box}body{margin:0;background:${t.bg};color:#30271f;font-family:${t.font};line-height:1.75}.page{max-width:850px;margin:7vh auto;padding:clamp(25px,6vw,76px);background:rgba(255,255,255,.52);min-height:82vh;border:1px solid ${t.accent}33;box-shadow:0 12px 40px #3a2b1a0c}.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:${t.accent}}h1{font-size:clamp(38px,6vw,66px);line-height:1.08;margin:16px 0;color:${t.accent}}.rule{height:2px;width:90px;background:${t.accent};margin:25px 0}h2{font-size:25px;margin-top:42px}p{font-size:17px;max-width:65ch;color:#5f554b}.note{font-style:italic;color:${t.accent};border-left:3px solid ${t.accent};padding:12px 20px;margin:30px 0}@media(max-width:600px){.page{margin:0;min-height:100vh;border:0}}</style></head><body><main class="page"><div class="eyebrow">${safeText(category)} · ${safeText(style)} edition</div><h1>${safeText(title)}</h1><div class="rule"></div><p class="note">A quiet space for ideas, observations and things worth remembering.</p><h2>Begin here</h2><p>Replace this paragraph with your own writing. Your book is a standalone HTML document, stored locally in this browser.</p><h2>New chapter</h2><p>Add sections, images, diagrams and references as your story grows. The original HTML remains portable and editable outside HtmlArts.</p></main>
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeText(title)}</title><style>*{box-sizing:border-box}body{margin:0;background:${t.bg};color:#30271f;font-family:${t.font};line-height:1.75}.page{max-width:850px;margin:7vh auto;padding:clamp(25px,6vw,76px);background:rgba(255,255,255,.52);min-height:82vh;border:1px solid ${t.accent}33;box-shadow:0 12px 40px #3a2b1a0c}.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:${t.accent}}h1{font-size:clamp(38px,6vw,66px);line-height:1.08;margin:16px 0;color:${t.accent}}.rule{height:2px;width:90px;background:${t.accent};margin:25px 0}h2{font-size:25px;margin-top:42px}p{font-size:17px;max-width:65ch;color:#5f554b}.note{font-style:italic;color:${t.accent};border-left:3px solid ${t.accent};padding:12px 20px;margin:30px 0}@media(max-width:600px){.page{margin:0;min-height:100vh;border:0}}</style></head><body><main class="page"><div class="eyebrow">${safeText(category)} · ${safeText(style)} edition</div><h1>${safeText(title)}</h1><div class="rule"></div><p class="note">A quiet space for ideas, observations and things worth remembering.</p><h2>Begin here</h2><p>Replace this paragraph with your own writing. Your book is a standalone HTML document, stored locally in this browser.</p><h2>New chapter</h2><p>Add sections, images, diagrams and references as your story grows. The original HTML remains portable and editable outside HtmlArts.</p></main></body></html>`;
+ }
+
+ function bookCard(b){
+  const node=document.createElement('article');
+  node.className='book-card';
+  node.dataset.recordId=b.id;
+  node.innerHTML=`<div class="cover"><div style="padding:22px;text-align:center;color:${b.color||'#805b3d'}"><div style="font:11px Arial;letter-spacing:2px;text-transform:uppercase">${safeText(b.category||'HTML BOOK')}</div><div style="font:600 25px Georgia;line-height:1.15;margin:16px 0">${safeText(b.title)}</div><div style="width:45px;height:2px;background:currentColor;margin:auto"></div></div></div><h3>${safeText(b.title)}</h3><div class="meta"><span class="tag">${safeText(b.category||'Imported')}</span><span>${b.kind==='import'?'Imported':'Created'}</span></div><div class="card-actions"><button data-open-book="${b.id}">Read ↗</button><button data-delete-book="${b.id}" aria-label="Remove book">Remove</button></div>`;
+  return node;
+ }
+
+ async function refreshBooks(){
+  const records=await queryStore(STORE).getAll();
+  const custom=records.sort((a,b)=>b.updatedAt-a.updatedAt);
+  localBooks=custom;
+  renderCatalog();
+  const count=custom.length+books.length;
+  $('resultCount').textContent=`${count} pieces · ${custom.length} in your library`;
+  const metric=$('bookMetric');
+  if(metric)metric.textContent=String(custom.length);
+ }
+
+ async function saveBook(record){
+  await queryStore(STORE).put(record);
+  await refreshBooks();
+ }
+
+ function openCreate(template){
+  selectedTemplate=template||'Editorial';
+  $('newBookTemplate').value=selectedTemplate;
+  $('newBookTitle').value='';
+  $('newBookCategory').value='Personal';
+  $('createModal').classList.add('open');
+  setTimeout(()=>$('newBookTitle').focus(),50);
+ }
+
+ async function createBook(){
+  const title=$('newBookTitle').value.trim(),
+        category=$('newBookCategory').value.trim()||'Personal',
+        style=$('newBookTemplate').value;
+  if(!title){
+   $('newBookTitle').focus();
+   toast('Give your book a title first.');
+   return;
+  }
+  const record={
+   id:id(),
+   title,
+   category,
+   kind:'created',
+   template:style,
+   html:templateHTML(title,category,style),
+   createdAt:Date.now(),
+   updatedAt:Date.now()
+  };
+  await saveBook(record);
+  $('createModal').classList.remove('open');
+  toast('Your book is on the shelf.');
+  openReader(record);
+ }
+
+ async function importFiles(files){
+  for(const file of files){
+   if(!/\.html?$/i.test(file.name)&&file.type!=='text/html')continue;
+   const html=await file.text();
+   const title=file.name.replace(/\.html?$/i,'').replace(/[_-]+/g,' ');
+   await saveBook({
+    id:id(),
+    title,
+    category:'Imported',
+    kind:'import',
+    html,
+    fileName:file.name,
+    createdAt:Date.now(),
+    updatedAt:Date.now()
+   });
+  }
+  toast(`${files.length} file(s) added to your local shelf.`);
+ }
+
+ /* Reader Orchestration via HtmlArtsClient.html & postMessage */
+ async function openReader(book){
+  activeBook=book;
+  $('readerBookTitle').textContent=book.title;
+  $('readerOverlay').classList.add('open');
+  $('readerStatus').textContent='Loading client reader...';
+
+  const frame=$('readerFrame');
+  const saved=await queryStore(INK_STORE).get(book.id);
+  const annotations=saved&&Array.isArray(saved.strokes)?saved.strokes:[];
+
+  const sendPayload=()=>{
+   frame.contentWindow.postMessage({
+    type:'HTMLARTS_LOAD',
+    payload:{
+     bookId:book.id,
+     html:book.html,
+     config:{theme:book.template||'Editorial',readOnly:false},
+     metadata:{title:book.title,category:book.category},
+     annotations:{strokes:annotations}
+    }
+   },'*');
+  };
+
+  if(frame.getAttribute('src')==='HtmlArtsClient.html'){
+   sendPayload();
+  }else{
+   frame.onload=()=>{sendPayload();};
+   frame.src='HtmlArtsClient.html';
+  }
+ }
+
+ function closeReader(){
+  $('readerOverlay').classList.remove('open');
+  const frame=$('readerFrame');
+  frame.onload=null;
+  frame.removeAttribute('src');
+  activeBook=null;
+ }
+
+ /* Listen for postMessage from HtmlArtsClient */
+ window.addEventListener('message',async(e)=>{
+  const d=e.data;
+  if(!d||d.type!=='HTMLARTS_EVENT')return;
+  const p=d.payload||{};
+
+  if(p.event==='book-ready'){
+   $('readerStatus').textContent='Client reader active · strokes synchronized';
+  }else if(p.event==='annotations-updated'){
+   if(p.bookId&&p.data&&Array.isArray(p.data.strokes)){
+    await queryStore(INK_STORE).put({
+     bookId:p.bookId,
+     strokes:p.data.strokes,
+     updatedAt:Date.now()
+    });
+    $('readerStatus').textContent=`Annotations saved · ${p.data.strokes.length} stroke(s)`;
+   }
+  }else if(p.event==='close'){
+   closeReader();
+  }
+ });
+
+ $('ingestBook').addEventListener('click',()=>$('htmlImportInput').click());
+ $('htmlImportInput').addEventListener('change',async e=>{
+  if(e.target.files.length)await importFiles([...e.target.files]);
+  e.target.value='';
+ });
+
+ ['createBook','studioCreate'].forEach(x=>{
+  const el=$(x);
+  if(el)el.onclick=()=>openCreate();
+ });
+ $('saveNewBook').onclick=createBook;
+
+ document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>$(b.dataset.close).classList.remove('open')));
+
+ document.getElementById('templateGrid').addEventListener('click',e=>{
+  const c=e.target.closest('[data-book]');
+  if(!c)return;
+  const name=c.dataset.book.replace(/ Page$/,'');
+  openCreate(templates[name]?name:'Editorial');
+ });
+
+ document.addEventListener('click',async e=>{
+  const open=e.target.closest('[data-open-book]');
+  if(open){
+   const b=await queryStore(STORE).get(open.dataset.openBook);
+   if(b)openReader(b);
+   return;
+  }
+  const del=e.target.closest('[data-delete-book]');
+  if(del){
+   const b=await queryStore(STORE).get(del.dataset.deleteBook);
+   if(!b)return;
+   if(confirm(`Remove “${b.title}” from this browser's library?`)){
+    await queryStore(STORE).delete(b.id);
+    await queryStore(INK_STORE).delete(b.id);
+    await refreshBooks();
+    toast('Book removed from this browser.');
+   }
+   return;
+  }
+ });
+
+ $('readerClose').onclick=closeReader;
+
+ (async()=>{
+  try{
+   db=await openDB();
+   await refreshBooks();
+   const metric=document.getElementById('bookMetric');
+   if(metric){
+    const all=await queryStore(STORE).getAll();
+    metric.textContent=String(all.length);
+   }
+  }catch(err){
+   console.error('HtmlArts local library:',err);
+   toast('Local database could not be opened. Try a normal browser window.');
+  }
+ })();
+})();
+</script>
+
 <script>
 /* Transparent Page Ink Layer (Classic Pen & Infographic Nib Engine) */
 (()=>{
@@ -467,8 +615,8 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  const inkDrops = document.querySelectorAll('.ink-drop');
 
  let penActive = false;
- let currentTool = 'pen'; // 'pen' | 'chisel' | 'eraser'
- let currentColor = '#261a12'; // Iron Gall Dark Sepia
+ let currentTool = 'pen';
+ let currentColor = '#261a12';
  let strokes = [];
  let redoStack = [];
  let activeDrawing = null;
@@ -516,10 +664,9 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
    for (let i = 1; i < st.points.length; i++) ctx.lineTo(st.points[i].x * w, st.points[i].y * h);
    ctx.stroke();
   } else if (st.tool === 'chisel') {
-   // Calligraphic Chisel Nib (Angled stub: broad downs, fine horizontals)
    ctx.globalCompositeOperation = 'source-over';
    ctx.fillStyle = st.color || '#261a12';
-   const angle = Math.PI / 4; // 45 degree classic italic cut
+   const angle = Math.PI / 4;
    const length = 5;
    const dx = Math.cos(angle) * length;
    const dy = Math.sin(angle) * length;
@@ -535,7 +682,6 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
     ctx.stroke();
    }
   } else {
-   // Vintage Flex Nib (variable width based on point pressure)
    ctx.globalCompositeOperation = 'source-over';
    ctx.strokeStyle = st.color || '#261a12';
    ctx.lineCap = 'round';
@@ -547,7 +693,6 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
     ctx.beginPath();
     ctx.moveTo(prev.x * w, prev.y * h);
     ctx.lineTo(curr.x * w, curr.y * h);
-    // Pressure modulated width
     ctx.lineWidth = 1.4 + (curr.p * 3.8);
     ctx.stroke();
    }
@@ -699,6 +844,103 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  document.querySelectorAll('[data-page], [data-go], .brand').forEach(el => {
   el.addEventListener('click', () => setTimeout(resizeCanvas, 120));
  });
+})();
+</script>
+
+
+
+
+
+<style>
+/* Tablet and narrow-laptop refinement */
+@media (min-width:761px) and (max-width:1100px){
+ .shell{padding-left:24px;padding-right:24px}
+ .topbar{gap:9px;padding-left:18px;padding-right:18px;flex-wrap:wrap;height:auto;min-height:68px}
+ .brand-name{font-size:20px}.nav{margin-left:4px;gap:0}.nav button,.about-link{padding:8px 7px;font-size:11px}
+ .search{width:min(180px,18vw)}.topbar>.primary{padding:9px 11px;font-size:11px}
+ .hero h1{font-size:clamp(34px,4vw,48px)}.book-grid,.catalog-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:760px){
+ .s3-head{gap:9px}.s3-head .brand-name{font-size:18px}
+ .s3-content{margin-top:24px}
+}
+</style>
+<style>
+/* Stage 3 — quiet local vault surfaces */
+.s3-layer{position:fixed;inset:0;z-index:120;background:var(--paper);display:none;flex-direction:column;overflow:auto}
+.s3-layer.open{display:flex}.s3-head{position:sticky;top:0;z-index:2;background:rgba(251,248,241,.96);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);padding:15px clamp(18px,4vw,54px);display:flex;align-items:center;gap:14px}
+.s3-head h2{font:600 23px var(--serif);margin:0}.s3-head small{color:var(--muted);font:13px var(--hand)}.s3-head .spacer{flex:1}
+.s3-content{width:min(1180px,calc(100% - 42px));margin:34px auto 70px}.s3-kicker{font:12px var(--hand);letter-spacing:1.5px;text-transform:uppercase;color:var(--brown2)}
+.s3-title{font:600 clamp(30px,4vw,43px) var(--serif);margin:7px 0}.s3-sub{font:16px var(--hand);color:var(--muted);margin:0 0 25px}
+.s3-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}.s3-card{background:rgba(255,253,248,.8);border:1px solid var(--line);border-radius:16px;padding:18px;min-width:0}.s3-card h3{font:600 17px var(--serif);margin:0 0 8px}.s3-number{font:600 32px var(--serif);color:var(--brown)}.s3-muted{color:var(--muted);font:12px var(--hand)}.s3-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.s3-table{width:100%;border-collapse:collapse;font-size:12px}.s3-table th,.s3-table td{text-align:left;padding:12px 9px;border-bottom:1px solid var(--line)}.s3-table th{color:var(--muted);font-weight:700}.s3-action{border:1px solid #d7c7ae;background:#fffaf1;color:var(--brown);border-radius:20px;padding:9px 13px;font-size:11px;font-weight:800}.s3-action.primary{background:var(--brown);color:#fffaf1}.s3-list{display:grid;gap:9px}.s3-item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;background:#fffdf8;border:1px solid var(--line);border-radius:12px}.s3-item strong{font:600 14px var(--serif)}.s3-bars{height:170px;display:flex;align-items:end;gap:12px;padding:16px 4px 0;border-bottom:1px solid var(--line)}.s3-bar{flex:1;min-width:12px;background:linear-gradient(#c6a477,#8b6747);border-radius:7px 7px 0 0;position:relative}.s3-bar span{position:absolute;bottom:-23px;left:50%;transform:translateX(-50%);font:10px var(--hand);color:var(--muted)}.s3-note{width:100%;min-height:180px;border:1px solid var(--line);border-radius:14px;background:#fffdf8;padding:16px;color:var(--ink);font:15px/1.7 var(--hand);outline-color:#b99568;resize:vertical}.s3-asset{display:flex;align-items:center;gap:12px;border:1px solid var(--line);background:#fffdf8;padding:10px;border-radius:12px}.s3-thumb{width:54px;height:54px;border-radius:9px;object-fit:cover;background:var(--paper2)}.s3-asset-info{min-width:0;flex:1}.s3-asset-info b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}.s3-asset-info small{color:var(--muted);font-size:10px}.s3-template{border:1px solid var(--line);border-radius:15px;padding:13px;background:#fffdf8}.s3-template .swatch{height:100px;border-radius:10px;margin-bottom:10px;display:grid;place-items:center;font:22px var(--serif);color:#72553c}.s3-template b{font:600 14px var(--serif)}.s3-template p{font:12px var(--hand);color:var(--muted);margin:4px 0 10px}
+@media(max-width:800px){.s3-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.s3-head{flex-wrap:wrap}.s3-head h2{font-size:19px}}@media(max-width:500px){.s3-grid{grid-template-columns:1fr}.s3-content{width:calc(100% - 28px)}.s3-head{padding:12px 14px}}
+</style>
+<div class="s3-layer" id="s3Layer" aria-modal="true" role="dialog" aria-label="HtmlArts Vault">
+ <header class="s3-head"><a class="brand" href="#" id="s3Home"><span class="brand-mark">⌂</span><span class="brand-name">HtmlArts</span></a><span style="color:var(--line)">/</span><div><h2 id="s3Heading">Vault</h2><small id="s3Caption">Your local creative library</small></div><span class="spacer"></span><button class="s3-action" id="s3Close">Close ×</button></header>
+ <main class="s3-content" id="s3Body"></main>
+</div>
+<script>
+/* HtmlArts Stage 3: local observability, workspace, asset vault and design studio. */
+(()=>{
+ const $=id=>document.getElementById(id), layer=$('s3Layer'), body=$('s3Body');
+ const MAIN_DB='htmlarts-local-library', ASSET_DB='htmlarts-assets-v1';
+ let assetDb=null, current='indexdb';
+ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const bytes=n=>n<1024?`${n} B`:n<1048576?`${(n/1024).toFixed(1)} KB`:`${(n/1048576).toFixed(2)} MB`;
+ function openAssetDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(ASSET_DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('assets'))r.result.createObjectStore('assets',{keyPath:'id'});};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
+ function assetReq(req){return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
+ function assetStore(mode='readonly'){return assetDb.transaction('assets',mode).objectStore('assets');}
+ function mainBooks(){return new Promise((resolve,reject)=>{const r=indexedDB.open(MAIN_DB,1);r.onsuccess=()=>{const d=r.result;if(!d.objectStoreNames.contains('books')){d.close();resolve([]);return;}const q=d.transaction('books').objectStore('books').getAll();q.onsuccess=()=>{resolve(q.result||[]);d.close();};q.onerror=()=>{reject(q.error);d.close();};};r.onerror=()=>reject(r.error);});}
+ function log(action,detail=''){const a=JSON.parse(localStorage.getItem('htmlarts_activity')||'[]');a.push({at:Date.now(),action,detail});localStorage.setItem('htmlarts_activity',JSON.stringify(a.slice(-500)));}
+ function openPanel(key){current=key;const names={indexdb:['IndexDB Dashboard','A clear view of what lives in this browser'],trends:['Trends','A small picture of your reading and making activity'],workspace:['Workspace','Continue where your ideas are'],assets:['Assets','Images and media kept on this device'],studio:['Design Studio','Choose a visual language for your next page']};$('s3Heading').textContent=names[key][0];$('s3Caption').textContent=names[key][1];layer.classList.add('open');render(key);}
+ function closePanel(){layer.classList.remove('open');}
+ async function render(key){
+  body.innerHTML='<p class="s3-sub">Opening your local workspace…</p>';
+  try{
+   if(key==='indexdb')await renderIndex(); if(key==='trends')renderTrends(); if(key==='workspace')await renderWorkspace(); if(key==='assets')await renderAssets(); if(key==='studio')renderStudio();
+  }catch(e){body.innerHTML=`<h1 class="s3-title">Could not open this view</h1><p class="s3-sub">${esc(e.message)}. Try opening HtmlArts from localhost in a modern browser.</p>`;}
+ }
+ async function renderIndex(){
+  if(!assetDb)assetDb=await openAssetDb();
+  const records=await mainBooks(), assets=await assetReq(assetStore().getAll()), estimate=await navigator.storage?.estimate?.()||{};
+  const inkDb=await new Promise(resolve=>{const r=indexedDB.open(MAIN_DB,1);r.onsuccess=()=>{const d=r.result;if(!d.objectStoreNames.contains('annotations')){d.close();resolve([]);return;}const q=d.transaction('annotations').objectStore('annotations').getAll();q.onsuccess=()=>{resolve(q.result||[]);d.close();};q.onerror=()=>{d.close();resolve([]);};};r.onerror=()=>resolve([]);});
+  const usage=estimate.usage||0, quota=estimate.quota||0;
+  body.innerHTML=`<div class="s3-kicker">Local storage / inspection</div><h1 class="s3-title">Your library, at a glance.</h1><p class="s3-sub">Data stays in this browser profile. Nothing is uploaded to a server.</p><div class="s3-grid"><section class="s3-card"><div class="s3-muted">Book records</div><div class="s3-number">${records.length}</div><div class="s3-muted">Imported and created HTML books</div></section><section class="s3-card"><div class="s3-muted">Media assets</div><div class="s3-number">${assets.length}</div><div class="s3-muted">Images and files in Assets</div></section><section class="s3-card"><div class="s3-muted">Annotation sets</div><div class="s3-number">${inkDb.length}</div><div class="s3-muted">Saved book ink layers</div></section><section class="s3-card"><div class="s3-muted">Browser storage</div><div class="s3-number">${bytes(usage)}</div><div class="s3-muted">${quota?`of ${bytes(quota)} estimated quota`:'Quota estimate unavailable'}</div></section></div><section class="s3-card" style="margin-top:16px"><div class="s3-row" style="justify-content:space-between"><h3>Book database · ${MAIN_DB}</h3><button class="s3-action" id="s3RefreshIndex">Refresh</button></div><div style="overflow:auto"><table class="s3-table"><thead><tr><th>Title</th><th>Category</th><th>Kind</th><th>Updated</th><th>Size</th></tr></thead><tbody>${records.length?records.map(b=>`<tr><td>${esc(b.title)}</td><td>${esc(b.category||'—')}</td><td>${esc(b.kind||'—')}</td><td>${b.updatedAt?new Date(b.updatedAt).toLocaleDateString():'—'}</td><td>${bytes(new Blob([b.html||'']).size)}</td></tr>`).join(''):'<tr><td colspan="5">No user books stored yet.</td></tr>'}</tbody></table></div><p class="s3-muted">The built-in sample catalogue is not counted as a stored record.</p></section>`;
+  $('s3RefreshIndex').onclick=()=>render('indexdb');
+ }
+ function renderTrends(){
+  const events=JSON.parse(localStorage.getItem('htmlarts_activity')||'[]'), days=Array.from({length:7},(_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));return d;});
+  const counts=days.map(d=>events.filter(e=>new Date(e.at).toDateString()===d.toDateString()).length),max=Math.max(1,...counts);
+  const booksMade=events.filter(e=>e.action==='book-created').length, imports=events.filter(e=>e.action==='book-imported').length, reads=events.filter(e=>e.action==='book-opened').length;
+  body.innerHTML=`<div class="s3-kicker">Personal activity</div><h1 class="s3-title">A gentle rhythm of making.</h1><p class="s3-sub">Trends are measured locally from actions performed in this browser, starting with this version.</p><div class="s3-grid"><section class="s3-card"><div class="s3-muted">Books created</div><div class="s3-number">${booksMade}</div></section><section class="s3-card"><div class="s3-muted">Books imported</div><div class="s3-number">${imports}</div></section><section class="s3-card"><div class="s3-muted">Reader opens</div><div class="s3-number">${reads}</div></section><section class="s3-card"><div class="s3-muted">Events recorded</div><div class="s3-number">${events.length}</div></section></div><section class="s3-card" style="margin-top:16px"><h3>Last seven days</h3><div class="s3-bars">${counts.map((n,i)=>`<div class="s3-bar" style="height:${Math.max(4,n/max*125)}px"><span>${days[i].toLocaleDateString(undefined,{weekday:'short'})}</span></div>`).join('')}</div><div style="height:22px"></div><p class="s3-muted">No historical activity is reconstructed. Counts begin when actions are recorded by this version.</p></section>`;
+ }
+ async function renderWorkspace(){
+  const records=await mainBooks(), recent=records.sort((a,b)=>(b.updatedAt||0)-(a.updatedAt||0));
+  body.innerHTML=`<div class="s3-kicker">Your desk</div><h1 class="s3-title">A place to pick up the thread.</h1><p class="s3-sub">Recent books, quick actions and a small persistent scratchpad.</p><div class="s3-row" style="margin-bottom:18px"><button class="s3-action primary" id="s3Create">＋ New book</button><button class="s3-action" id="s3Import">Import HTML</button><button class="s3-action" id="s3Studio">Open Design Studio</button></div><section class="s3-card"><h3>Recently touched</h3><div class="s3-list">${recent.length?recent.slice(0,8).map(b=>`<div class="s3-item"><div><strong>${esc(b.title)}</strong><div class="s3-muted">${esc(b.category||'Personal')} · ${b.updatedAt?new Date(b.updatedAt).toLocaleString():'No date'}</div></div><button class="s3-action" data-s3-read="${esc(b.id)}">Read ↗</button></div>`).join(''):'<p class="s3-muted">Your created and imported books will appear here.</p>'}</div></section><section class="s3-card" style="margin-top:15px"><div class="s3-row" style="justify-content:space-between"><h3>Desk notes</h3><span class="s3-muted">Saved automatically on this device</span></div><textarea class="s3-note" id="s3Scratch" placeholder="Capture a thought, a reading goal, or the next thing to make…"></textarea></section>`;
+  $('s3Scratch').value=localStorage.getItem('htmlarts_workspace_note')||'';$('s3Scratch').addEventListener('input',e=>localStorage.setItem('htmlarts_workspace_note',e.target.value));
+  $('s3Create').onclick=()=>{closePanel();document.getElementById('createBook').click();};$('s3Import').onclick=()=>{closePanel();document.getElementById('ingestBook').click();};$('s3Studio').onclick=()=>openPanel('studio');
+  body.querySelectorAll('[data-s3-read]').forEach(b=>b.onclick=()=>{closePanel();const card=document.querySelector(`[data-open-book=\"${CSS.escape(b.dataset.s3Read)}\"]`);if(card)card.click();else toast('Open this book from the Catalog to launch the reader.');});
+ }
+ async function renderAssets(){
+  if(!assetDb)assetDb=await openAssetDb();
+  const assets=await assetReq(assetStore().getAll());
+  body.innerHTML=`<div class="s3-kicker">Media library</div><h1 class="s3-title">Keep the useful pieces close.</h1><p class="s3-sub">Images and files are stored in a separate local IndexedDB database.</p><div class="s3-row" style="margin-bottom:18px"><label class="s3-action primary" for="s3AssetInput">＋ Add assets</label><input id="s3AssetInput" type="file" accept="image/*,.svg,.pdf,.txt" multiple hidden><span class="s3-muted">Images, SVG, PDF and text files</span></div><div class="s3-grid" id="s3AssetGrid">${assets.length?assets.map(a=>`<div class="s3-asset"><img class="s3-thumb" data-asset-preview="${esc(a.id)}" alt=""><div class="s3-asset-info"><b>${esc(a.name)}</b><small>${bytes(a.size)} · ${esc(a.type||'file')}</small></div><button class="s3-action" data-asset-delete="${esc(a.id)}">×</button></div>`).join(''):'<div class="s3-card" style="grid-column:1/-1;text-align:center;padding:42px"><div style="font:30px var(--serif)">＋</div><h3>Your asset shelf is empty</h3><p class="s3-muted">Add reference images, diagrams and supporting files.</p></div>'}</div>`;
+  for(const a of assets){if(a.type?.startsWith('image/')){const el=body.querySelector(`[data-asset-preview="${CSS.escape(a.id)}"]`);if(el)el.src=URL.createObjectURL(a.blob);}}
+  $('s3AssetInput').onchange=async e=>{for(const f of e.target.files){await assetReq(assetStore('readwrite').put({id:`asset-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,name:f.name,type:f.type,size:f.size,blob:f,addedAt:Date.now()}));}log('assets-added',String(e.target.files.length));renderAssets();};body.querySelectorAll('[data-asset-delete]').forEach(b=>b.onclick=async()=>{await assetReq(assetStore('readwrite').delete(b.dataset.assetDelete));log('asset-deleted');renderAssets();});
+ }
+ function renderStudio(){
+  const styles=[['Editorial','A quiet literary page','#f5ead8','Aa'],['Swiss Grid','Structure and strong hierarchy','#eeece5','01'],['Botanical','Organic shapes and natural rhythm','#e9eddf','❧'],['Geometric','Simple forms and bold balance','#f3e5d5','○'],['Comic','Expressive panels and playful marks','#fff0c7','Pow!'],['Watercolour','Soft edges and washed colour','#e5eeeb','≈']];
+  body.innerHTML=`<div class="s3-kicker">Page-making tools</div><h1 class="s3-title">Choose the mood before the words.</h1><p class="s3-sub">Select a visual direction to create a new HTML book. Your chosen style is embedded into the generated document.</p><div class="s3-grid">${styles.map(([n,d,c,s])=>`<article class="s3-template"><div class="swatch" style="background:${c}">${s}</div><b>${n}</b><p>${d}</p><button class="s3-action" data-s3-template="${n}">Create with this style ↗</button></article>`).join('')}</div>`;
+  body.querySelectorAll('[data-s3-template]').forEach(b=>b.onclick=()=>{closePanel();const btn=document.getElementById('createBook');btn.click();setTimeout(()=>{const sel=document.getElementById('newBookTemplate');if(sel)sel.value=b.dataset.s3Template;},80);});
+ }
+ // Existing Vault labels may use "IndexDB Dashboard"; normalize robustly.
+ document.querySelectorAll('[data-vault]').forEach(b=>{b.addEventListener('click',()=>{const v=b.dataset.vault.toLowerCase();openPanel(v.includes('index')?'indexdb':v.includes('trend')?'trends':v.includes('workspace')?'workspace':'assets');});});
+ $('s3Close').onclick=closePanel;$('s3Home').onclick=e=>{e.preventDefault();closePanel();};layer.addEventListener('click',e=>{if(e.target===layer)closePanel();});document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel();});
+ (async()=>{try{assetDb=await openAssetDb();}catch(e){console.warn('Assets database unavailable',e);}})();
+ // Record actions from existing Stage 2 flows without changing their storage contracts.
+ const oldToast=window.toast;
+ document.addEventListener('click',e=>{if(e.target.closest('[data-open-book]'))log('book-opened');if(e.target.closest('#saveNewBook'))log('book-created');if(e.target.closest('#ingestBook'))log('book-imported');});
+ window.HtmlArtsVault={open:openPanel,close:closePanel};
 })();
 </script>
 </body></html>
