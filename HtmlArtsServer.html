@@ -50,6 +50,83 @@
 @media(max-width:900px){.catalog-heading{grid-template-columns:1fr;gap:12px;min-height:0;align-items:start}.category-quick-filters{margin:0 auto;width:min(100%,470px);min-height:235px}}
 @media(max-width:560px){.category-quick-filters{width:100%;min-height:205px;padding:37px 28px 22px;gap:8px 10px}.category-icon{width:52px;height:52px;border-radius:15px}.category-icon svg{width:26px;height:26px}.catalog-toolbar{align-items:flex-start;flex-direction:column}}
 
+
+/* Transparent Home/Page Ink Layer */
+#pageInkCanvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 15;
+  touch-action: none;
+}
+#pageInkCanvas.pen-active {
+  pointer-events: auto;
+  cursor: crosshair;
+}
+.pen-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: #fffaf1;
+  color: var(--brown);
+  border-radius: 22px;
+  padding: 8px 14px;
+  font-size: 12px;
+  font-weight: 800;
+  transition: all .18s ease;
+  user-select: none;
+}
+.pen-toggle-btn:hover {
+  background: #f0e4ce;
+  border-color: var(--brown2);
+}
+.pen-toggle-btn.active {
+  background: var(--brown);
+  color: #fffdf8;
+  border-color: var(--brown);
+  box-shadow: 0 0 0 2px rgba(121,82,52,.2);
+}
+.pen-toolbar-floating {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 40;
+  background: rgba(251,248,241,.96);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  border-radius: 30px;
+  padding: 6px 12px;
+  display: none;
+  align-items: center;
+  gap: 8px;
+  animation: fade .2s ease;
+}
+.pen-toolbar-floating.show {
+  display: flex;
+}
+.pen-toolbar-floating button {
+  border: 1px solid var(--line);
+  background: #fffaf1;
+  color: var(--brown);
+  border-radius: 18px;
+  padding: 6px 11px;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.pen-toolbar-floating button:hover {
+  background: #f0e4ce;
+}
+.pen-toolbar-floating button.active {
+  background: var(--brown);
+  color: #fff;
+  border-color: var(--brown);
+}
 </style>
 </head>
 <body>
@@ -61,7 +138,7 @@
   <button data-page="studio" aria-label="Design Studio" title="Design Studio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.8-.8 4 4-.8L19.8 7.4a2.1 2.1 0 0 0-3-3L4 16.8Z"/><path d="m14.9 6.3 3 3"/></svg></button>
   <button data-page="analytics" aria-label="Analytics" title="Analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5h18"/><rect x="5" y="11" width="3.5" height="9.5" rx="1"/><rect x="10.3" y="6.5" width="3.5" height="14" rx="1"/><rect x="15.6" y="3" width="3.5" height="17.5" rx="1"/></svg></button>
 </nav>
- <span class="top-spacer"></span><label class="search"><span>⌕</span><input id="globalSearch" placeholder="Search books, templates..." aria-label="Search library"></label>
+ <span class="top-spacer"></span><button class="pen-toggle-btn" id="pagePenToggle" aria-label="Toggle writing pen on page" title="Write or sketch directly on the page"><span style="font-size:14px">✎</span> <span id="penToggleText">Pen Off</span></button><label class="search"><span>⌕</span><input id="globalSearch" placeholder="Search books, templates..." aria-label="Search library"></label>
  <button class="soft-btn" id="ingestBook">＋ Ingest HTML</button>
  <div class="vault-wrap"><button class="vault-trigger" id="vaultTrigger" aria-expanded="false">Vault⌄</button><div class="vault-menu" id="vaultMenu" role="menu">
   <button data-vault="IndexDB Dashboard"><span>▤</span><span>IndexDB Dashboard<small>Local storage overview</small></span></button><button data-vault="Trends"><span>⌁</span><span>Trends<small>Reading and library activity</small></span></button><button data-vault="Workspace"><span>▣</span><span>Workspace<small>Your local working area</small></span></button><button data-vault="Assets"><span>▧</span><span>Assets<small>Images and media collection</small></span></button>
@@ -102,6 +179,16 @@
 <section class="page" id="templates"><div class="page-title"><div><div class="eyebrow">A starting point, not a limitation</div><h1>Page Templates</h1><p>Visual directions for expressive HTML pages.</p></div><button class="primary" id="createBook">＋ Create Book</button></div><div class="book-grid" id="templateGrid"></div><p class="lead" style="margin-top:18px">Choose a page style to start a new HTML book. Templates are editable after creation.</p></section>
 <section class="page" id="studio"><div class="page-title"><div><div class="eyebrow">Make a page your own</div><h1>Design Studio</h1><p>A calm space for arranging content, visuals and page structure.</p></div><button class="primary" id="studioCreate">＋ Create Book</button></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">＋</span><div><b>New composition</b><small>Start with a blank page</small></div></div><div class="feature"><span class="feature-icon">▧</span><div><b>Media placement</b><small>Arrange local images and art</small></div></div><div class="feature"><span class="feature-icon">⌘</span><div><b>Page components</b><small>Build reusable sections</small></div></div></div><p class="lead">The studio workspace is reserved for Stage 2. This foundation keeps its place in the navigation without pretending the editor is already connected.</p></section>
 <section class="page" id="analytics"><div class="page-title"><div><div class="eyebrow">Your library, at a glance</div><h1>Analytics</h1><p>Simple local-library indicators.</p></div></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">▤</span><div><b id="bookMetric">8</b><small>Sample catalog items</small></div></div><div class="feature"><span class="feature-icon">◷</span><div><b>Local first</b><small>No account required</small></div></div><div class="feature"><span class="feature-icon">♡</span><div><b>Private by design</b><small>Browser-based foundation</small></div></div></div><p class="lead">Detailed reading trends and IndexedDB diagnostics will be added with the Vault implementation in Stage 3.</p></section>
+<!-- Transparent Drawing Layer over entire document -->
+<canvas id="pageInkCanvas" aria-label="Transparent drawing screen"></canvas>
+<div class="pen-toolbar-floating" id="pagePenToolbar" role="toolbar" aria-label="Page Pen Tools">
+ <span style="font:600 12px var(--hand);color:var(--brown)">Ink Layer:</span>
+ <button id="pagePenTool" class="active">✎ Pen</button>
+ <button id="pageEraserTool">⌫ Eraser</button>
+ <button id="pageUndoTool" title="Undo stroke">↶ Undo</button>
+ <button id="pageClearTool" title="Clear page drawings">✕ Clear</button>
+</div>
+
 </main>
 <footer class="shell footer"><span>HtmlArts · A local library for beautiful HTML books</span><span>Designed with a little ink and a lot of care · <a href="#home" data-go="home">Back to top ↑</a></span></footer>
 <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="modal"><button class="close" id="closeAbout" aria-label="Close">×</button><div class="eyebrow">A note about this place</div><h2 id="aboutTitle">Welcome to HtmlArts.</h2><p>HtmlArts is a local-first library for reading, creating and collecting self-contained HTML books. It brings books, visual page styles and a quiet writing space into one thoughtful interface.</p><div class="about-list"><div><b>Local by nature</b>Designed to work from your own files and browser.</div><div><b>Open format</b>Books remain portable HTML documents.</div><div><b>Reader first</b>Simple navigation and a distraction-light surface.</div><div><b>Made to grow</b>Creation, annotation and library tools arrive in stages.</div></div><p class="about-license">GNU AGPLv3 <span aria-hidden="true">·</span> Open-source software</p></div></div>
@@ -189,7 +276,202 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  function templateHTML(title,category,style){
   const t=templates[style]||templates.Editorial;
-  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeText(title)}</title><style>*{box-sizing:border-box}body{margin:0;background:${t.bg};color:#30271f;font-family:${t.font};line-height:1.75}.page{max-width:850px;margin:7vh auto;padding:clamp(25px,6vw,76px);background:rgba(255,255,255,.52);min-height:82vh;border:1px solid ${t.accent}33;box-shadow:0 12px 40px #3a2b1a0c}.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:${t.accent}}h1{font-size:clamp(38px,6vw,66px);line-height:1.08;margin:16px 0;color:${t.accent}}.rule{height:2px;width:90px;background:${t.accent};margin:25px 0}h2{font-size:25px;margin-top:42px}p{font-size:17px;max-width:65ch;color:#5f554b}.note{font-style:italic;color:${t.accent};border-left:3px solid ${t.accent};padding:12px 20px;margin:30px 0}@media(max-width:600px){.page{margin:0;min-height:100vh;border:0}}</style></head><body><main class="page"><div class="eyebrow">${safeText(category)} · ${safeText(style)} edition</div><h1>${safeText(title)}</h1><div class="rule"></div><p class="note">A quiet space for ideas, observations and things worth remembering.</p><h2>Begin here</h2><p>Replace this paragraph with your own writing. Your book is a standalone HTML document, stored locally in this browser.</p><h2>New chapter</h2><p>Add sections, images, diagrams and references as your story grows. The original HTML remains portable and editable outside HtmlArts.</p></main></body></html>`;
+  return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeText(title)}</title><style>*{box-sizing:border-box}body{margin:0;background:${t.bg};color:#30271f;font-family:${t.font};line-height:1.75}.page{max-width:850px;margin:7vh auto;padding:clamp(25px,6vw,76px);background:rgba(255,255,255,.52);min-height:82vh;border:1px solid ${t.accent}33;box-shadow:0 12px 40px #3a2b1a0c}.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:${t.accent}}h1{font-size:clamp(38px,6vw,66px);line-height:1.08;margin:16px 0;color:${t.accent}}.rule{height:2px;width:90px;background:${t.accent};margin:25px 0}h2{font-size:25px;margin-top:42px}p{font-size:17px;max-width:65ch;color:#5f554b}.note{font-style:italic;color:${t.accent};border-left:3px solid ${t.accent};padding:12px 20px;margin:30px 0}@media(max-width:600px){.page{margin:0;min-height:100vh;border:0}}</style></head><body><main class="page"><div class="eyebrow">${safeText(category)} · ${safeText(style)} edition</div><h1>${safeText(title)}</h1><div class="rule"></div><p class="note">A quiet space for ideas, observations and things worth remembering.</p><h2>Begin here</h2><p>Replace this paragraph with your own writing. Your book is a standalone HTML document, stored locally in this browser.</p><h2>New chapter</h2><p>Add sections, images, diagrams and references as your story grows. The original HTML remains portable and editable outside HtmlArts.</p></main>
+<script>
+/* Transparent Page Ink Layer (Physical Book Aesthetics) */
+(()=>{
+ const DB_NAME = 'htmlarts-local-library', INK_STORE = 'annotations', PAGE_KEY = '__homepage_ink__';
+ const canvas = document.getElementById('pageInkCanvas');
+ const ctx = canvas.getContext('2d', { alpha: true });
+ const toggleBtn = document.getElementById('pagePenToggle');
+ const toggleText = document.getElementById('penToggleText');
+ const toolbar = document.getElementById('pagePenToolbar');
+ const penTool = document.getElementById('pagePenTool');
+ const eraserTool = document.getElementById('pageEraserTool');
+ const undoTool = document.getElementById('pageUndoTool');
+ const clearTool = document.getElementById('pageClearTool');
+
+ let penActive = false;
+ let currentTool = 'pen'; // 'pen' | 'eraser'
+ let strokes = [];
+ let redoStack = [];
+ let activeDrawing = null;
+
+ function resizeCanvas() {
+  const dpr = Math.min(window.devicePixelRatio || 1, 2);
+  const docWidth = Math.max(document.documentElement.scrollWidth, document.body.scrollWidth, window.innerWidth);
+  const docHeight = Math.max(document.documentElement.scrollHeight, document.body.scrollHeight, window.innerHeight);
+
+  canvas.width = Math.round(docWidth * dpr);
+  canvas.height = Math.round(docHeight * dpr);
+  canvas.style.width = docWidth + 'px';
+  canvas.style.height = docHeight + 'px';
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  redraw();
+ }
+
+ function point(e) {
+  const rect = canvas.getBoundingClientRect();
+  const scrollX = window.pageXOffset || document.documentElement.scrollLeft;
+  const scrollY = window.pageYOffset || document.documentElement.scrollTop;
+  const w = parseFloat(canvas.style.width) || canvas.width;
+  const h = parseFloat(canvas.style.height) || canvas.height;
+  const x = (e.pageX || (e.clientX + scrollX)) / w;
+  const y = (e.pageY || (e.clientY + scrollY)) / h;
+  return { x: Math.max(0, Math.min(1, x)), y: Math.max(0, Math.min(1, y)), p: e.pressure || 0.5 };
+ }
+
+ function drawStroke(st) {
+  if (!st || !st.points || !st.points.length) return;
+  const w = parseFloat(canvas.style.width) || canvas.width;
+  const h = parseFloat(canvas.style.height) || canvas.height;
+
+  ctx.save();
+  ctx.globalCompositeOperation = st.tool === 'eraser' ? 'destination-out' : 'source-over';
+  ctx.strokeStyle = st.color || '#332314';
+  ctx.lineWidth = st.width || (st.tool === 'eraser' ? 24 : 2.8);
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+  ctx.beginPath();
+  ctx.moveTo(st.points[0].x * w, st.points[0].y * h);
+  for (let i = 1; i < st.points.length; i++) {
+   ctx.lineTo(st.points[i].x * w, st.points[i].y * h);
+  }
+  if (st.points.length === 1) {
+   ctx.lineTo(st.points[0].x * w + 0.1, st.points[0].y * h + 0.1);
+  }
+  ctx.stroke();
+  ctx.restore();
+ }
+
+ function redraw() {
+  const w = parseFloat(canvas.style.width) || canvas.width;
+  const h = parseFloat(canvas.style.height) || canvas.height;
+  ctx.clearRect(0, 0, w, h);
+  strokes.forEach(st => drawStroke(st));
+ }
+
+ async function savePageInk() {
+  try {
+   const req = indexedDB.open(DB_NAME, 1);
+   req.onsuccess = () => {
+    const d = req.result;
+    if (!d.objectStoreNames.contains(INK_STORE)) return;
+    const tx = d.transaction(INK_STORE, 'readwrite').objectStore(INK_STORE);
+    tx.put({ bookId: PAGE_KEY, strokes, updatedAt: Date.now() });
+   };
+  } catch (err) {
+   localStorage.setItem('htmlarts_page_ink', JSON.stringify(strokes));
+  }
+ }
+
+ async function loadPageInk() {
+  try {
+   const req = indexedDB.open(DB_NAME, 1);
+   req.onsuccess = () => {
+    const d = req.result;
+    if (!d.objectStoreNames.contains(INK_STORE)) return;
+    const tx = d.transaction(INK_STORE, 'readonly').objectStore(INK_STORE);
+    const q = tx.get(PAGE_KEY);
+    q.onsuccess = () => {
+     if (q.result && Array.isArray(q.result.strokes)) {
+      strokes = q.result.strokes;
+      redraw();
+     }
+    };
+   };
+  } catch (err) {
+   const cached = localStorage.getItem('htmlarts_page_ink');
+   if (cached) strokes = JSON.parse(cached);
+   redraw();
+  }
+ }
+
+ function togglePen() {
+  penActive = !penActive;
+  canvas.classList.toggle('pen-active', penActive);
+  toggleBtn.classList.toggle('active', penActive);
+  toggleText.textContent = penActive ? 'Pen On' : 'Pen Off';
+  toolbar.classList.toggle('show', penActive);
+  resizeCanvas();
+ }
+
+ toggleBtn.addEventListener('click', togglePen);
+
+ penTool.addEventListener('click', () => {
+  currentTool = 'pen';
+  penTool.classList.add('active');
+  eraserTool.classList.remove('active');
+ });
+
+ eraserTool.addEventListener('click', () => {
+  currentTool = 'eraser';
+  eraserTool.classList.add('active');
+  penTool.classList.remove('active');
+ });
+
+ undoTool.addEventListener('click', async () => {
+  if (strokes.length) {
+   redoStack.push(strokes.pop());
+   redraw();
+   await savePageInk();
+  }
+ });
+
+ clearTool.addEventListener('click', async () => {
+  if (confirm('Clear all drawings on this page?')) {
+   strokes = [];
+   redoStack = [];
+   redraw();
+   await savePageInk();
+  }
+ });
+
+ canvas.addEventListener('pointerdown', e => {
+  if (!penActive) return;
+  canvas.setPointerCapture(e.pointerId);
+  activeDrawing = {
+   tool: currentTool,
+   color: currentTool === 'eraser' ? '#000000' : '#332314',
+   width: currentTool === 'eraser' ? 24 : 2.8,
+   points: [point(e)]
+  };
+  drawStroke(activeDrawing);
+ });
+
+ canvas.addEventListener('pointermove', e => {
+  if (!activeDrawing) return;
+  const pts = e.getCoalescedEvents ? e.getCoalescedEvents() : [e];
+  for (const ev of pts) activeDrawing.points.push(point(ev));
+  redraw();
+  drawStroke(activeDrawing);
+ });
+
+ const finishStroke = async () => {
+  if (!activeDrawing) return;
+  strokes.push(activeDrawing);
+  activeDrawing = null;
+  redoStack = [];
+  await savePageInk();
+ };
+
+ canvas.addEventListener('pointerup', finishStroke);
+ canvas.addEventListener('pointercancel', finishStroke);
+
+ window.addEventListener('resize', resizeCanvas);
+ window.addEventListener('load', () => {
+  resizeCanvas();
+  loadPageInk();
+ });
+
+ // Recalculate canvas bounds when switching pages
+ document.querySelectorAll('[data-page], [data-go], .brand').forEach(el => {
+  el.addEventListener('click', () => setTimeout(resizeCanvas, 120));
+ });
+})();
+</script>
+
+</body></html>`;
  }
 
  function bookCard(b){
