@@ -1224,11 +1224,63 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  (async()=>{
   try{
+   // 1. Resolve embedded client template if present
+   try {
+    const embData = document.getElementById('EMBEDDED_LIBRARY_DATA');
+    if (embData && embData.textContent) {
+     const payload = JSON.parse(embData.textContent);
+     if (payload && payload.clientSource) {
+      const blob = new Blob([payload.clientSource], { type: 'text/html' });
+      window.HTMLARTS_CLIENT_URL = URL.createObjectURL(blob);
+     }
+    }
+   } catch(e) { console.warn('Embedded client source resolution skipped:', e); }
+
    db=await openDB();
+
+   // 2. Hydrate embedded library bundle into IndexedDB if not yet hydrated or if empty
+   try {
+    const embData = document.getElementById('EMBEDDED_LIBRARY_DATA');
+    if (embData && embData.textContent) {
+     const payload = JSON.parse(embData.textContent);
+     if (payload && Array.isArray(payload.books) && payload.books.length > 0) {
+      const hydratedKey = 'htmlarts_hydrated_' + (payload.exportedAt || 'bundle');
+      const count = await queryStore(STORE_META).getAll().then(a => a.length).catch(() => 0);
+      if (count === 0 || !localStorage.getItem(hydratedKey)) {
+       console.log(`[Hydration] Hydrating ${payload.books.length} bundled books into IndexedDB...`);
+       const t = db.transaction([STORE_META, STORE_CONTENT, STORE_LEGACY, INK_STORE], 'readwrite');
+       const mStore = t.objectStore(STORE_META);
+       const cStore = t.objectStore(STORE_CONTENT);
+       const lStore = t.objectStore(STORE_LEGACY);
+       const aStore = t.objectStore(INK_STORE);
+       for (const b of payload.books) {
+        const meta = {
+         id: b.id, title: b.title, category: b.category || 'Personal',
+         genre: b.genre || 'Book', kind: b.kind || 'bundled',
+         template: b.template || 'Editorial', color: b.color || '#805b3d',
+         sizeBytes: (b.html || '').length, createdAt: b.createdAt || Date.now(),
+         updatedAt: b.updatedAt || Date.now(), visitCount: 1
+        };
+        const content = { id: b.id, html: b.html || '', rawHtml: b.rawHtml || b.html || '' };
+        mStore.put(meta);
+        cStore.put(content);
+        lStore.put(b);
+       }
+       if (Array.isArray(payload.annotations)) {
+        for (const a of payload.annotations) aStore.put(a);
+       }
+       await new Promise(r => t.oncomplete = r);
+       localStorage.setItem(hydratedKey, 'true');
+       console.log('[Hydration] Complete.');
+      }
+     }
+    }
+   } catch(e) { console.warn('Bundle hydration skipped:', e); }
+
    await refreshBooks();
    const metric=document.getElementById('bookMetric');
    if(metric){
-    const all=await queryStore(STORE).getAll();
+    const all=await queryStore(STORE_META).getAll();
     metric.textContent=String(all.length);
    }
   }catch(err){
@@ -1236,6 +1288,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
    toast('Local database could not be opened. Try a normal browser window.');
   }
  })();
+ window.refreshBooks = refreshBooks;
 
  // Micro-Server Ingestion: Mount PageServer.html on-demand in Design Studio
  function mountPageServerStudio() {
@@ -1660,69 +1713,43 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
       version: '2.0-high-scale',
       exportedAt: Date.now(),
       totalBooks: fullBooks.length,
+      clientSource: clientSource || '',
       books: fullBooks,
       assets: allAssets.map(a => ({ id: a.id, name: a.name, type: a.type, size: a.size })),
       annotations: allInk
     };
 
+    // Clean transient UI classes before capturing outerHTML
+    const toastElem = document.getElementById('toast');
+    const wasToastShowing = toastElem?.classList.contains('show');
+    if (toastElem) {
+      toastElem.classList.remove('show');
+      toastElem.textContent = '';
+    }
+    document.getElementById('downloadModal')?.classList.remove('open');
+    document.getElementById('vaultMenu')?.classList.remove('open');
+    document.getElementById('aboutModal')?.classList.remove('open');
+    document.getElementById('s3Layer')?.classList.remove('open');
+
     // Grab current shell markup (this document)
     let currentHtml = document.documentElement.outerHTML;
 
+    // Restore toast in active session
+    if (toastElem && wasToastShowing) {
+      toastElem.textContent = 'Packaging library into self-extracting HtmlArts.html...';
+      toastElem.classList.add('show');
+    }
+
     // Clean up any previously injected bundles or templates
     currentHtml = currentHtml.replace(/<template id="EMBEDDED_CLIENT_SOURCE">[\s\S]*?<\/template>/gi, '');
-    currentHtml = currentHtml.replace(new RegExp('<scr' + 'ipt id="EMBEDDED_LIBRARY_DATA"[\\s\\S]*?<\\/scr' + 'ipt>', 'gi'), '');
-    currentHtml = currentHtml.replace(new RegExp('\\/\\* Self-Extracting Hydration on First Run \\*\\/[\\s\\S]*?<\\/scr' + 'ipt>', 'gi'), '');
+    currentHtml = currentHtml.replace(/<script id="EMBEDDED_LIBRARY_DATA"[\s\S]*?<\/script>/gi, '');
+    currentHtml = currentHtml.replace(/<script[^>]*>\s*\/\* Self-Extracting Hydration on First Run \*\/[\s\S]*?<\/script>/gi, '');
 
-    const clientTemplateTag = clientSource ? ('\n<template id="EMBEDDED_CLIENT_SOURCE">' + esc(clientSource) + '</template>') : '';
-    const payloadTag = '\n<scr' + 'ipt id="EMBEDDED_LIBRARY_DATA" type="application/json">' + JSON.stringify(bundlePayload) + '</scr' + 'ipt>';
+    // Critical: JSON-safe escaping of '<' as '\u003c' so browser HTML parser NEVER prematurely terminates the script tag
+    const safePayloadJson = JSON.stringify(bundlePayload).replace(/</g, '\\u003c');
+    const payloadTag = '\n<script id="EMBEDDED_LIBRARY_DATA" type="application/json">' + safePayloadJson + '</script>\n';
 
-    const hydrationScript = '\n<scr' + 'ipt>\n' +
-    '/* Self-Extracting Hydration on First Run */\n' +
-    '(async()=>{\n' +
-    ' const tpl = document.getElementById("EMBEDDED_CLIENT_SOURCE");\n' +
-    ' if(tpl){ const blob = new Blob([tpl.content?.textContent || tpl.textContent], { type: "text/html" }); window.HTMLARTS_CLIENT_URL = URL.createObjectURL(blob); }\n' +
-    ' const dataElem = document.getElementById("EMBEDDED_LIBRARY_DATA");\n' +
-    ' if (!dataElem) return;\n' +
-    ' try {\n' +
-    '  const payload = JSON.parse(dataElem.textContent);\n' +
-    '  if (!payload || !payload.books || !payload.books.length) return;\n' +
-    '  const req = indexedDB.open("' + MAIN_DB + '", 2);\n' +
-    '  req.onupgradeneeded = e => {\n' +
-    '   const d = req.result;\n' +
-    '   if(!d.objectStoreNames.contains("books_meta")) d.createObjectStore("books_meta", { keyPath: "id" });\n' +
-    '   if(!d.objectStoreNames.contains("books_content")) d.createObjectStore("books_content", { keyPath: "id" });\n' +
-    '   if(!d.objectStoreNames.contains("books")) d.createObjectStore("books", { keyPath: "id" });\n' +
-    '   if(!d.objectStoreNames.contains("annotations")) d.createObjectStore("annotations", { keyPath: "bookId" });\n' +
-    '  };\n' +
-    '  req.onsuccess = async () => {\n' +
-    '   const db = req.result;\n' +
-    '   const countReq = db.transaction("books_meta").objectStore("books_meta").count();\n' +
-    '   countReq.onsuccess = async () => {\n' +
-    '    if (countReq.result === 0) {\n' +
-    '     console.log("Hydrating " + payload.books.length + " books from bundle...");\n' +
-    '     const tx = db.transaction(["books_meta", "books_content", "books", "annotations"], "readwrite");\n' +
-    '     const mStore = tx.objectStore("books_meta");\n' +
-    '     const cStore = tx.objectStore("books_content");\n' +
-    '     const lStore = tx.objectStore("books");\n' +
-    '     const aStore = tx.objectStore("annotations");\n' +
-    '     for (const b of payload.books) {\n' +
-    '      const meta = { id: b.id, title: b.title, category: b.category||"Personal", genre: b.genre||"Book", kind: b.kind||"bundled", template: b.template||"Editorial", color: b.color||"#805b3d", sizeBytes: (b.html||"").length, createdAt: b.createdAt||Date.now(), updatedAt: b.updatedAt||Date.now(), visitCount: 1 };\n' +
-    '      const content = { id: b.id, html: b.html||"", rawHtml: b.rawHtml||b.html||"" };\n' +
-    '      mStore.put(meta); cStore.put(content); lStore.put(b);\n' +
-    '     }\n' +
-    '     for (const a of payload.annotations||[]) aStore.put(a);\n' +
-    '     tx.oncomplete = () => {\n' +
-    '      console.log("Hydration complete.");\n' +
-    '      if (typeof refreshBooks === "function") refreshBooks();\n' +
-    '     };\n' +
-    '    }\n' +
-    '   };\n' +
-    '  };\n' +
-    ' } catch(e) { console.warn("Hydration skipped:", e); }\n' +
-    '})();\n' +
-    '</scr' + 'ipt>\n';
-
-    const compiledFile = '<!DOCTYPE html>\n' + currentHtml.replace('</body>', clientTemplateTag + payloadTag + hydrationScript + '</body>');
+    const compiledFile = '<!DOCTYPE html>\n' + currentHtml.replace('</body>', payloadTag + '</body>');
     const blob = new Blob([compiledFile], { type: 'text/html;charset=utf-8' });
     const a = document.createElement('a');
     a.download = 'HtmlArts.html';
