@@ -444,7 +444,30 @@
  </div>
 </section>
 <section class="page" id="templates"><div class="page-title"><div><div class="eyebrow">A starting point, not a limitation</div><h1>Page Templates</h1><p>Visual directions for expressive HTML pages.</p></div><button class="primary" id="createBook">＋ Create Book</button></div><div class="book-grid" id="templateGrid"></div><p class="lead" style="margin-top:18px">Choose a page style to start a new HTML book. Templates are editable after creation.</p></section>
-<section class="page" id="studio"><div class="page-title"><div><div class="eyebrow">Make a page your own</div><h1>Design Studio</h1><p>A calm space for arranging content, visuals and page structure.</p></div><button class="primary" id="studioCreate">＋ Create Book</button></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">＋</span><div><b>New composition</b><small>Start with a blank page</small></div></div><div class="feature"><span class="feature-icon">▧</span><div><b>Media placement</b><small>Arrange local images and art</small></div></div><div class="feature"><span class="feature-icon">⌘</span><div><b>Page components</b><small>Build reusable sections</small></div></div></div><p class="lead">The studio workspace is reserved for Stage 2. This foundation keeps its place in the navigation without pretending the editor is already connected.</p></section>
+<section class="page" id="studio">
+ <div class="page-title">
+  <div>
+   <div class="eyebrow">Micro-Server Studio Integration</div>
+   <h1>Design Studio & Page Server</h1>
+   <p>Author and compile flat PDF technical field guides, architecture sheets, and bespoke folios.</p>
+  </div>
+  <div style="display:flex;gap:8px">
+   <a href="PageServer.html" target="_blank" class="soft-btn" title="Open PageServer in full standalone window">Open Standalone ↗</a>
+   <button class="primary" id="btnLaunchPageStudio">Mount Page Studio</button>
+  </div>
+ </div>
+
+ <!-- Dynamic Ingestion Stage for PageServer.html -->
+ <div id="pageServerHostContainer" style="border:1.5px solid var(--line);border-radius:18px;background:#fff;min-height:580px;height:72vh;overflow:hidden;position:relative;box-shadow:var(--shadow)">
+  <div id="pageServerPlaceholder" style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:40px;text-align:center;gap:14px">
+   <div style="width:52px;height:52px;border-radius:16px;background:var(--paper2);border:1px solid var(--line);display:grid;place-items:center;font-size:24px;color:var(--brown)">🖨️</div>
+   <h2 style="font:600 24px var(--serif);margin:0;color:var(--ink)">Field Guide & Spec Sheet Studio</h2>
+   <p style="font:14px var(--hand);color:var(--muted);max-width:520px;margin:0">Mount the autonomous <code>PageServer.html</code> micro-server to gain instant Swiss-grid layout algorithms, interactive decision aids, and print-ready PDF export.</p>
+   <button class="primary" id="btnMountStudioPlaceholder" style="margin-top:10px">Mount Page Studio Now ↓</button>
+  </div>
+  <iframe id="pageServerIframe" title="PageServer Micro-Server Workspace" style="width:100%;height:100%;border:none;display:none"></iframe>
+ </div>
+</section>
 <section class="page" id="analytics"><div class="page-title"><div><div class="eyebrow">Your library, at a glance</div><h1>Analytics</h1><p>Simple local-library indicators.</p></div></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">▤</span><div><b id="bookMetric">8</b><small>Sample catalog items</small></div></div><div class="feature"><span class="feature-icon">◷</span><div><b>Local first</b><small>No account required</small></div></div><div class="feature"><span class="feature-icon">♡</span><div><b>Private by design</b><small>Browser-based foundation</small></div></div></div><p class="lead">Detailed reading trends and IndexedDB diagnostics will be added with the Vault implementation in Stage 3.</p></section>
 
 
@@ -536,7 +559,7 @@ const books=[
 ];
 const art=(kind)=>{const common='stroke="#76583d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"';let s='';if(kind==='mountain')s=`<circle cx="220" cy="70" r="24" fill="#e8bd6d"/><path d="M28 190 115 82l55 68 48-88 105 128Z" fill="#b8b29b" ${common}/><path d="m86 119 29-37 25 31-25-10-13 13m79 3 29-54 29 34-29-12-16 20" fill="#fff8e9"/><path d="M28 192q150-42 295 0v35H28Z" fill="#8fa28a"/>`;if(kind==='banana')s=`<path d="M82 187q-18-90 50-142 50-38 94-3-49 3-53 58-4 59-61 104-17 12-30-17Z" fill="#e9c15f" ${common}/><path d="M123 89q22-20 47 0l-7 18-45-1Z" fill="#fff" ${common}/><path d="m129 92 12 4m16-5 12 3" ${common}/><path d="M117 133q30 23 58-1" fill="none" ${common}/><path d="M75 205q80 18 165-2" fill="none" stroke="#b98d55" stroke-width="5"/>`;if(kind==='people')s=`<g fill="#c69b6b" stroke="#76583d" stroke-width="2"><circle cx="175" cy="62" r="22"/><circle cx="116" cy="130" r="20"/><circle cx="175" cy="130" r="20"/><circle cx="234" cy="130" r="20"/><circle cx="87" cy="195" r="17"/><circle cx="145" cy="195" r="17"/><circle cx="204" cy="195" r="17"/><circle cx="263" cy="195" r="17"/></g><path d="M175 85v24m-59 0v-14m59 14V95m59 14v-14m-88 83v-12m58 12v-12m-117 12v-12m176 12v-12" fill="none" ${common}/>`;if(kind==='chart')s=`<path d="M48 215h260M68 205v-38h42v38m20 0v-75h42v75m20 0V99h42v106m20 0V65h42v140" fill="#d9b17a" stroke="#8b6747" stroke-width="3"/><path d="m68 145 70-28 56-37 72-28 28-5" fill="none" stroke="#a66c37" stroke-width="6"/><path d="m278 45 18 2-8 17" fill="none" stroke="#a66c37" stroke-width="5"/>`;if(kind==='wave')s=`<path d="M25 130q55-65 110 0t110 0 75 0v100H25Z" fill="#9fb4ae"/><path d="M25 165q55-65 110 0t110 0 75 0" fill="none" stroke="#648c8a" stroke-width="8"/><path d="M25 197q55-65 110 0t110 0 75 0" fill="none" stroke="#d5e0d6" stroke-width="7"/>`;if(kind==='feather')s=`<path d="M75 210Q100 65 280 42q-15 145-180 168Z" fill="#d9bd8e" ${common}/><path d="M76 210 255 64M120 170l-5-53m35 23 2-48m19 22 31-34m-85 99-45-6m79-21 42-35" fill="none" ${common}/>`;if(kind==='atom')s=`<g fill="none" stroke="#8b9c91" stroke-width="5"><ellipse cx="175" cy="135" rx="125" ry="48"/><ellipse cx="175" cy="135" rx="125" ry="48" transform="rotate(60 175 135)"/><ellipse cx="175" cy="135" rx="125" ry="48" transform="rotate(120 175 135)"/></g><circle cx="175" cy="135" r="13" fill="#d5a65d"/>`;if(kind==='megaphone')s=`<path d="M70 112h65l130-52v150l-130-52H70Z" fill="#d5b17e" ${common}/><path d="m132 158 27 64h-39l-25-64" fill="#b78e60" ${common}/><path d="M280 94q38 40 0 80m20-104q62 65 0 130" fill="none" stroke="#a67a4d" stroke-width="5"/>`;return `<svg viewBox="0 0 350 250" aria-hidden="true"><rect width="350" height="250" rx="12" fill="#f4ead8"/>${s}</svg>`};
 function card(b){return `<article class="book-card" data-book="${b.title}"><div class="cover">${art(b.art)}</div><h3>${b.title}</h3><div class="meta"><span class="tag">${b.category}</span><span>•••</span></div></article>`}
-const featured=document.getElementById('featuredGrid'),catalog=document.getElementById('catalogGrid');featured.innerHTML=books.slice(0,6).map(card).join('');document.getElementById('templateGrid').innerHTML=['Editorial','Swiss Grid','Botanical','Geometric','Comic','Watercolour'].map((t,i)=>card({title:t+' Page',category:'Page art',type:'Template',art:['feather','chart','mountain','atom','banana','wave'][i]})).join('');
+const featured=document.getElementById('featuredGrid'),catalog=document.getElementById('catalogGrid');featured.innerHTML=books.slice(0,6).map(card).join('');document.getElementById('templateGrid').innerHTML=['Editorial','Swiss Grid','Botanical','Geometric','Comic','Watercolour','Architecture Field Guide'].map((t,i)=>card({title:t+(t.includes('Guide')?'':' Page'),category:(t.includes('Guide')?'Technical Spec':'Page art'),type:'Template',art:['feather','chart','mountain','atom','banana','wave','chart'][i]})).join('');
 let category='All Books',type='All',query='';const cats=['All Books','Education','Society','Technology','Design','Media','Science'];function renderCatalog(){let filtered=books.filter(b=>{
   const streams = getBookMetadataStreams(b);
   const matchCategory = (category === 'All Books' || b.category === category || streams.has(category));
@@ -885,6 +908,24 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
    toast('Local database could not be opened. Try a normal browser window.');
   }
  })();
+
+ // Micro-Server Ingestion: Mount PageServer.html on-demand in Design Studio
+ function mountPageServerStudio() {
+  const container = document.getElementById('pageServerHostContainer');
+  const placeholder = document.getElementById('pageServerPlaceholder');
+  const iframe = document.getElementById('pageServerIframe');
+  if (!iframe || iframe.src) return;
+
+  placeholder.style.display = 'none';
+  iframe.style.display = 'block';
+  iframe.src = 'PageServer.html';
+  toast('PageServer.html micro-server successfully mounted on-demand.');
+ }
+
+ const btnLaunch = document.getElementById('btnLaunchPageStudio');
+ if (btnLaunch) btnLaunch.onclick = mountPageServerStudio;
+ const btnMountPH = document.getElementById('btnMountStudioPlaceholder');
+ if (btnMountPH) btnMountPH.onclick = mountPageServerStudio;
 })();
 </script>
 
