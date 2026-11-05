@@ -533,6 +533,7 @@
  <button class="app-download-btn" id="topbarDownloadApp" title="Download as HtmlArts.html or install app">⬇ Export App</button>
  <div class="vault-wrap"><button class="vault-trigger" id="vaultTrigger" aria-expanded="false">Vault⌄</button><div class="vault-menu" id="vaultMenu" role="menu">
   <button data-vault="IndexDB Dashboard"><span>▤</span><span>IndexDB Dashboard<small>Local storage overview</small></span></button><button data-vault="Trends"><span>⌁</span><span>Trends<small>Reading and library activity</small></span></button><button data-vault="Workspace"><span>▣</span><span>Workspace<small>Your local working area</small></span></button><button data-vault="Assets"><span>▧</span><span>Assets<small>Images and media collection</small></span></button>
+  <a href="IndexDictionary.html" target="_blank" style="text-decoration:none;display:flex;align-items:center;gap:11px;width:100%;padding:12px;border-radius:11px;color:var(--ink);font-size:12px;font-weight:700"><span>📖</span><span>Index Dictionary<small>AI Semantic Index & Terms</small></span></a>
  </div></div>
 </header>
 <main class="shell">
@@ -567,7 +568,7 @@
   <div class="catalog-grid" id="catalogGrid"></div>
  </div>
 </section>
-<section class="page" id="templates"><div class="page-title"><div><div class="eyebrow">A starting point, not a limitation</div><h1>Page Templates</h1><p>Visual directions for expressive HTML pages.</p></div><button class="primary" id="createBook">＋ Create Book</button></div><div class="book-grid" id="templateGrid"></div><p class="lead" style="margin-top:18px">Choose a page style to start a new HTML book. Templates are editable after creation.</p></section>
+<section class="page" id="templates"><div class="page-title"><div><div class="eyebrow">A starting point, not a limitation</div><h1>Page Templates</h1><p>Visual directions for expressive HTML pages.</p></div><div style="display:flex;gap:8px"><input id="templateImportInput" type="file" accept=".html,.htm,text/html" hidden><button class="soft-btn" id="btnIngestTemplate">＋ Ingest Template</button><button class="primary" id="createBook">＋ Create Book</button></div></div><div class="book-grid" id="templateGrid"></div><p class="lead" style="margin-top:18px">Choose a page style to start a new HTML book. Templates are editable after creation.</p></section>
 <section class="page" id="studio">
  <div class="page-title">
   <div>
@@ -957,6 +958,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  function templateHTML(title,category,style){
   const t=templates[style]||templates.Editorial;
+  if(t.customHtml) return t.customHtml.replace(/<title>.*?<\/title>/i, `<title>${safeText(title)}</title>`);
   return `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${safeText(title)}</title><style>*{box-sizing:border-box}body{margin:0;background:${t.bg};color:#30271f;font-family:${t.font};line-height:1.75}.page{max-width:850px;margin:7vh auto;padding:clamp(25px,6vw,76px);background:rgba(255,255,255,.52);min-height:82vh;border:1px solid ${t.accent}33;box-shadow:0 12px 40px #3a2b1a0c}.eyebrow{font:700 11px Arial,sans-serif;letter-spacing:2px;text-transform:uppercase;color:${t.accent}}h1{font-size:clamp(38px,6vw,66px);line-height:1.08;margin:16px 0;color:${t.accent}}.rule{height:2px;width:90px;background:${t.accent};margin:25px 0}h2{font-size:25px;margin-top:42px}p{font-size:17px;max-width:65ch;color:#5f554b}.note{font-style:italic;color:${t.accent};border-left:3px solid ${t.accent};padding:12px 20px;margin:30px 0}@media(max-width:600px){.page{margin:0;min-height:100vh;border:0}}</style></head><body><main class="page"><div class="eyebrow">${safeText(category)} · ${safeText(style)} edition</div><h1>${safeText(title)}</h1><div class="rule"></div><p class="note">A quiet space for ideas, observations and things worth remembering.</p><h2>Begin here</h2><p>Replace this paragraph with your own writing. Your book is a standalone HTML document, stored locally in this browser.</p><h2>New chapter</h2><p>Add sections, images, diagrams and references as your story grows. The original HTML remains portable and editable outside HtmlArts.</p></main></body></html>`;
  }
 
@@ -1156,6 +1158,35 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  $('htmlImportInput').addEventListener('change',async e=>{
   if(e.target.files.length)await importFiles([...e.target.files]);
   e.target.value='';
+ });
+
+ $('btnIngestTemplate')?.addEventListener('click', ()=>$('templateImportInput')?.click());
+ $('templateImportInput')?.addEventListener('change', async e=>{
+  const file = e.target.files[0];
+  if (!file) return;
+  const text = await file.text();
+  const name = file.name.replace(/\.html?$/i, '').replace(/[_-]+/g, ' ');
+  templates[name] = {
+   bg: '#fbf8f1',
+   accent: '#805b3d',
+   font: 'Georgia, serif',
+   layout: 'custom',
+   customHtml: text
+  };
+  const tGrid = document.getElementById('templateGrid');
+  if (tGrid) {
+   const cardEl = document.createElement('div');
+   cardEl.innerHTML = card({ title: name + ' Page', category: 'Ingested Archetype', type: 'Template', art: 'feather' });
+   tGrid.prepend(cardEl.firstElementChild);
+  }
+  const sel = document.getElementById('newBookTemplate');
+  if (sel) {
+   const opt = document.createElement('option');
+   opt.textContent = name;
+   sel.appendChild(opt);
+  }
+  toast(`Template “${name}” ingested and registered!`);
+  e.target.value = '';
  });
 
  ['createBook','studioCreate'].forEach(x=>{

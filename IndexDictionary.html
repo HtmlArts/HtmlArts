@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>IndexDictionary — AI-Powered Semantic Index & Term Discovery</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Kalam:wght@300;400;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
+:root{--paper:#fbf8f1;--paper2:#f6f0e5;--ink:#33271f;--muted:#817568;--line:#e6dccb;--brown:#795234;--brown2:#916b49;--gold:#e8c98c;--sage:#89927a;--white:#fffdf8;--shadow:0 12px 32px rgba(74,53,32,.07);--hand:'Kalam',cursive;--serif:'Playfair Display',Georgia,serif;--sans:'Manrope',sans-serif;--mono:'DM Mono',monospace}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);min-height:100vh;background-image:radial-gradient(rgba(116,87,57,.10) .65px,transparent .65px);background-size:17px 17px;display:flex;flex-direction:column}
+header{height:68px;border-bottom:1px solid var(--line);background:rgba(251,248,241,.96);backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:space-between;padding:0 24px;position:sticky;top:0;z-index:20}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font:700 20px var(--serif)}
+.brand-mark{width:32px;height:32px;display:grid;place-items:center;border:1.5px solid var(--brown);border-radius:10px;color:var(--brown);font-size:14px}
+.badge{font:700 10px var(--mono);background:#efe3cc;color:var(--brown);padding:3px 8px;border-radius:12px;letter-spacing:1px;text-transform:uppercase}
+.search-box{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);background:#fffdf9;border-radius:24px;padding:6px 14px;width:min(340px,40vw)}
+.search-box input{border:0;outline:0;background:transparent;width:100%;font:13px var(--sans);color:var(--ink)}
+.main-layout{display:grid;grid-template-columns:300px 1fr;flex:1;min-height:0}
+aside{border-right:1px solid var(--line);background:rgba(255,253,248,.7);padding:20px;overflow-y:auto}
+main{padding:32px 40px;overflow-y:auto}
+h1{font:600 32px var(--serif);margin:0 0 8px;color:var(--ink)}
+p.sub{font:14px/1.6 var(--hand);color:var(--muted);margin:0 0 24px}
+.alphabet-nav{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:18px}
+.alpha-btn{width:28px;height:28px;display:grid;place-items:center;border:1px solid var(--line);border-radius:8px;background:#fffdf8;color:var(--brown);font:700 11px var(--mono);cursor:pointer;transition:.15s}
+.alpha-btn:hover,.alpha-btn.active{background:var(--brown);color:#fff;border-color:var(--brown)}
+.index-list{display:grid;gap:6px}
+.index-item{display:flex;align-items:center;justify-content:space-between;padding:8px 12px;border:1px solid var(--line);border-radius:10px;background:#fffdf8;cursor:pointer;transition:all .15s}
+.index-item:hover,.index-item.active{background:#f4ead8;border-color:var(--brown2);transform:translateX(2px)}
+.index-item b{font:600 13px var(--sans)}
+.index-item span{font:10px var(--mono);color:var(--muted)}
+.entry-card{background:#fffdfa;border:1.5px solid var(--line);border-radius:18px;padding:28px;box-shadow:var(--shadow);margin-bottom:24px}
+.entry-card .term-head{display:flex;justify-content:space-between;align-items:baseline;border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:18px}
+.entry-card h2{font:600 28px var(--serif);margin:0;color:var(--brown)}
+.entry-card .domain{font:600 11px var(--mono);color:var(--muted);text-transform:uppercase;letter-spacing:1.5px}
+.entry-def{font:16px/1.8 var(--serif);color:#3f3226;margin-bottom:20px}
+.folio-refs{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.folio-pill{border:1px solid #d4c1a5;background:#fcf7ee;color:var(--brown);border-radius:14px;padding:5px 12px;font:600 11px var(--sans);text-decoration:none;cursor:pointer}
+.folio-pill:hover{background:var(--brown);color:#fff}
+.mcp-panel{background:#f5efe3;border:1px dashed var(--brown);border-radius:14px;padding:16px;margin-top:24px;font:12px var(--mono)}
+.mcp-panel b{color:var(--brown);display:block;margin-bottom:6px}
+@media(max-width:850px){.main-layout{grid-template-columns:1fr}aside{display:none}}
+</style>
+</head>
+<body>
+<header>
+ <div class="brand">
+  <span class="brand-mark">📖</span>
+  <span>IndexDictionary</span>
+  <span class="badge">AI Semantic Index</span>
+ </div>
+ <div class="search-box">
+  <span>⌕</span>
+  <input type="text" id="termSearch" placeholder="Search index terms, folios, concepts...">
+ </div>
+ <div>
+  <button class="badge" id="btnExportIndex" style="cursor:pointer;border:1px solid var(--line);background:#fff">↓ Export JSON</button>
+ </div>
+</header>
+
+<div class="main-layout">
+ <aside>
+  <div class="alphabet-nav" id="alphabetNav"></div>
+  <div style="font:700 11px var(--mono);color:var(--muted);margin:12px 0 6px;text-transform:uppercase">Indexed Concepts</div>
+  <div class="index-list" id="indexTermList"></div>
+ </aside>
+
+ <main id="entryView">
+  <h1>Semantic Index & Knowledge Dictionary</h1>
+  <p class="sub">AI-powered dictionary cross-referencing concepts, folios, and definitions across the entire HtmlArts library.</p>
+  <div id="activeEntryContainer">
+   <!-- Populated dynamically -->
+  </div>
+
+  <div class="mcp-panel">
+   <b>🤖 MCP Gateway Context Provider</b>
+   <span>Listening on postMessage bus for <code>INDEX_DISCOVER</code> and <code>INDEX_QUERY</code>. Ready to generate semantic summaries for autonomous agents.</span>
+  </div>
+ </main>
+</div>
+
+<script>
+/* Autonomous Index & Semantic Dictionary Engine */
+(()=>{
+ const TERMS_DATABASE = [
+  {
+   term: "Auto-Pagination",
+   domain: "Architecture",
+   definition: "The automated pipeline in HtmlArts that ingests arbitrary raw HTML documents and intelligently decomposes them into semantic spreads (Folio 0 to 20) with clean hierarchy.",
+   folios: ["HTMLPAGE.html // Folio 1", "PageServer.html // Folio 4"],
+   tags: ["pipeline", "folios", "layout"]
+  },
+  {
+   term: "Dual-Store IndexedDB",
+   domain: "Persistence",
+   definition: "Storage topology separating lightweight metadata (`books_meta`, <15ms) from high-volume HTML payloads (`books_content`, <3ms) and vector ink (`annotations`), enabling zero-lag catalogs up to 500+ books.",
+   folios: ["HtmlArtsServer.html // DB_VERSION 2", "LocalJSON.html // Specification"],
+   tags: ["database", "scale", "performance"]
+  },
+  {
+   term: "Hypermedia Workbook",
+   domain: "Product Vision",
+   definition: "A single self-contained document (~15 MB) that carries its own source code, data, layout algorithms, and vector notes in an Excel-like portable package.",
+   folios: ["PRD // Section 1", "Home.html // Overview"],
+   tags: ["workbook", "quine", "portability"]
+  },
+  {
+   term: "Micro-Server Ingestion",
+   domain: "Composition",
+   definition: "The design pattern where autonomous HTML pages (PageServer.html, HtmlArtsReadUI.html) are ingested and mounted on-demand via sandboxed iframes without compile-time bundlers.",
+   folios: ["PageServer.html // MicroServer", "HtmlArtsApp.html // Orchestrator"],
+   tags: ["iframe", "microserver", "postMessage"]
+  },
+  {
+   term: "Quine Persistence",
+   domain: "Storage Engine",
+   definition: "Self-serializing HTML document architecture that captures its own outerHTML, injects updated JSON with \\u003c escaping, and triggers atomic refresh without external servers.",
+   folios: ["HtmlArtsServer.html // compileAndDownloadLibraryBundle", "LocalJSON.html // Persistence"],
+   tags: ["quine", "serialization", "offline"]
+  },
+  {
+   term: "Swiss Grid Layout",
+   domain: "Design Studio",
+   definition: "A structured, mathematically proportional layout archetype embedded into PageServer.html for high-density technical specs, architectural sheets, and print-ready field guides.",
+   folios: ["PageServer.html // SwissEngine", "DesignComponent.html // Tokens"],
+   tags: ["design", "print", "typography"]
+  },
+  {
+   term: "Vector Ink Notes",
+   domain: "Annotation",
+   definition: "A 120Hz transparent canvas overlay that records pressure-sensitive pen strokes, synchronized bidirectionally across folios and persisted in IndexedDB.",
+   folios: ["HtmlArtsClient.html // InkEngine", "HtmlArtsServer.html // FolioStation"],
+   tags: ["pen", "ink", "canvas"]
+  }
+ ];
+
+ const $ = id => document.getElementById(id);
+ let activeTerm = TERMS_DATABASE[0];
+
+ function renderAlphabet() {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  $('alphabetNav').innerHTML = letters.map(l => `<button class="alpha-btn" data-letter="${l}">${l}</button>`).join('');
+  $('alphabetNav').addEventListener('click', e => {
+   const btn = e.target.closest('.alpha-btn');
+   if (!btn) return;
+   document.querySelectorAll('.alpha-btn').forEach(b => b.classList.remove('active'));
+   btn.classList.add('active');
+   filterByLetter(btn.dataset.letter);
+  });
+ }
+
+ function renderTermList(terms = TERMS_DATABASE) {
+  const container = $('indexTermList');
+  if (!terms.length) {
+   container.innerHTML = '<div style="font:12px var(--hand);color:var(--muted);padding:8px">No matching terms.</div>';
+   return;
+  }
+  container.innerHTML = terms.map(t => `
+   <div class="index-item ${t.term === activeTerm.term ? 'active' : ''}" data-term="${t.term}">
+    <b>${t.term}</b>
+    <span>${t.domain}</span>
+   </div>
+  `).join('');
+
+  container.querySelectorAll('[data-term]').forEach(el => {
+   el.onclick = () => {
+    const found = TERMS_DATABASE.find(x => x.term === el.dataset.term);
+    if (found) selectTerm(found);
+   };
+  });
+ }
+
+ function selectTerm(t) {
+  activeTerm = t;
+  renderTermList(TERMS_DATABASE);
+  $('activeEntryContainer').innerHTML = `
+   <article class="entry-card">
+    <div class="term-head">
+     <h2>${t.term}</h2>
+     <span class="domain">${t.domain}</span>
+    </div>
+    <div class="entry-def">${t.definition}</div>
+    <div style="font:700 11px var(--mono);color:var(--muted);margin-bottom:8px;text-transform:uppercase">Referenced Folios & Modules</div>
+    <div class="folio-refs">
+     ${t.folios.map(f => `<span class="folio-pill">📖 ${f}</span>`).join('')}
+    </div>
+   </article>
+  `;
+ }
+
+ function filterByLetter(l) {
+  const filtered = TERMS_DATABASE.filter(t => t.term.toUpperCase().startsWith(l));
+  renderTermList(filtered);
+  if (filtered.length) selectTerm(filtered[0]);
+ }
+
+ $('termSearch').addEventListener('input', e => {
+  const q = e.target.value.toLowerCase().trim();
+  const matched = TERMS_DATABASE.filter(t => 
+    t.term.toLowerCase().includes(q) || 
+    t.domain.toLowerCase().includes(q) || 
+    t.definition.toLowerCase().includes(q) ||
+    t.tags.some(tag => tag.toLowerCase().includes(q))
+  );
+  renderTermList(matched);
+  if (matched.length) selectTerm(matched[0]);
+ });
+
+ $('btnExportIndex').onclick = () => {
+  const blob = new Blob([JSON.stringify(TERMS_DATABASE, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'IndexDictionary-Export.json';
+  a.click();
+ };
+
+ // MCP Bus Integration via postMessage
+ window.addEventListener('message', e => {
+  const d = e.data;
+  if (!d || !d.type) return;
+  if (d.type === 'INDEX_DISCOVER') {
+   e.source.postMessage({
+    type: 'INDEX_DISCOVER_REPLY',
+    termsCount: TERMS_DATABASE.length,
+    domains: [...new Set(TERMS_DATABASE.map(t => t.domain))]
+   }, '*');
+  } else if (d.type === 'INDEX_QUERY') {
+   const q = (d.query || '').toLowerCase();
+   const results = TERMS_DATABASE.filter(t => t.term.toLowerCase().includes(q) || t.definition.toLowerCase().includes(q));
+   e.source.postMessage({ type: 'INDEX_QUERY_REPLY', results }, '*');
+  }
+ });
+
+ renderAlphabet();
+ renderTermList();
+ selectTerm(TERMS_DATABASE[0]);
+})();
+</script>
+</body>
+</html>
