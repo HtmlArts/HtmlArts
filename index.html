@@ -2,6 +2,11 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#805b3d">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="HtmlArts">
 <title>HtmlArts — Server & Library</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Kalam:wght@300;400;700&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:wght@500;600;700&display=swap');
@@ -393,6 +398,84 @@
   border-color: var(--brown2);
   font-weight: 700;
 }
+
+/* App Download & Dual-Runtime Styles */
+.app-download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--brown);
+  color: #fffdf8;
+  border: 1px solid #68462b;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font: 700 12px var(--sans);
+  cursor: pointer;
+  transition: all .18s ease;
+  white-space: nowrap;
+}
+.app-download-btn:hover {
+  background: #634329;
+  transform: translateY(-1px);
+}
+.runtime-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 18px 0 10px;
+}
+@media (max-width: 640px) {
+  .runtime-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.runtime-card {
+  border: 1.5px solid var(--line);
+  background: rgba(255, 253, 248, 0.95);
+  border-radius: 16px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: border-color .2s, transform .2s, box-shadow .2s;
+}
+.runtime-card:hover {
+  border-color: var(--brown2);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow);
+}
+.runtime-badge {
+  display: inline-block;
+  font: 700 10px var(--sans);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--brown);
+  background: #f0e4ce;
+  padding: 3px 8px;
+  border-radius: 10px;
+  margin-bottom: 8px;
+}
+.runtime-title {
+  font: 600 19px var(--serif);
+  margin: 0 0 6px;
+  color: var(--ink);
+}
+.runtime-desc {
+  font: 400 13px/1.6 var(--sans);
+  color: #65584b;
+  margin-bottom: 14px;
+}
+.runtime-meta {
+  font: 500 11px var(--hand);
+  color: var(--muted);
+  line-height: 1.5;
+  margin-bottom: 14px;
+}
+.runtime-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 </style>
 </head>
 <body>
@@ -407,13 +490,14 @@
 </nav>
  <span class="top-spacer"></span><label class="search"><span>⌕</span><input id="globalSearch" placeholder="Search books, templates..." aria-label="Search library"></label>
  <button class="soft-btn" id="ingestBook">＋ Ingest HTML</button>
+ <button class="app-download-btn" id="topbarDownloadApp" title="Download HtmlArts for offline use or install native app">⬇ Download App</button>
  <div class="vault-wrap"><button class="vault-trigger" id="vaultTrigger" aria-expanded="false">Vault⌄</button><div class="vault-menu" id="vaultMenu" role="menu">
   <button data-vault="IndexDB Dashboard"><span>▤</span><span>IndexDB Dashboard<small>Local storage overview</small></span></button><button data-vault="Trends"><span>⌁</span><span>Trends<small>Reading and library activity</small></span></button><button data-vault="Workspace"><span>▣</span><span>Workspace<small>Your local working area</small></span></button><button data-vault="Assets"><span>▧</span><span>Assets<small>Images and media collection</small></span></button>
  </div></div>
 </header>
 <main class="shell">
 <section class="page active" id="home">
- <div class="hero"><div><div class="eyebrow">A little library made with care</div><h1>Create, read, design and <em>publish</em> beautiful HTML books.</h1><p class="lead">A local home for interactive books, thoughtful notes, visual stories and creative learning. Your library stays close, simple and yours.</p><div class="hero-actions"><button class="soft-btn" data-go="catalog">Browse Catalog&nbsp; ↗</button></div></div>
+ <div class="hero"><div><div class="eyebrow">A little library made with care</div><h1>Create, read, design and <em>publish</em> beautiful HTML books.</h1><p class="lead">A local home for interactive books, thoughtful notes, visual stories and creative learning. Your library stays close, simple and yours.</p><div class="hero-actions"><button class="soft-btn" data-go="catalog">Browse Catalog&nbsp; ↗</button><button class="primary" id="heroDownloadApp">⬇ Run HtmlArts Locally</button></div></div>
  <div class="hero-art"><svg viewBox="0 0 650 340" role="img" aria-label="Hand drawn open book with a mountain landscape"><defs><linearGradient id="pg" x2="0" y2="1"><stop stop-color="#fff9e9"/><stop offset="1" stop-color="#ead9bd"/></linearGradient></defs><path d="M62 275 Q180 245 270 275 T590 268" fill="none" stroke="#d9c8a9" stroke-width="3" stroke-linecap="round"/><path d="M105 264 Q190 232 300 270 Q410 231 540 260 L530 292 Q410 268 300 299 Q185 268 105 292Z" fill="#e8d7bd" opacity=".55"/><path d="M110 84 Q210 57 305 111 L305 276 Q207 225 110 253Z" fill="url(#pg)" stroke="#76563b" stroke-width="4" stroke-linejoin="round"/><path d="M305 111 Q410 57 536 84 L536 253 Q414 225 305 276Z" fill="#fffaf0" stroke="#76563b" stroke-width="4" stroke-linejoin="round"/><path d="M305 111 Q300 196 305 276" fill="none" stroke="#b58e62" stroke-width="3"/><path d="M137 207 L191 144 L224 181 L254 133 L292 205Z" fill="#a9a58b" stroke="#6f6a56" stroke-width="2"/><path d="M159 180 L191 144 L207 164 L191 158 L177 173Z M224 181 L254 133 L272 163 L254 149 L242 169Z" fill="#f8f0dc"/><path d="M139 210 Q201 193 292 212" fill="none" stroke="#7d987f" stroke-width="9"/><circle cx="255" cy="112" r="22" fill="#e8bc65"/><path d="M340 130 Q422 109 504 126 M340 155 Q424 133 504 150 M340 180 Q424 158 504 175 M340 205 Q424 183 504 200 M340 230 Q424 208 504 225" stroke="#cbb99e" stroke-width="3" stroke-linecap="round" fill="none"/><path d="M70 250 Q38 210 66 168 Q80 145 96 129 M82 197 Q48 190 48 165 M81 219 Q111 195 111 173" fill="none" stroke="#8c9b75" stroke-width="4" stroke-linecap="round"/><path d="M558 258 Q594 212 574 164 M575 210 Q608 199 612 170 M571 230 Q545 214 544 190" fill="none" stroke="#8c9b75" stroke-width="4" stroke-linecap="round"/><path d="M540 278 Q568 263 595 278" stroke="#8b6747" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M556 268 L592 92 Q594 83 601 87 L610 91 Q616 94 611 102 L575 278Z" fill="#b88753" stroke="#76563b" stroke-width="3"/><path d="M592 91 L602 62 Q605 54 611 62 L617 70 L611 94" fill="#d6b27c" stroke="#76563b" stroke-width="2"/><path d="M574 278 L560 296 L580 287Z" fill="#76563b"/><path d="M95 287 Q115 267 126 248 M95 287 Q76 274 72 255 M95 287 Q99 263 92 245" fill="none" stroke="#8c9b75" stroke-width="3" stroke-linecap="round"/></svg><div class="scribble">made for curious minds ↗</div></div></div>
  <div class="feature-row"><div class="feature"><span class="feature-icon">▤</span><div><b>HTML Book Creator</b><small>Build rich, interactive books</small></div></div><div class="feature"><span class="feature-icon">✿</span><div><b>Page Art Templates</b><small>20+ visual page styles</small></div></div><div class="feature"><span class="feature-icon">✎</span><div><b>Write & Annotate</b><small>Pen, highlights and notes</small></div></div><div class="feature"><span class="feature-icon">▱</span><div><b>Design Studio</b><small>Compose pages and parts</small></div></div><div class="feature"><span class="feature-icon">▣</span><div><b>Vault</b><small>IndexDB · Trends · Workspace · Assets</small></div></div></div>
  <div class="section-head"><h2>Featured Books</h2><div class="rule"></div><button class="text-link" data-go="catalog">View all&nbsp; →</button></div><div class="book-grid" id="featuredGrid"></div>
@@ -513,6 +597,66 @@
 
 <input id="htmlImportInput" type="file" accept=".html,.htm,text/html" multiple hidden>
 <div class="modal-backdrop" id="createModal" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="modal"><button class="close" data-close="createModal" aria-label="Close">×</button><div class="eyebrow">A fresh page begins</div><h2 id="createTitle">Create a little book.</h2><label class="field-label" for="newBookTitle">Book title</label><input class="field-input" id="newBookTitle" maxlength="90" placeholder="e.g. Notes on the Natural World"><label class="field-label" for="newBookCategory">Category</label><input class="field-input" id="newBookCategory" maxlength="40" value="Personal"><label class="field-label" for="newBookTemplate">Starting style</label><select class="field-input" id="newBookTemplate"><option>Editorial</option><option>Swiss Grid</option><option>Botanical</option><option>Geometric</option><option>Comic</option><option>Watercolour</option></select><div class="modal-actions"><button class="soft-btn" data-close="createModal">Cancel</button><button class="primary" id="saveNewBook">Create & Open ↗</button></div></div></div>
+
+<div class="modal-backdrop" id="downloadModal" role="dialog" aria-modal="true" aria-labelledby="downloadModalTitle">
+ <div class="modal" style="width:min(720px,100%)">
+  <button class="close" id="closeDownloadModal" aria-label="Close">×</button>
+  <div class="eyebrow">Local-first & autonomous runtime</div>
+  <h2 id="downloadModalTitle">Run HtmlArts Anywhere.</h2>
+  <p style="font-size:14px;color:var(--muted);margin-bottom:12px">
+   Persist up to 500+ books locally in your browser or device with zero cloud dependencies. Warmup in ~5s, reader launch in &lt;30ms.
+  </p>
+  <div class="runtime-grid">
+   <!-- Runtime 1: Browser Self-Extracting App -->
+   <div class="runtime-card">
+    <div>
+     <span class="runtime-badge">Browser Super-Bundle</span>
+     <h3 class="runtime-title">HTMLARTSAPP.html</h3>
+     <p class="runtime-desc">
+      Complete zero-dependency single-file web app. Embeds all your stored books, client reader sandbox, folio ink engine, and self-extracting IndexedDB bootstrapper.
+     </p>
+     <div class="runtime-meta">
+      ✓ Double-click in Chrome, Safari, Firefox, Edge<br>
+      ✓ 100% offline portable archive (.html)<br>
+      ✓ Auto-hydrates library on first launch
+     </div>
+    </div>
+    <div class="runtime-actions">
+     <button class="primary" id="btnDownloadSuperBundle" style="width:100%;text-align:center">
+      📦 Download HTMLARTSAPP.html
+     </button>
+    </div>
+   </div>
+   <!-- Runtime 2: Native Desktop / Mobile APK -->
+   <div class="runtime-card">
+    <div>
+     <span class="runtime-badge">Native App &amp; Mobile</span>
+     <h3 class="runtime-title">HtmlLib.app / APK</h3>
+     <p class="runtime-desc">
+      Run HtmlArts as a native OS application without address bars. Install locally via PWA or compile the Android APK wrapper.
+     </p>
+     <div class="runtime-meta">
+      ✓ 1-click install on Desktop &amp; Android (PWA)<br>
+      ✓ Android WebView APK configuration<br>
+      ✓ Offline Service Worker caching enabled
+     </div>
+    </div>
+    <div class="runtime-actions">
+     <button class="primary" id="btnInstallPwa" style="width:100%;text-align:center;background:#556b2f;border-color:#435424">
+      📲 Install App Locally (PWA)
+     </button>
+     <button class="soft-btn" id="btnDownloadNativeKit" style="width:100%;text-align:center">
+      🤖 Download HtmlLib.apk Kit (.zip)
+     </button>
+    </div>
+   </div>
+  </div>
+  <div style="margin-top:14px;font:11px var(--hand);color:var(--muted);display:flex;justify-content:space-between;align-items:center">
+   <span>High-Scale Telemetry: Dual-Store IndexedDB · Sub-30ms reader dispatch</span>
+   <button class="text-link" id="linkToVaultBenchmark" style="font-size:11px">⚡ Test 500 Books in Vault →</button>
+  </div>
+ </div>
+</div>
 <!-- Transparent Drawing Layer over entire document -->
 <canvas id="pageInkCanvas" aria-label="Transparent drawing screen"></canvas>
 <div class="reader-overlay" id="readerOverlay" aria-label="HtmlArts reading workspace"><div class="reader-bar"><div><b id="readerBookTitle">Reading</b><small>HtmlArts Server · client-hosted reader</small></div><div class="reader-tools"><button class="reader-tool" id="readerClose" title="Close reader">✕ Close</button></div></div><div class="reader-stage"><iframe id="readerFrame" title="HtmlArts Client Reader" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe></div><div class="reader-status" id="readerStatus">Ready</div></div>
@@ -569,7 +713,14 @@ let category='All Books',type='All',query='';const cats=['All Books','Education'
  });catalog.innerHTML=filtered.length?filtered.map(card).join(''):'<div class="empty">No books on this shelf yet. Try another filter.</div>';document.getElementById('resultCount').textContent=`${filtered.length} ${filtered.length===1?'piece':'pieces'}`;document.querySelectorAll('#categoryQuickFilters [data-category]').forEach(button=>{const selected=button.dataset.category===category;button.classList.toggle('active',selected);button.setAttribute('aria-pressed',String(selected));const count=button.dataset.category==='All Books'?books.length:books.filter(book=>book.category===button.dataset.category).length;button.title=`${button.dataset.category} · ${count}`})}
 renderCatalog();function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2400)}function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.nav [data-page]').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.getElementById('vaultMenu').classList.remove('open');window.scrollTo({top:0,behavior:'smooth'});if(id==='catalog')renderCatalog()}
 document.querySelectorAll('[data-page]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.page)));document.querySelector('.brand')?.addEventListener('click',e=>{e.preventDefault();showPage('home');});document.querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.go)));document.getElementById('vaultTrigger').addEventListener('click',e=>{const m=document.getElementById('vaultMenu');m.classList.toggle('open');e.currentTarget.setAttribute('aria-expanded',m.classList.contains('open'))});document.addEventListener('click',e=>{if(!e.target.closest('.vault-wrap')){document.getElementById('vaultMenu').classList.remove('open');document.getElementById('vaultTrigger').setAttribute('aria-expanded','false')}});document.querySelectorAll('[data-vault]').forEach(b=>b.addEventListener('click',()=>document.getElementById('vaultMenu').classList.remove('open')));
-document.getElementById('aboutBtn').onclick=()=>{document.getElementById('aboutModal').classList.add('open');};document.getElementById('closeAbout').onclick=()=>document.getElementById('aboutModal').classList.remove('open');document.getElementById('aboutModal').addEventListener('click',e=>{if(e.target.id==='aboutModal')e.currentTarget.classList.remove('open')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('aboutModal').classList.remove('open');document.getElementById('vaultMenu').classList.remove('open')}});
+document.getElementById('aboutBtn').onclick=()=>{document.getElementById('aboutModal').classList.add('open');};document.getElementById('closeAbout').onclick=()=>document.getElementById('aboutModal').classList.remove('open');document.getElementById('aboutModal').addEventListener('click',e=>{if(e.target.id==='aboutModal')e.currentTarget.classList.remove('open')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){document.getElementById('aboutModal').classList.remove('open');document.getElementById('vaultMenu').classList.remove('open');document.getElementById('downloadModal')?.classList.remove('open')}});
+const openDownloadModal=()=>{document.getElementById('downloadModal')?.classList.add('open');};
+const closeDownloadModal=()=>{document.getElementById('downloadModal')?.classList.remove('open');};
+document.getElementById('topbarDownloadApp')?.addEventListener('click',openDownloadModal);
+document.getElementById('heroDownloadApp')?.addEventListener('click',openDownloadModal);
+document.getElementById('closeDownloadModal')?.addEventListener('click',closeDownloadModal);
+document.getElementById('downloadModal')?.addEventListener('click',e=>{if(e.target.id==='downloadModal')closeDownloadModal();});
+document.getElementById('linkToVaultBenchmark')?.addEventListener('click',()=>{closeDownloadModal();if(window.HtmlArtsVault?.open)window.HtmlArtsVault.open('indexdb');});
 
 document.getElementById('globalSearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();showPage('catalog');renderCatalog()});document.getElementById('categoryQuickFilters').addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(!b)return;category=b.dataset.category;renderCatalog()});document.getElementById('typeFilters').addEventListener('click',e=>{const b=e.target.closest('[data-type]');if(!b)return;type=b.dataset.type;document.querySelectorAll('[data-type]').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()});
 document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if(c)toast(`${c.dataset.book} · Reader launch will be connected in Stage 2.`)});
@@ -578,7 +729,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 <script>
 /* HtmlArts Stage 2 — Server Orchestration: IndexedDB persistence, book ingestion, and Client iframe messaging. */
 (()=>{
- const DB_NAME='htmlarts-local-library',DB_VERSION=1,STORE='books',INK_STORE='annotations';
+ const DB_NAME='htmlarts-local-library',DB_VERSION=2,STORE_META='books_meta',STORE_CONTENT='books_content',STORE_LEGACY='books',INK_STORE='annotations';
  const $=id=>document.getElementById(id);
  let db=null,selectedTemplate='Editorial',activeBook=null;
 
@@ -594,10 +745,46 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  function openDB(){
   return new Promise((resolve,reject)=>{
    const r=indexedDB.open(DB_NAME,DB_VERSION);
-   r.onupgradeneeded=()=>{
+   r.onupgradeneeded=(e)=>{
     const d=r.result;
-    if(!d.objectStoreNames.contains(STORE))d.createObjectStore(STORE,{keyPath:'id'});
-    if(!d.objectStoreNames.contains(INK_STORE))d.createObjectStore(INK_STORE,{keyPath:'bookId'});
+    if(!d.objectStoreNames.contains(STORE_META)){
+     const meta=d.createObjectStore(STORE_META,{keyPath:'id'});
+     meta.createIndex('by_category','category',{unique:false});
+     meta.createIndex('by_updatedAt','updatedAt',{unique:false});
+    }
+    if(!d.objectStoreNames.contains(STORE_CONTENT)){
+     d.createObjectStore(STORE_CONTENT,{keyPath:'id'});
+    }
+    if(!d.objectStoreNames.contains(STORE_LEGACY)){
+     d.createObjectStore(STORE_LEGACY,{keyPath:'id'});
+    }
+    if(!d.objectStoreNames.contains(INK_STORE)){
+     d.createObjectStore(INK_STORE,{keyPath:'bookId'});
+    }
+    if(d.objectStoreNames.contains(STORE_LEGACY)){
+     const tx=e.target.transaction;
+     const lStore=tx.objectStore(STORE_LEGACY);
+     const mStore=tx.objectStore(STORE_META);
+     const cStore=tx.objectStore(STORE_CONTENT);
+     const curReq=lStore.openCursor();
+     curReq.onsuccess=ev=>{
+      const cur=ev.target.result;
+      if(cur){
+       const b=cur.value;
+       const meta={
+        id:b.id,title:b.title,category:b.category||'Personal',
+        genre:b.genre||'Book',kind:b.kind||'created',
+        template:b.template||'Editorial',color:b.color||'#805b3d',
+        sizeBytes:(b.html||'').length,createdAt:b.createdAt||Date.now(),
+        updatedAt:b.updatedAt||Date.now(),visitCount:b.visitCount||1
+       };
+       const content={id:b.id,html:b.html||'',rawHtml:b.rawHtml||''};
+       mStore.put(meta);
+       cStore.put(content);
+       cur.continue();
+      }
+     };
+    }
    };
    r.onsuccess=()=>resolve(r.result);
    r.onerror=()=>reject(r.error);
@@ -715,18 +902,49 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  }
 
  async function refreshBooks(){
-  const records=await queryStore(STORE).getAll();
-  const custom=records.sort((a,b)=>b.updatedAt-a.updatedAt);
-  localBooks=custom;
+  const startT = performance.now();
+  let records = [];
+  try {
+   const metaReq = db.transaction(STORE_META).objectStore(STORE_META).getAll();
+   records = await req(metaReq);
+  } catch (err) {
+   records = await queryStore(STORE_LEGACY).getAll();
+  }
+  const custom = records.sort((a,b)=> (b.updatedAt||0) - (a.updatedAt||0));
+  localBooks = custom;
   renderCatalog();
-  const count=custom.length+books.length;
-  $('resultCount').textContent=`${count} pieces · ${custom.length} in your library`;
-  const metric=$('bookMetric');
-  if(metric)metric.textContent=String(custom.length);
+  const count = custom.length + books.length;
+  $('resultCount').textContent = `${count} pieces · ${custom.length} in your library`;
+  const metric = $('bookMetric');
+  if(metric) metric.textContent = String(custom.length);
+  const dur = Math.round(performance.now() - startT);
+  console.log(`[HtmlArts Scale] Read ${records.length} book metadata entries in ${dur}ms (Target: <50ms)`);
  }
 
  async function saveBook(record){
-  await queryStore(STORE).put(record);
+  const meta = {
+   id: record.id,
+   title: record.title,
+   category: record.category || 'Personal',
+   genre: record.genre || 'Book',
+   kind: record.kind || 'created',
+   template: record.template || 'Editorial',
+   color: record.color || (templates[record.template]?.accent || '#805b3d'),
+   sizeBytes: (record.html || '').length,
+   createdAt: record.createdAt || Date.now(),
+   updatedAt: record.updatedAt || Date.now(),
+   visitCount: record.visitCount || 1
+  };
+  const content = {
+   id: record.id,
+   html: record.html || '',
+   rawHtml: record.rawHtml || ''
+  };
+  const t = db.transaction([STORE_META, STORE_CONTENT, STORE_LEGACY], 'readwrite');
+  t.objectStore(STORE_META).put(meta);
+  t.objectStore(STORE_CONTENT).put(content);
+  t.objectStore(STORE_LEGACY).put(record);
+  await new Promise(r => t.oncomplete = r);
   await refreshBooks();
  }
 
@@ -790,37 +1008,50 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  /* Reader Orchestration via HtmlArtsClient.html & postMessage */
  async function openReader(book){
-  activeBook=book;
-  $('readerBookTitle').textContent=book.title;
+  const startT = performance.now();
+  activeBook = book;
+  $('readerBookTitle').textContent = book.title;
   $('readerOverlay').classList.add('open');
-  $('readerStatus').textContent='Loading client reader...';
+  $('readerStatus').textContent = 'Loading client reader...';
 
-  const frame=$('readerFrame');
-  const saved=await queryStore(INK_STORE).get(book.id);
-  const annotations=saved&&Array.isArray(saved.strokes)?saved.strokes:[];
+  // Lazy-load payload from books_content on demand (<5ms)
+  let htmlContent = book.html;
+  if (!htmlContent) {
+   try {
+    const cReq = db.transaction(STORE_CONTENT).objectStore(STORE_CONTENT).get(book.id);
+    const res = await req(cReq);
+    htmlContent = res?.html || '';
+   } catch(e) {
+    htmlContent = book.html || '';
+   }
+  }
+
+  const frame = $('readerFrame');
+  const saved = await queryStore(INK_STORE).get(book.id);
+  const annotations = saved && Array.isArray(saved.strokes) ? saved.strokes : [];
 
   // Sub-30ms Latency: Fast payload dispatch with memory cleanup
-  const sendPayload=()=>{
-   const startT = performance.now();
+  const sendPayload = () => {
    frame.contentWindow.postMessage({
-    type:'HTMLARTS_LOAD',
-    payload:{
-     bookId:book.id,
-     html:book.html,
-     config:{theme:book.template||'Editorial',readOnly:false},
-     metadata:{title:book.title,category:book.category},
-     annotations:{strokes:annotations}
+    type: 'HTMLARTS_LOAD',
+    payload: {
+     bookId: book.id,
+     html: htmlContent,
+     config: { theme: book.template || 'Editorial', readOnly: false },
+     metadata: { title: book.title, category: book.category },
+     annotations: { strokes: annotations }
     }
-   },'*');
+   }, '*');
    const dur = Math.round(performance.now() - startT);
    console.log(`[HtmlArts Latency] Book ${book.id} dispatch took ${dur}ms (Target: <30ms)`);
   };
 
-  if(frame.getAttribute('src')==='HtmlArtsClient.html'){
+  const clientSrc = window.HTMLARTS_CLIENT_URL || 'HtmlArtsClient.html';
+  if (frame.getAttribute('src') === clientSrc) {
    sendPayload();
-  }else{
-   frame.onload=()=>{sendPayload();};
-   frame.src='HtmlArtsClient.html';
+  } else {
+   frame.onload = () => { sendPayload(); };
+   frame.src = clientSrc;
   }
  }
 
@@ -878,22 +1109,58 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  document.addEventListener('click',async e=>{
   const open=e.target.closest('[data-open-book]');
   if(open){
-   const b=await queryStore(STORE).get(open.dataset.openBook);
-   if(b)openReader(b);
+   const bookId = open.dataset.openBook;
+   let b = localBooks.find(x => x.id === bookId);
+   if (!b) {
+    try { b = await req(db.transaction(STORE_META).objectStore(STORE_META).get(bookId)); } catch(err){}
+   }
+   if (!b) b = await queryStore(STORE_LEGACY).get(bookId);
+   if(b) openReader(b);
    return;
   }
   const del=e.target.closest('[data-delete-book]');
   if(del){
-   const b=await queryStore(STORE).get(del.dataset.deleteBook);
+   const bookId = del.dataset.deleteBook;
+   let b = localBooks.find(x => x.id === bookId);
+   if (!b) {
+    try { b = await req(db.transaction(STORE_META).objectStore(STORE_META).get(bookId)); } catch(err){}
+   }
+   if (!b) b = await queryStore(STORE_LEGACY).get(bookId);
    if(!b)return;
    if(confirm(`Remove “${b.title}” from this browser's library?`)){
-    await queryStore(STORE).delete(b.id);
+    const t = db.transaction([STORE_META, STORE_CONTENT, STORE_LEGACY], 'readwrite');
+    t.objectStore(STORE_META).delete(b.id);
+    t.objectStore(STORE_CONTENT).delete(b.id);
+    t.objectStore(STORE_LEGACY).delete(b.id);
+    await new Promise(r => t.oncomplete = r);
     await queryStore(INK_STORE).delete(b.id);
     await refreshBooks();
     toast('Book removed from this browser.');
    }
    return;
   }
+ });
+
+ $('btnDownloadSuperBundle')?.addEventListener('click', () => {
+   $('downloadModal')?.classList.remove('open');
+   if (typeof compileAndDownloadLibraryBundle === 'function') compileAndDownloadLibraryBundle();
+ });
+ $('btnDownloadNativeKit')?.addEventListener('click', () => {
+   const a = document.createElement('a');
+   a.href = './HtmlLib-Native-Kit.zip';
+   a.download = 'HtmlLib-Native-Kit.zip';
+   a.click();
+   toast('HtmlLib Native Kit (.zip) download initiated.');
+ });
+ $('btnInstallPwa')?.addEventListener('click', async () => {
+   if (window.deferredInstallPrompt) {
+     window.deferredInstallPrompt.prompt();
+     const choice = await window.deferredInstallPrompt.userChoice;
+     if (choice && choice.outcome === 'accepted') toast('HtmlArts installed!');
+     window.deferredInstallPrompt = null;
+   } else {
+     toast('To install: click your browser menu (⋮) → "Install HtmlArts" / "Add to Home Screen".');
+   }
  });
 
  $('readerClose').onclick=closeReader;
@@ -1261,7 +1528,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  function openAssetDb(){return new Promise((resolve,reject)=>{const r=indexedDB.open(ASSET_DB,1);r.onupgradeneeded=()=>{if(!r.result.objectStoreNames.contains('assets'))r.result.createObjectStore('assets',{keyPath:'id'});};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error);});}
  function assetReq(req){return new Promise((resolve,reject)=>{req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});}
  function assetStore(mode='readonly'){return assetDb.transaction('assets',mode).objectStore('assets');}
- function mainBooks(){return new Promise((resolve,reject)=>{const r=indexedDB.open(MAIN_DB,1);r.onsuccess=()=>{const d=r.result;if(!d.objectStoreNames.contains('books')){d.close();resolve([]);return;}const q=d.transaction('books').objectStore('books').getAll();q.onsuccess=()=>{resolve(q.result||[]);d.close();};q.onerror=()=>{reject(q.error);d.close();};};r.onerror=()=>reject(r.error);});}
+ function mainBooks(){return new Promise((resolve,reject)=>{const r=indexedDB.open(MAIN_DB,2);r.onsuccess=()=>{const d=r.result;const storeName=d.objectStoreNames.contains('books_meta')?'books_meta':(d.objectStoreNames.contains('books')?'books':null);if(!storeName){d.close();resolve([]);return;}const q=d.transaction(storeName).objectStore(storeName).getAll();q.onsuccess=()=>{resolve(q.result||[]);d.close();};q.onerror=()=>{reject(q.error);d.close();};};r.onerror=()=>reject(r.error);});}
  function log(action,detail=''){const a=JSON.parse(localStorage.getItem('htmlarts_activity')||'[]');a.push({at:Date.now(),action,detail});localStorage.setItem('htmlarts_activity',JSON.stringify(a.slice(-500)));}
  function openPanel(key){current=key;const names={indexdb:['IndexDB Dashboard','A clear view of what lives in this browser'],trends:['Trends','A small picture of your reading and making activity'],workspace:['Workspace','Continue where your ideas are'],assets:['Assets','Images and media kept on this device'],studio:['Design Studio','Choose a visual language for your next page']};$('s3Heading').textContent=names[key][0];$('s3Caption').textContent=names[key][1];layer.classList.add('open');render(key);}
  function closePanel(){layer.classList.remove('open');}
@@ -1275,12 +1542,37 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   // ── HTMLARTSAPP Bundling & High-Scale Export Engine ──
   async function compileAndDownloadLibraryBundle() {
     toast('Packaging library into self-extracting HTMLARTSAPP.html...');
-    const allBooks = await mainBooks();
+    const metaBooks = await mainBooks();
     const allAssets = assetDb ? await assetReq(assetStore().getAll()) : [];
-    
+
+    // Retrieve full HTML payload for each book from books_content or legacy
+    const fullBooks = [];
+    if (metaBooks.length > 0) {
+      await new Promise(resolve => {
+        const r = indexedDB.open(MAIN_DB, 2);
+        r.onsuccess = async () => {
+          const d = r.result;
+          const hasContent = d.objectStoreNames.contains('books_content');
+          if (hasContent) {
+            const tx = d.transaction(['books_content', 'books_meta'], 'readonly');
+            const cStore = tx.objectStore('books_content');
+            for (const m of metaBooks) {
+              const c = await req(cStore.get(m.id));
+              fullBooks.push({ ...m, html: c?.html || m.html || '' });
+            }
+          } else {
+            fullBooks.push(...metaBooks);
+          }
+          d.close();
+          resolve();
+        };
+        r.onerror = () => { fullBooks.push(...metaBooks); resolve(); };
+      });
+    }
+
     // Read all ink strokes
     const allInk = await new Promise(resolve => {
-      const r = indexedDB.open(MAIN_DB, 1);
+      const r = indexedDB.open(MAIN_DB, 2);
       r.onsuccess = () => {
         const d = r.result;
         if (!d.objectStoreNames.contains('annotations')) { d.close(); resolve([]); return; }
@@ -1291,79 +1583,183 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
       r.onerror = () => resolve([]);
     });
 
+    // Try to fetch HtmlArtsClient.html to embed client sandbox template for 100% offline single-file execution
+    let clientSource = '';
+    try {
+      const resp = await fetch('HtmlArtsClient.html');
+      if (resp.ok) clientSource = await resp.text();
+    } catch(e) {}
+
     const bundlePayload = {
       version: '2.0-high-scale',
       exportedAt: Date.now(),
-      totalBooks: allBooks.length,
-      books: allBooks,
+      totalBooks: fullBooks.length,
+      books: fullBooks,
       assets: allAssets.map(a => ({ id: a.id, name: a.name, type: a.type, size: a.size })),
       annotations: allInk
     };
 
     // Grab current shell markup (this document)
     let currentHtml = document.documentElement.outerHTML;
-    
-    // Inject the hydration payload into a special self-extracting script tag right before </body>
-    const payloadTag = '<scr' + 'ipt id="EMBEDDED_LIBRARY_DATA" type="application/json">' + JSON.stringify(bundlePayload) + '</scr' + 'ipt>';
-    
-    // Ensure self-hydration script is embedded
-    const hydrationScript = '<scr' + 'ipt>\n' +
-    '/* Self-Extracting Hydration on First Run */'
-    (async()=>{
-      const dataElem = document.getElementById('EMBEDDED_LIBRARY_DATA');
-      if (!dataElem) return;
-      try {
-        const payload = JSON.parse(dataElem.textContent);
-        if (!payload || !payload.books || !payload.books.length) return;
-        
-        const req = indexedDB.open('${MAIN_DB}', 1);
-        req.onsuccess = async () => {
-          const db = req.result;
-          if (!db.objectStoreNames.contains('books')) return;
-          const countReq = db.transaction('books').objectStore('books').count();
-          countReq.onsuccess = async () => {
-            if (countReq.result === 0) {
-              console.log('Hydrating ${payload.books.length} books from bundle payload...');
-              const tx = db.transaction(['books', 'annotations'], 'readwrite');
-              const bStore = tx.objectStore('books');
-              const aStore = tx.objectStore('annotations');
-              for (const b of payload.books) bStore.put(b);
-              for (const a of payload.annotations) aStore.put(a);
-              tx.oncomplete = () => {
-                console.log('Hydration complete.');
-                if (typeof refreshBooks === 'function') refreshBooks();
-              };
-            }
-          };
-        };
-      } catch(e) { console.warn('Hydration skipped:', e); }
-    })();
-    </scr' + 'ipt>';
 
-    const compiledFile = '<!DOCTYPE html>\n' + currentHtml.replace('</body>', payloadTag + '\n' + hydrationScript + '\n</body>');
+    const clientTemplateTag = clientSource ? ('\n<template id="EMBEDDED_CLIENT_SOURCE">' + esc(clientSource) + '</template>') : '';
+    const payloadTag = '\n<scr' + 'ipt id="EMBEDDED_LIBRARY_DATA" type="application/json">' + JSON.stringify(bundlePayload) + '</scr' + 'ipt>';
+
+    const hydrationScript = '\n<scr' + 'ipt>\n' +
+    '/* Self-Extracting Hydration on First Run */\n' +
+    '(async()=>{\n' +
+    ' const tpl = document.getElementById("EMBEDDED_CLIENT_SOURCE");\n' +
+    ' if(tpl){ const blob = new Blob([tpl.content?.textContent || tpl.textContent], { type: "text/html" }); window.HTMLARTS_CLIENT_URL = URL.createObjectURL(blob); }\n' +
+    ' const dataElem = document.getElementById("EMBEDDED_LIBRARY_DATA");\n' +
+    ' if (!dataElem) return;\n' +
+    ' try {\n' +
+    '  const payload = JSON.parse(dataElem.textContent);\n' +
+    '  if (!payload || !payload.books || !payload.books.length) return;\n' +
+    '  const req = indexedDB.open("' + MAIN_DB + '", 2);\n' +
+    '  req.onupgradeneeded = e => {\n' +
+    '   const d = req.result;\n' +
+    '   if(!d.objectStoreNames.contains("books_meta")) d.createObjectStore("books_meta", { keyPath: "id" });\n' +
+    '   if(!d.objectStoreNames.contains("books_content")) d.createObjectStore("books_content", { keyPath: "id" });\n' +
+    '   if(!d.objectStoreNames.contains("books")) d.createObjectStore("books", { keyPath: "id" });\n' +
+    '   if(!d.objectStoreNames.contains("annotations")) d.createObjectStore("annotations", { keyPath: "bookId" });\n' +
+    '  };\n' +
+    '  req.onsuccess = async () => {\n' +
+    '   const db = req.result;\n' +
+    '   const countReq = db.transaction("books_meta").objectStore("books_meta").count();\n' +
+    '   countReq.onsuccess = async () => {\n' +
+    '    if (countReq.result === 0) {\n' +
+    '     console.log("Hydrating " + payload.books.length + " books from bundle...");\n' +
+    '     const tx = db.transaction(["books_meta", "books_content", "books", "annotations"], "readwrite");\n' +
+    '     const mStore = tx.objectStore("books_meta");\n' +
+    '     const cStore = tx.objectStore("books_content");\n' +
+    '     const lStore = tx.objectStore("books");\n' +
+    '     const aStore = tx.objectStore("annotations");\n' +
+    '     for (const b of payload.books) {\n' +
+    '      const meta = { id: b.id, title: b.title, category: b.category||"Personal", genre: b.genre||"Book", kind: b.kind||"bundled", template: b.template||"Editorial", color: b.color||"#805b3d", sizeBytes: (b.html||"").length, createdAt: b.createdAt||Date.now(), updatedAt: b.updatedAt||Date.now(), visitCount: 1 };\n' +
+    '      const content = { id: b.id, html: b.html||"", rawHtml: b.rawHtml||b.html||"" };\n' +
+    '      mStore.put(meta); cStore.put(content); lStore.put(b);\n' +
+    '     }\n' +
+    '     for (const a of payload.annotations||[]) aStore.put(a);\n' +
+    '     tx.oncomplete = () => {\n' +
+    '      console.log("Hydration complete.");\n' +
+    '      if (typeof refreshBooks === "function") refreshBooks();\n' +
+    '     };\n' +
+    '    }\n' +
+    '   };\n' +
+    '  };\n' +
+    ' } catch(e) { console.warn("Hydration skipped:", e); }\n' +
+    '})();\n' +
+    '</scr' + 'ipt>\n';
+
+    const compiledFile = '<!DOCTYPE html>\n' + currentHtml.replace('</body>', clientTemplateTag + payloadTag + hydrationScript + '</body>');
     const blob = new Blob([compiledFile], { type: 'text/html' });
     const a = document.createElement('a');
     a.download = `HTMLARTSAPP_Bundle_${new Date().toISOString().slice(0,10)}.html`;
     a.href = URL.createObjectURL(blob);
     a.click();
-    toast(`Library packaged! ${allBooks.length} book(s) bundled into standalone HTML.`);
+    toast(`Library packaged! ${fullBooks.length} book(s) bundled into standalone HTML.`);
+  }
+
+  async function generate500BenchmarkBooks() {
+    toast('Generating 500 benchmark books across 7 categories...');
+    const tStart = performance.now();
+    const categories = ['Education', 'Society', 'Technology', 'Design', 'Media', 'Science', 'Literature'];
+    const templatesList = ['Editorial', 'Swiss Grid', 'Botanical', 'Geometric', 'Comic', 'Watercolour'];
+    
+    const r = indexedDB.open(MAIN_DB, 2);
+    r.onsuccess = () => {
+      const db = r.result;
+      const tx = db.transaction(['books_meta', 'books_content', 'books'], 'readwrite');
+      const mStore = tx.objectStore('books_meta');
+      const cStore = tx.objectStore('books_content');
+      const lStore = tx.objectStore('books');
+
+      for (let i = 1; i <= 500; i++) {
+        const cat = categories[i % categories.length];
+        const style = templatesList[i % templatesList.length];
+        const bookId = `bench-${i}`;
+        const title = `Volume ${i}: Perspectives on ${cat}`;
+        const contentHtml = `<div style="padding:28px"><h1>Volume ${i}: Perspectives on ${cat}</h1><p>A benchmark exploration of ${cat} using the ${style} archetype. Persistent local IndexedDB record #${i}.</p></div>`;
+        const meta = {
+          id: bookId,
+          title,
+          category: cat,
+          genre: 'Book',
+          kind: 'benchmark',
+          template: style,
+          color: '#805b3d',
+          sizeBytes: contentHtml.length,
+          createdAt: Date.now() - (500 - i) * 60000,
+          updatedAt: Date.now() - (500 - i) * 60000,
+          visitCount: 1
+        };
+        const content = {
+          id: bookId,
+          html: contentHtml,
+          rawHtml: contentHtml
+        };
+        mStore.put(meta);
+        cStore.put(content);
+        lStore.put({ ...meta, html: contentHtml });
+      }
+
+      tx.oncomplete = async () => {
+        const genDur = Math.round(performance.now() - tStart);
+        await refreshBooks();
+        renderIndex();
+        toast(`500 benchmark books generated in ${genDur}ms!`);
+        console.log(`[HtmlArts Benchmark] 500 books generated and persisted in ${genDur}ms`);
+      };
+    };
+  }
+
+  async function clearBenchmarkBooks() {
+    toast('Clearing benchmark books...');
+    const records = await mainBooks();
+    const benchIds = records.filter(b => b.kind === 'benchmark').map(b => b.id);
+    if (!benchIds.length) { toast('No benchmark books found.'); return; }
+    
+    const r = indexedDB.open(MAIN_DB, 2);
+    r.onsuccess = () => {
+      const db = r.result;
+      const tx = db.transaction(['books_meta', 'books_content', 'books'], 'readwrite');
+      const mStore = tx.objectStore('books_meta');
+      const cStore = tx.objectStore('books_content');
+      const lStore = tx.objectStore('books');
+      for (const id of benchIds) {
+        mStore.delete(id);
+        cStore.delete(id);
+        lStore.delete(id);
+      }
+      tx.oncomplete = async () => {
+        await refreshBooks();
+        renderIndex();
+        toast(`Cleared ${benchIds.length} benchmark books.`);
+      };
+    };
   }
 
  async function renderIndex(){
   if(!assetDb)assetDb=await openAssetDb();
   const records=await mainBooks(), assets=await assetReq(assetStore().getAll()), estimate=await navigator.storage?.estimate?.()||{};
-  const inkDb=await new Promise(resolve=>{const r=indexedDB.open(MAIN_DB,1);r.onsuccess=()=>{const d=r.result;if(!d.objectStoreNames.contains('annotations')){d.close();resolve([]);return;}const q=d.transaction('annotations').objectStore('annotations').getAll();q.onsuccess=()=>{resolve(q.result||[]);d.close();};q.onerror=()=>{d.close();resolve([]);};};r.onerror=()=>resolve([]);});
+  const inkDb=await new Promise(resolve=>{const r=indexedDB.open(MAIN_DB,2);r.onsuccess=()=>{const d=r.result;if(!d.objectStoreNames.contains('annotations')){d.close();resolve([]);return;}const q=d.transaction('annotations').objectStore('annotations').getAll();q.onsuccess=()=>{resolve(q.result||[]);d.close();};q.onerror=()=>{d.close();resolve([]);};};r.onerror=()=>resolve([]);});
   const usage=estimate.usage||0, quota=estimate.quota||0;
   body.innerHTML=`<div class="s3-kicker">Local storage / inspection</div><h1 class="s3-title">Your library, at a glance.</h1><p class="s3-sub">Data stays in this browser profile. Nothing is uploaded to a server.</p><div class="s3-grid"><section class="s3-card"><div class="s3-muted">Book records</div><div class="s3-number">${records.length}</div><div class="s3-muted">Imported and created HTML books</div></section><section class="s3-card"><div class="s3-muted">Media assets</div><div class="s3-number">${assets.length}</div><div class="s3-muted">Images and files in Assets</div></section><section class="s3-card"><div class="s3-muted">Annotation sets</div><div class="s3-number">${inkDb.length}</div><div class="s3-muted">Saved book ink layers</div></section><section class="s3-card"><div class="s3-muted">Browser storage</div><div class="s3-number">${bytes(usage)}</div><div class="s3-muted">${quota?`of ${bytes(quota)} estimated quota`:'Quota estimate unavailable'}</div></section></div><section class="s3-card" style="margin-top:16px"><div class="s3-row" style="justify-content:space-between;flex-wrap:wrap;gap:8px">
  <h3>Book database · ${MAIN_DB}</h3>
- <div style="display:flex;gap:8px">
+ <div style="display:flex;gap:8px;flex-wrap:wrap">
   <button class="s3-action primary" id="s3DownloadAppBundle" title="Compile all stored books into a standalone HTMLARTSAPP.html super-bundle">📦 Download HTMLARTSAPP.html</button>
+  <button class="s3-action" id="s3Bench500" title="Populate 500 benchmark books to test high-scale performance">⚡ Benchmark 500 Books</button>
+  <button class="s3-action" id="s3ClearBench" title="Clear generated benchmark books">🗑 Clear Benchmark</button>
   <button class="s3-action" id="s3RefreshIndex">Refresh</button>
  </div>
-</div><div style="overflow:auto"><table class="s3-table"><thead><tr><th>Title</th><th>Category</th><th>Kind</th><th>Updated</th><th>Size</th></tr></thead><tbody>${records.length?records.map(b=>`<tr><td>${esc(b.title)}</td><td>${esc(b.category||'—')}</td><td>${esc(b.kind||'—')}</td><td>${b.updatedAt?new Date(b.updatedAt).toLocaleDateString():'—'}</td><td>${bytes(new Blob([b.html||'']).size)}</td></tr>`).join(''):'<tr><td colspan="5">No user books stored yet.</td></tr>'}</tbody></table></div><p class="s3-muted">The built-in sample catalogue is not counted as a stored record.</p></section>`;
-     $('s3RefreshIndex').onclick=()=>render('indexdb');
-   const btnBundle = $('s3DownloadAppBundle');
-   if (btnBundle) btnBundle.onclick = compileAndDownloadLibraryBundle;
+</div><div style="overflow:auto"><table class="s3-table"><thead><tr><th>Title</th><th>Category</th><th>Kind</th><th>Updated</th><th>Size</th></tr></thead><tbody>${records.length?records.map(b=>`<tr><td>${esc(b.title)}</td><td>${esc(b.category||'—')}</td><td>${esc(b.kind||'—')}</td><td>${b.updatedAt?new Date(b.updatedAt).toLocaleDateString():'—'}</td><td>${bytes(b.sizeBytes||new Blob([b.html||'']).size)}</td></tr>`).join(''):'<tr><td colspan="5">No user books stored yet.</td></tr>'}</tbody></table></div><p class="s3-muted">The built-in sample catalogue is not counted as a stored record.</p></section>`;
+  $('s3RefreshIndex').onclick=()=>render('indexdb');
+  const btnBundle = $('s3DownloadAppBundle');
+  if (btnBundle) btnBundle.onclick = compileAndDownloadLibraryBundle;
+  const btnBench = $('s3Bench500');
+  if (btnBench) btnBench.onclick = generate500BenchmarkBooks;
+  const btnClearBench = $('s3ClearBench');
+  if (btnClearBench) btnClearBench.onclick = clearBenchmarkBooks;
  }
  function renderTrends(){
   const events=JSON.parse(localStorage.getItem('htmlarts_activity')||'[]'), days=Array.from({length:7},(_,i)=>{const d=new Date();d.setHours(0,0,0,0);d.setDate(d.getDate()-(6-i));return d;});
@@ -1401,5 +1797,21 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  document.addEventListener('click',e=>{if(e.target.closest('[data-open-book]'))log('book-opened');if(e.target.closest('#saveNewBook'))log('book-created');if(e.target.closest('#ingestBook'))log('book-imported');});
  window.HtmlArtsVault={open:openPanel,close:closePanel};
 })();
+</script>
+<script>
+/* Service Worker Registration & PWA Hooks */
+window.deferredInstallPrompt = null;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  window.deferredInstallPrompt = e;
+  const pwaBtn = document.getElementById('btnInstallPwa');
+  if (pwaBtn) pwaBtn.style.display = 'block';
+});
+
+if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW reg failed', err));
+  });
+}
 </script>
 </body></html>

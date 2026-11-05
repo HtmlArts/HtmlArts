@@ -1,0 +1,39 @@
+{
+  "name": "HtmlArts - Autonomous HTML Book Platform",
+  "short_name": "HtmlArts",
+  "description": "Zero-dependency, local-first HTML book platform, reader, and folio bookstore.",
+  "id": "htmlarts-autonomous-app",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f8f5ee",
+  "theme_color": "#805b3d",
+  "categories": ["books", "education", "productivity", "utilities"],
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192' fill='%23805b3d'%3E%3Crect width='192' height='192' rx='36' fill='%23fbf8f1' stroke='%23805b3d' stroke-width='6'/%3E%3Cpath d='M36 52c28-13 54-9 80 10v104c-26-19-52-23-80-10zM156 52c-28-13-54-9-80 10v104c26-19 52-23 80-10z' fill='none' stroke='%23805b3d' stroke-width='10' stroke-linejoin='round'/%3E%3Cpath d='M96 62v104' stroke='%23805b3d' stroke-width='8'/%3E%3C/svg%3E",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512' fill='%23805b3d'%3E%3Crect width='512' height='512' rx='96' fill='%23fbf8f1' stroke='%23805b3d' stroke-width='16'/%3E%3Cpath d='M96 140c75-35 144-24 214 27v278c-70-51-139-62-214-27zM416 140c-75-35-144-24-214 27v278c70-51 139-62 214-27z' fill='none' stroke='%23805b3d' stroke-width='26' stroke-linejoin='round'/%3E%3Cpath d='M256 167v278' stroke='%23805b3d' stroke-width='22'/%3E%3C/svg%3E",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Browse Catalog",
+      "url": "./index.html#catalog",
+      "description": "Browse and read stored HTML books"
+    },
+    {
+      "name": "Design Studio",
+      "url": "./index.html#studio",
+      "description": "Field guides and technical spec sheet authoring"
+    }
+  ]
+}
