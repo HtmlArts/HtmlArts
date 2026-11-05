@@ -399,6 +399,40 @@
   font-weight: 700;
 }
 
+/* Quine Refresh & Persist Trigger Button */
+.quine-refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: #fbf5ea;
+  color: var(--brown);
+  border: 1.5px solid #d4c0a5;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font: 700 12px var(--sans);
+  cursor: pointer;
+  transition: all .18s ease;
+  white-space: nowrap;
+}
+.quine-refresh-btn:hover {
+  background: var(--brown);
+  color: #fffdf8;
+  border-color: var(--brown);
+  transform: translateY(-1px);
+}
+.quine-refresh-btn svg {
+  width: 15px;
+  height: 15px;
+  transition: transform .6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.quine-refresh-btn.spinning svg {
+  animation: spin-refresh .7s linear infinite;
+}
+@keyframes spin-refresh {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 /* App Download & Dual-Runtime Styles */
 .app-download-btn {
   display: inline-flex;
@@ -490,7 +524,13 @@
 </nav>
  <span class="top-spacer"></span><label class="search"><span>⌕</span><input id="globalSearch" placeholder="Search books, templates..." aria-label="Search library"></label>
  <button class="soft-btn" id="ingestBook">＋ Ingest HTML</button>
- <button class="app-download-btn" id="topbarDownloadApp" title="Download as HtmlArts.html or install app">⬇ Download HtmlArts.html</button>
+ <button class="quine-refresh-btn" id="btnRefreshQuine" title="Refresh & Persist Local Workbook (Ctrl+S / Cmd+S)" aria-label="Refresh & Persist Local Workbook">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+   <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+  </svg>
+  <span>Refresh & Save</span>
+ </button>
+ <button class="app-download-btn" id="topbarDownloadApp" title="Download as HtmlArts.html or install app">⬇ Export App</button>
  <div class="vault-wrap"><button class="vault-trigger" id="vaultTrigger" aria-expanded="false">Vault⌄</button><div class="vault-menu" id="vaultMenu" role="menu">
   <button data-vault="IndexDB Dashboard"><span>▤</span><span>IndexDB Dashboard<small>Local storage overview</small></span></button><button data-vault="Trends"><span>⌁</span><span>Trends<small>Reading and library activity</small></span></button><button data-vault="Workspace"><span>▣</span><span>Workspace<small>Your local working area</small></span></button><button data-vault="Assets"><span>▧</span><span>Assets<small>Images and media collection</small></span></button>
  </div></div>
@@ -721,6 +761,33 @@ document.getElementById('heroDownloadApp')?.addEventListener('click',openDownloa
 document.getElementById('closeDownloadModal')?.addEventListener('click',closeDownloadModal);
 document.getElementById('downloadModal')?.addEventListener('click',e=>{if(e.target.id==='downloadModal')closeDownloadModal();});
 document.getElementById('linkToVaultBenchmark')?.addEventListener('click',()=>{closeDownloadModal();if(window.HtmlArtsVault?.open)window.HtmlArtsVault.open('indexdb');});
+
+// Design 1 Quine Trigger: Refresh Icon Button & Ctrl+S Keyboard Shortcut
+const btnRefreshQuine = document.getElementById('btnRefreshQuine');
+if (btnRefreshQuine) {
+  btnRefreshQuine.addEventListener('click', async () => {
+    btnRefreshQuine.classList.add('spinning');
+    toast('Refreshing workbook & saving self-contained HtmlArts.html...');
+    try {
+      if (typeof window.compileAndDownloadLibraryBundle === 'function') {
+        await window.compileAndDownloadLibraryBundle();
+      }
+    } finally {
+      setTimeout(() => btnRefreshQuine.classList.remove('spinning'), 1000);
+    }
+  });
+}
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    const btn = document.getElementById('btnRefreshQuine');
+    if (btn) btn.click();
+    else if (typeof window.compileAndDownloadLibraryBundle === 'function') {
+      window.compileAndDownloadLibraryBundle();
+    }
+  }
+});
 
 document.getElementById('globalSearch').addEventListener('input',e=>{query=e.target.value.trim().toLowerCase();showPage('catalog');renderCatalog()});document.getElementById('categoryQuickFilters').addEventListener('click',e=>{const b=e.target.closest('[data-category]');if(!b)return;category=b.dataset.category;renderCatalog()});document.getElementById('typeFilters').addEventListener('click',e=>{const b=e.target.closest('[data-type]');if(!b)return;type=b.dataset.type;document.querySelectorAll('[data-type]').forEach(x=>x.classList.toggle('active',x===b));renderCatalog()});
 document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if(c)toast(`${c.dataset.book} · Reader launch will be connected in Stage 2.`)});
@@ -1226,7 +1293,7 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   try{
    // 1. Resolve embedded client template if present
    try {
-    const embData = document.getElementById('EMBEDDED_LIBRARY_DATA');
+    const embData = document.getElementById('LOCAL_JSON') || document.getElementById('EMBEDDED_LIBRARY_DATA');
     if (embData && embData.textContent) {
      const payload = JSON.parse(embData.textContent);
      if (payload && payload.clientSource) {
@@ -1240,20 +1307,21 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
    // 2. Hydrate embedded library bundle into IndexedDB if not yet hydrated or if empty
    try {
-    const embData = document.getElementById('EMBEDDED_LIBRARY_DATA');
+    const embData = document.getElementById('LOCAL_JSON') || document.getElementById('EMBEDDED_LIBRARY_DATA');
     if (embData && embData.textContent) {
      const payload = JSON.parse(embData.textContent);
-     if (payload && Array.isArray(payload.books) && payload.books.length > 0) {
+     const incomingBooks = payload.productList || payload.books || [];
+     if (payload && Array.isArray(incomingBooks) && incomingBooks.length > 0) {
       const hydratedKey = 'htmlarts_hydrated_' + (payload.exportedAt || 'bundle');
       const count = await queryStore(STORE_META).getAll().then(a => a.length).catch(() => 0);
       if (count === 0 || !localStorage.getItem(hydratedKey)) {
-       console.log(`[Hydration] Hydrating ${payload.books.length} bundled books into IndexedDB...`);
+       console.log(`[Hydration] Hydrating ${incomingBooks.length} bundled books into IndexedDB...`);
        const t = db.transaction([STORE_META, STORE_CONTENT, STORE_LEGACY, INK_STORE], 'readwrite');
        const mStore = t.objectStore(STORE_META);
        const cStore = t.objectStore(STORE_CONTENT);
        const lStore = t.objectStore(STORE_LEGACY);
        const aStore = t.objectStore(INK_STORE);
-       for (const b of payload.books) {
+       for (const b of incomingBooks) {
         const meta = {
          id: b.id, title: b.title, category: b.category || 'Personal',
          genre: b.genre || 'Book', kind: b.kind || 'bundled',
@@ -1710,11 +1778,48 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
     } catch(e) {}
 
     const bundlePayload = {
+      $schema: "https://htmlarts.org/schema/v2/catalog.json",
+      appVersion: "2.1.0-local",
+      CatalogVersion: "2026.11-v2",
+      OpeniatedArchiConfig: {
+        architecturePattern: "Self-Serializing-Quine-Workbook",
+        executionBoundary: "Sandboxed-Iframe",
+        persistenceEngine: "LocalDualStoreIndexedDB",
+        maxZeroLatencyBooks: 500,
+        targetCatalogLatencyMs: 15,
+        targetReaderLaunchMs: 30,
+        enforceSingleFilePortability: true
+      },
+      EnvConfig: {
+        environment: "localApprun",
+        runtimeMode: "standalone-file",
+        isOfflineCapable: true,
+        supportedGestures: ["pan", "zoom", "swipe"]
+      },
+      OrchestationConfig: {
+        serverHost: "HTMLPAGE.html",
+        clientReader: "HtmlArtsReadUI.html",
+        studioServer: "PageServer.html",
+        postMessageProtocol: "HTMLARTS_COMM_V1"
+      },
+      WorkflowConfig: {
+        persistenceTrigger: "refresh-icon-button",
+        shortcut: "Ctrl+S / Cmd+S"
+      },
       version: '2.0-high-scale',
       exportedAt: Date.now(),
       totalBooks: fullBooks.length,
       clientSource: clientSource || '',
+      productList: fullBooks,
       books: fullBooks,
+      TemplateList: [
+        { id: "Editorial", name: "Editorial", category: "Page art", accent: "#805b3d" },
+        { id: "Swiss Grid", name: "Swiss Grid", category: "Technical Spec", accent: "#343b36" },
+        { id: "Botanical", name: "Botanical", category: "Organic notes", accent: "#65785b" },
+        { id: "Geometric", name: "Geometric", category: "Abstract balance", accent: "#a66d45" },
+        { id: "Comic", name: "Comic", category: "Graphic stories", accent: "#2e302d" },
+        { id: "Watercolour", name: "Watercolour", category: "Soft washes", accent: "#788d8a" }
+      ],
       assets: allAssets.map(a => ({ id: a.id, name: a.name, type: a.type, size: a.size })),
       annotations: allInk
     };
@@ -1743,11 +1848,12 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
     // Clean up any previously injected bundles or templates
     currentHtml = currentHtml.replace(/<template id="EMBEDDED_CLIENT_SOURCE">[\s\S]*?<\/template>/gi, '');
     currentHtml = currentHtml.replace(/<script id="EMBEDDED_LIBRARY_DATA"[\s\S]*?<\/script>/gi, '');
+    currentHtml = currentHtml.replace(/<script id="LOCAL_JSON"[\s\S]*?<\/script>/gi, '');
     currentHtml = currentHtml.replace(/<script[^>]*>\s*\/\* Self-Extracting Hydration on First Run \*\/[\s\S]*?<\/script>/gi, '');
 
     // Critical: JSON-safe escaping of '<' as '\u003c' so browser HTML parser NEVER prematurely terminates the script tag
     const safePayloadJson = JSON.stringify(bundlePayload).replace(/</g, '\\u003c');
-    const payloadTag = '\n<script id="EMBEDDED_LIBRARY_DATA" type="application/json">' + safePayloadJson + '</script>\n';
+    const payloadTag = '\n<script id="LOCAL_JSON" type="application/json">' + safePayloadJson + '</script>\n<script id="EMBEDDED_LIBRARY_DATA" type="application/json">' + safePayloadJson + '</script>\n';
 
     const compiledFile = '<!DOCTYPE html>\n' + currentHtml.replace('</body>', payloadTag + '</body>');
     const blob = new Blob([compiledFile], { type: 'text/html;charset=utf-8' });
