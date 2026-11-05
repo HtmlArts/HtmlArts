@@ -213,6 +213,147 @@
 .nib-part-item b {
   color: var(--brown);
 }
+
+/* --- Minimalist Footer Pen Dock & Folio Bar --- */
+.footer-pen-station {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 18px;
+  background: rgba(255, 253, 248, 0.95);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  box-shadow: 0 4px 20px rgba(58, 42, 26, 0.06);
+  margin-bottom: 16px;
+  user-select: none;
+  flex-wrap: wrap;
+}
+.folio-zone-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 220px;
+}
+.folio-label {
+  font: 600 12px var(--hand);
+  color: var(--brown);
+  margin-right: 4px;
+}
+.folio-tabs {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+}
+.folio-chip {
+  border: 1px solid var(--line);
+  background: #fffaf0;
+  color: var(--brown);
+  border-radius: 12px;
+  padding: 4px 9px;
+  font: 600 11px var(--sans);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.folio-chip.active {
+  background: var(--brown);
+  color: #fffdf8;
+  border-color: var(--brown);
+}
+.folio-add-btn {
+  border: 1px dashed var(--brown);
+  background: transparent;
+  color: var(--brown);
+  border-radius: 12px;
+  padding: 3px 8px;
+  font: 700 12px var(--sans);
+  cursor: pointer;
+}
+.folio-add-btn:hover {
+  background: #f0e4ce;
+}
+
+.pen-zone-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.master-nib-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  border: 1.5px solid var(--brown);
+  background: var(--brown);
+  color: #fffdf8;
+  border-radius: 24px;
+  padding: 8px 18px;
+  font: 700 13px var(--sans);
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(121, 82, 52, 0.25);
+  transition: all .18s ease;
+}
+.master-nib-btn:hover {
+  background: #634329;
+  transform: translateY(-1px);
+}
+.master-nib-btn.pen-resting {
+  background: #fffdf8;
+  color: var(--brown);
+  border-color: var(--line);
+  box-shadow: none;
+}
+
+.tools-zone-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+  flex: 1;
+  min-width: 240px;
+}
+.inkwell-palette {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 6px;
+  border-right: 1px solid var(--line);
+}
+.ink-drop {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.25);
+  cursor: pointer;
+  transition: transform .15s ease;
+}
+.ink-drop:hover {
+  transform: scale(1.22);
+}
+.ink-drop.active {
+  transform: scale(1.3);
+  box-shadow: 0 0 0 2px var(--brown);
+}
+.tool-btn {
+  border: 1px solid var(--line);
+  background: #fffaf0;
+  color: var(--brown);
+  border-radius: 14px;
+  padding: 5px 10px;
+  font: 600 11px var(--sans);
+  cursor: pointer;
+  transition: background .15s;
+}
+.tool-btn:hover {
+  background: #f0e4ce;
+}
+.tool-btn.primary {
+  background: #f4ead8;
+  border-color: var(--brown2);
+  font-weight: 700;
+}
 </style>
 </head>
 <body>
@@ -266,70 +407,51 @@
 <section class="page" id="studio"><div class="page-title"><div><div class="eyebrow">Make a page your own</div><h1>Design Studio</h1><p>A calm space for arranging content, visuals and page structure.</p></div><button class="primary" id="studioCreate">＋ Create Book</button></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">＋</span><div><b>New composition</b><small>Start with a blank page</small></div></div><div class="feature"><span class="feature-icon">▧</span><div><b>Media placement</b><small>Arrange local images and art</small></div></div><div class="feature"><span class="feature-icon">⌘</span><div><b>Page components</b><small>Build reusable sections</small></div></div></div><p class="lead">The studio workspace is reserved for Stage 2. This foundation keeps its place in the navigation without pretending the editor is already connected.</p></section>
 <section class="page" id="analytics"><div class="page-title"><div><div class="eyebrow">Your library, at a glance</div><h1>Analytics</h1><p>Simple local-library indicators.</p></div></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">▤</span><div><b id="bookMetric">8</b><small>Sample catalog items</small></div></div><div class="feature"><span class="feature-icon">◷</span><div><b>Local first</b><small>No account required</small></div></div><div class="feature"><span class="feature-icon">♡</span><div><b>Private by design</b><small>Browser-based foundation</small></div></div></div><p class="lead">Detailed reading trends and IndexedDB diagnostics will be added with the Vault implementation in Stage 3.</p></section>
 
-<!-- Prompt Modal: Create New Tab/Book from Transparent Layer -->
-<div class="modal-backdrop" id="saveLayerModal" role="dialog" aria-modal="true" aria-labelledby="saveLayerTitle">
- <div class="modal" style="max-width:440px">
-  <button class="close" id="closeSaveLayer" aria-label="Close">×</button>
-  <div class="eyebrow">Preserve Your Page Ink</div>
-  <h2 id="saveLayerTitle">Create a new book?</h2>
-  <p>You have handwritten drawings on this page. Would you like to save them into a new HTML book tab or clear the slate?</p>
-  <div class="modal-actions" style="margin-top:22px;gap:8px;flex-wrap:wrap">
-   <button class="soft-btn" id="btnDiscardLayer">Clear Slate</button>
-   <button class="soft-btn" id="btnKeepLayer">Keep on Page</button>
-   <button class="primary" id="btnCreateFromLayer">＋ Create New Book</button>
+
+</main>
+<footer class="shell footer" style="flex-direction:column;align-items:stretch">
+ <div class="footer-pen-station" id="footerPenStation">
+  <!-- ZONE 1: LEFT - Folio Note Pages -->
+  <div class="folio-zone-left">
+   <span class="folio-label">Folios:</span>
+   <div class="folio-tabs" id="folioTabsContainer">
+    <!-- Rendered dynamically: Folio 0, 1, 2... -->
+   </div>
+   <button class="folio-add-btn" id="btnAddFolio" title="Add fresh folio note page">＋ Page</button>
+  </div>
+
+  <!-- ZONE 2: CENTER - Master Nib Button -->
+  <div class="pen-zone-center">
+   <button class="master-nib-btn" id="btnMasterNib" title="Toggle Writing Nib">
+    <span style="font-size:15px">🖋️</span> <span id="masterNibLabel">Nib (Active)</span>
+   </button>
+  </div>
+
+  <!-- ZONE 3: RIGHT - Middle Color Default, History & Download -->
+  <div class="tools-zone-right">
+   <div class="inkwell-palette" title="Archival Inkwell Palette">
+    <div class="ink-drop" data-color="#261a12" title="Iron Gall Dark Sepia" style="background:#261a12"></div>
+    <div class="ink-drop" data-color="#5a3d24" title="Walnut Husk Brown" style="background:#5a3d24"></div>
+    <!-- MIDDLE COLOR SELECTED BY DEFAULT -->
+    <div class="ink-drop active" data-color="#994d29" title="Terracotta Sienna (Default)" style="background:#994d29"></div>
+    <div class="ink-drop" data-color="#4f6154" title="Sage Verdigris" style="background:#4f6154"></div>
+    <div class="ink-drop" data-color="#2b3a4a" title="Dusk Indigo" style="background:#2b3a4a"></div>
+   </div>
+
+   <button class="tool-btn" id="btnUndoFolio" title="Undo stroke">↶ Undo</button>
+   <button class="tool-btn" id="btnRedoFolio" title="Redo stroke">↷ Redo</button>
+   <button class="tool-btn" id="btnClearFolio" title="Clear this folio">Clear</button>
+   <button class="tool-btn primary" id="btnDownloadNotes" title="Download note as transparent image">↓ Download</button>
   </div>
  </div>
-</div>
-</main>
-<footer class="shell footer"><span>HtmlArts · A local book store of HTML books · <button class="about-link" id="aboutBtn" style="padding:0;text-decoration:underline;cursor:pointer;font-size:inherit">@About</button></span><span>Designed with a little ink and a lot of care · <a href="#home" data-go="home">Back to top ↑</a></span></footer>
+
+ <div style="display:flex;justify-content:space-between;width:100%;flex-wrap:wrap;gap:8px"><span>HtmlArts · A local book store of HTML books · <button class="about-link" id="aboutBtn" style="padding:0;text-decoration:underline;cursor:pointer;font-size:inherit">@About</button></span><span>Designed with a little ink and a lot of care · <a href="#home" data-go="home">Back to top ↑</a></span></footer>
 <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="modal"><button class="close" id="closeAbout" aria-label="Close">×</button><div class="eyebrow">A note about this place</div><h2 id="aboutTitle">Welcome to HtmlArts.</h2><p>HtmlArts is a local-first library for reading, creating and collecting self-contained HTML books. It brings books, visual page styles and a quiet writing space into one thoughtful interface.</p><div class="about-list"><div><b>Local by nature</b>Designed to work from your own files and browser.</div><div><b>Open format</b>Books remain portable HTML documents.</div><div><b>Reader first</b>Simple navigation and a distraction-light surface.</div><div><b>Made to grow</b>Creation, annotation and library tools arrive in stages.</div></div><p class="about-license">GNU AGPLv3 <span aria-hidden="true">·</span> Open-source software</p></div></div>
 
 <input id="htmlImportInput" type="file" accept=".html,.htm,text/html" multiple hidden>
 <div class="modal-backdrop" id="createModal" role="dialog" aria-modal="true" aria-labelledby="createTitle"><div class="modal"><button class="close" data-close="createModal" aria-label="Close">×</button><div class="eyebrow">A fresh page begins</div><h2 id="createTitle">Create a little book.</h2><label class="field-label" for="newBookTitle">Book title</label><input class="field-input" id="newBookTitle" maxlength="90" placeholder="e.g. Notes on the Natural World"><label class="field-label" for="newBookCategory">Category</label><input class="field-input" id="newBookCategory" maxlength="40" value="Personal"><label class="field-label" for="newBookTemplate">Starting style</label><select class="field-input" id="newBookTemplate"><option>Editorial</option><option>Swiss Grid</option><option>Botanical</option><option>Geometric</option><option>Comic</option><option>Watercolour</option></select><div class="modal-actions"><button class="soft-btn" data-close="createModal">Cancel</button><button class="primary" id="saveNewBook">Create & Open ↗</button></div></div></div>
 <!-- Transparent Drawing Layer over entire document -->
 <canvas id="pageInkCanvas" aria-label="Transparent drawing screen"></canvas>
-<div class="pen-dock" id="pagePenToolbar" role="toolbar" aria-label="Classic Pen Station">
- <button id="dockPenToggle" class="active" title="Toggle Writing on Page"><span>✎</span> <b id="dockPenStatus">Pen On</b></button>
- <button id="btnInfographic" title="Inspect Fountain Pen Anatomy">🖋️ Anatomy</button>
- <button id="pagePenTool" class="active" title="Vintage Fountain Pen">Nib</button>
- <button id="pageChiselTool" title="Calligraphy Italic Stub">Chisel</button>
- <button id="pageEraserTool" title="Blotting Eraser">Eraser</button>
- <div class="inkwell-group" title="Archival Inkwell Palette">
-  <div class="ink-drop active" data-color="#261a12" title="Iron Gall Sepia" style="background:#261a12"></div>
-  <div class="ink-drop" data-color="#5a3d24" title="Walnut Husk" style="background:#5a3d24"></div>
-  <div class="ink-drop" data-color="#994d29" title="Terracotta Sienna" style="background:#994d29"></div>
-  <div class="ink-drop" data-color="#4f6154" title="Sage Verdigris" style="background:#4f6154"></div>
-  <div class="ink-drop" data-color="#2b3a4a" title="Dusk Indigo" style="background:#2b3a4a"></div>
- </div>
- <button id="pageUndoTool" title="Undo stroke">↶</button>
- <button id="pageClearTool" title="Blot All Ink">Clear</button>
-</div>
-
-<div class="infographic-pen-modal" id="penInfographicCard">
- <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">
-  <h3>Fountain Pen Anatomy</h3>
-  <button id="closeInfographic" style="border:none;background:none;color:var(--brown);cursor:pointer;font-size:16px">✕</button>
- </div>
- <p>Crafted for tactile physical-book fidelity.</p>
- <div class="nib-diagram">
-  <svg width="220" height="110" viewBox="0 0 220 110" fill="none" stroke="#795234" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-   <path d="M20 55 L75 25 L150 25 L195 55 L150 85 L75 85 Z" fill="#fffcf7" />
-   <line x1="20" y1="55" x2="115" y2="55" stroke="#795234" stroke-width="1.5" />
-   <circle cx="118" cy="55" r="4.5" fill="#f4ead8" stroke="#795234" stroke-width="1.5" />
-   <line x1="145" y1="35" x2="145" y2="75" stroke="#a66d45" stroke-dasharray="2 3" />
-   <line x1="160" y1="38" x2="160" y2="72" stroke="#a66d45" stroke-dasharray="2 3" />
-   <line x1="175" y1="42" x2="175" y2="68" stroke="#a66d45" stroke-dasharray="2 3" />
-   <text x="75" y="58" font-family="'Playfair Display', Georgia, serif" font-size="9" fill="#805b3d" stroke="none">HtmlArts · 14K</text>
-  </svg>
- </div>
- <div class="nib-parts-list">
-  <div class="nib-part-item"><span><b>1. Tipping:</b> Iridium glide</span><span>Smooth drag</span></div>
-  <div class="nib-part-item"><span><b>2. Breather:</b> Capillary balance</span><span>Pressure flex</span></div>
-  <div class="nib-part-item"><span><b>3. Ebonite Feed:</b> Regulated channel</span><span>Rich saturation</span></div>
-  <div class="nib-part-item"><span><b>4. Reservoir:</b> Archival pigment</span><span>Fade-proof</span></div>
- </div>
-</div>
-
 <div class="reader-overlay" id="readerOverlay" aria-label="HtmlArts reading workspace"><div class="reader-bar"><div><b id="readerBookTitle">Reading</b><small>HtmlArts Server · client-hosted reader</small></div><div class="reader-tools"><button class="reader-tool" id="readerClose" title="Close reader">✕ Close</button></div></div><div class="reader-stage"><iframe id="readerFrame" title="HtmlArts Client Reader" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe></div><div class="reader-status" id="readerStatus">Ready</div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
@@ -614,38 +736,31 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 </script>
 
 <script>
-/* Transparent Page Ink Layer (Classic Pen & Infographic Nib Engine) */
+/* Minimalist Footer Pen & Folio Note Engine */
 (()=>{
- const DB_NAME = 'htmlarts-local-library', INK_STORE = 'annotations', PAGE_KEY = '__homepage_ink__';
+ const DB_NAME = 'htmlarts-local-library', INK_STORE = 'annotations', FOLIO_STORAGE_KEY = '__folio_notes_state__';
  const canvas = document.getElementById('pageInkCanvas');
  const ctx = canvas.getContext('2d', { alpha: true });
- const dock = document.getElementById('pagePenToolbar');
- const dockPenToggle = document.getElementById('dockPenToggle');
- const dockPenStatus = document.getElementById('dockPenStatus');
- const penTool = document.getElementById('pagePenTool');
- const chiselTool = document.getElementById('pageChiselTool');
- const eraserTool = document.getElementById('pageEraserTool');
- const undoTool = document.getElementById('pageUndoTool');
- const clearTool = document.getElementById('pageClearTool');
- const btnInfographic = document.getElementById('btnInfographic');
- const infographicCard = document.getElementById('penInfographicCard');
- const closeInfographic = document.getElementById('closeInfographic');
+ 
+ const masterNibBtn = document.getElementById('btnMasterNib');
+ const masterNibLabel = document.getElementById('masterNibLabel');
+ const folioTabs = document.getElementById('folioTabsContainer');
+ const btnAddFolio = document.getElementById('btnAddFolio');
+ const btnUndo = document.getElementById('btnUndoFolio');
+ const btnRedo = document.getElementById('btnRedoFolio');
+ const btnClear = document.getElementById('btnClearFolio');
+ const btnDownload = document.getElementById('btnDownloadNotes');
  const inkDrops = document.querySelectorAll('.ink-drop');
 
- // Modal elements
- const saveModal = document.getElementById('saveLayerModal');
- const closeSave = document.getElementById('closeSaveLayer');
- const btnDiscard = document.getElementById('btnDiscardLayer');
- const btnKeep = document.getElementById('btnKeepLayer');
- const btnCreate = document.getElementById('btnCreateFromLayer');
-
- let penActive = true; // Pen active by default
- let currentTool = 'pen';
- let currentColor = '#261a12';
- let strokes = [];
- let redoStack = [];
+ let penActive = true;
+ let currentColor = '#994d29'; // Middle color: Terracotta Sienna by default
+ let activeFolioIndex = 0;
+ let folios = [
+  { id: 0, title: '0', strokes: [] },
+  { id: 1, title: '1', strokes: [] }
+ ];
  let activeDrawing = null;
- let pendingPageNav = null;
+ let redoStack = [];
 
  function resizeCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -680,54 +795,25 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   const h = parseFloat(canvas.style.height) || canvas.height;
 
   ctx.save();
-  if (st.tool === 'eraser') {
-   ctx.globalCompositeOperation = 'destination-out';
-   ctx.lineWidth = 26;
-   ctx.lineCap = 'round';
-   ctx.lineJoin = 'round';
+  ctx.globalCompositeOperation = 'source-over';
+  ctx.strokeStyle = st.color || '#994d29';
+  ctx.lineCap = 'round';
+  ctx.lineJoin = 'round';
+
+  for (let i = 1; i < st.points.length; i++) {
+   const prev = st.points[i - 1];
+   const curr = st.points[i];
    ctx.beginPath();
-   ctx.moveTo(st.points[0].x * w, st.points[0].y * h);
-   for (let i = 1; i < st.points.length; i++) ctx.lineTo(st.points[i].x * w, st.points[i].y * h);
+   ctx.moveTo(prev.x * w, prev.y * h);
+   ctx.lineTo(curr.x * w, curr.y * h);
+   ctx.lineWidth = 1.4 + (curr.p * 3.6);
    ctx.stroke();
-  } else if (st.tool === 'chisel') {
-   ctx.globalCompositeOperation = 'source-over';
-   ctx.fillStyle = st.color || '#261a12';
-   const angle = Math.PI / 4;
-   const length = 5;
-   const dx = Math.cos(angle) * length;
-   const dy = Math.sin(angle) * length;
-
-   for (let i = 0; i < st.points.length; i++) {
-    const px = st.points[i].x * w;
-    const py = st.points[i].y * h;
-    ctx.beginPath();
-    ctx.moveTo(px - dx, py - dy);
-    ctx.lineTo(px + dx, py + dy);
-    ctx.lineWidth = 2.2;
-    ctx.strokeStyle = st.color || '#261a12';
-    ctx.stroke();
-   }
-  } else {
-   ctx.globalCompositeOperation = 'source-over';
-   ctx.strokeStyle = st.color || '#261a12';
-   ctx.lineCap = 'round';
-   ctx.lineJoin = 'round';
-
-   for (let i = 1; i < st.points.length; i++) {
-    const prev = st.points[i - 1];
-    const curr = st.points[i];
-    ctx.beginPath();
-    ctx.moveTo(prev.x * w, prev.y * h);
-    ctx.lineTo(curr.x * w, curr.y * h);
-    ctx.lineWidth = 1.4 + (curr.p * 3.8);
-    ctx.stroke();
-   }
-   if (st.points.length === 1) {
-    ctx.beginPath();
-    ctx.arc(st.points[0].x * w, st.points[0].y * h, 1.5, 0, Math.PI * 2);
-    ctx.fillStyle = st.color || '#261a12';
-    ctx.fill();
-   }
+  }
+  if (st.points.length === 1) {
+   ctx.beginPath();
+   ctx.arc(st.points[0].x * w, st.points[0].y * h, 1.5, 0, Math.PI * 2);
+   ctx.fillStyle = st.color || '#994d29';
+   ctx.fill();
   }
   ctx.restore();
  }
@@ -736,114 +822,152 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   const w = parseFloat(canvas.style.width) || canvas.width;
   const h = parseFloat(canvas.style.height) || canvas.height;
   ctx.clearRect(0, 0, w, h);
-  strokes.forEach(st => drawStroke(st));
+  const currentStrokes = folios[activeFolioIndex]?.strokes || [];
+  currentStrokes.forEach(st => drawStroke(st));
  }
 
- async function savePageInk() {
+ function renderFolioTabs() {
+  folioTabs.innerHTML = '';
+  folios.forEach((folio, idx) => {
+   const btn = document.createElement('button');
+   btn.className = 'folio-chip' + (idx === activeFolioIndex ? ' active' : '');
+   btn.textContent = 'Folio ' + folio.title;
+   btn.title = `Switch to Folio ${folio.title} (${folio.strokes.length} strokes)`;
+   btn.onclick = () => switchFolio(idx);
+   folioTabs.appendChild(btn);
+  });
+ }
+
+ function switchFolio(idx) {
+  if (idx < 0 || idx >= folios.length) return;
+  activeFolioIndex = idx;
+  redoStack = [];
+  renderFolioTabs();
+  redraw();
+  saveState();
+ }
+
+ function addNewFolio() {
+  const newIndex = folios.length;
+  folios.push({
+   id: newIndex,
+   title: String(newIndex),
+   strokes: []
+  });
+  switchFolio(newIndex);
+ }
+
+ async function saveState() {
   try {
    const req = indexedDB.open(DB_NAME, 1);
    req.onsuccess = () => {
     const d = req.result;
     if (!d.objectStoreNames.contains(INK_STORE)) return;
     const tx = d.transaction(INK_STORE, 'readwrite').objectStore(INK_STORE);
-    tx.put({ bookId: PAGE_KEY, strokes, updatedAt: Date.now() });
+    tx.put({ bookId: FOLIO_STORAGE_KEY, folios, activeFolioIndex, updatedAt: Date.now() });
    };
   } catch (err) {
-   localStorage.setItem('htmlarts_page_ink', JSON.stringify(strokes));
+   localStorage.setItem(FOLIO_STORAGE_KEY, JSON.stringify({ folios, activeFolioIndex }));
   }
  }
 
- async function loadPageInk() {
+ async function loadState() {
   try {
    const req = indexedDB.open(DB_NAME, 1);
    req.onsuccess = () => {
     const d = req.result;
     if (!d.objectStoreNames.contains(INK_STORE)) return;
     const tx = d.transaction(INK_STORE, 'readonly').objectStore(INK_STORE);
-    const q = tx.get(PAGE_KEY);
+    const q = tx.get(FOLIO_STORAGE_KEY);
     q.onsuccess = () => {
-     if (q.result && Array.isArray(q.result.strokes)) {
-      strokes = q.result.strokes;
+     if (q.result && Array.isArray(q.result.folios) && q.result.folios.length) {
+      folios = q.result.folios;
+      activeFolioIndex = Math.min(q.result.activeFolioIndex || 0, folios.length - 1);
+      renderFolioTabs();
       redraw();
+     } else {
+      renderFolioTabs();
      }
     };
    };
   } catch (err) {
-   const cached = localStorage.getItem('htmlarts_page_ink');
-   if (cached) strokes = JSON.parse(cached);
+   const cached = localStorage.getItem(FOLIO_STORAGE_KEY);
+   if (cached) {
+    const parsed = JSON.parse(cached);
+    if (parsed.folios) folios = parsed.folios;
+    activeFolioIndex = parsed.activeFolioIndex || 0;
+   }
+   renderFolioTabs();
    redraw();
   }
  }
 
- function updatePenState() {
-  canvas.classList.toggle('pen-active', penActive);
-  dockPenToggle.classList.toggle('active', penActive);
-  dockPenStatus.textContent = penActive ? 'Pen On' : 'Pen Off';
-  if (!penActive) infographicCard.classList.remove('open');
- }
-
- dockPenToggle.addEventListener('click', () => {
+ function togglePen() {
   penActive = !penActive;
-  updatePenState();
- });
-
- function setTool(t) {
-  currentTool = t;
-  penTool.classList.toggle('active', t === 'pen');
-  chiselTool.classList.toggle('active', t === 'chisel');
-  eraserTool.classList.toggle('active', t === 'eraser');
-  if (!penActive) {
-   penActive = true;
-   updatePenState();
-  }
+  canvas.classList.toggle('pen-active', penActive);
+  masterNibBtn.classList.toggle('pen-resting', !penActive);
+  masterNibLabel.textContent = penActive ? 'Nib (Active)' : 'Nib (Resting)';
  }
 
- penTool.addEventListener('click', () => setTool('pen'));
- chiselTool.addEventListener('click', () => setTool('chisel'));
- eraserTool.addEventListener('click', () => setTool('eraser'));
+ masterNibBtn.addEventListener('click', togglePen);
+ btnAddFolio.addEventListener('click', addNewFolio);
 
  inkDrops.forEach(drop => {
   drop.addEventListener('click', () => {
    inkDrops.forEach(d => d.classList.remove('active'));
    drop.classList.add('active');
    currentColor = drop.dataset.color;
-   if (currentTool === 'eraser') setTool('pen');
    if (!penActive) {
     penActive = true;
-    updatePenState();
+    togglePen();
    }
   });
  });
 
- btnInfographic.addEventListener('click', () => {
-  infographicCard.classList.toggle('open');
- });
- closeInfographic.addEventListener('click', () => {
-  infographicCard.classList.remove('open');
- });
-
- undoTool.addEventListener('click', async () => {
-  if (strokes.length) {
-   redoStack.push(strokes.pop());
+ btnUndo.addEventListener('click', async () => {
+  const currentStrokes = folios[activeFolioIndex]?.strokes;
+  if (currentStrokes && currentStrokes.length) {
+   redoStack.push(currentStrokes.pop());
    redraw();
-   await savePageInk();
+   await saveState();
   }
  });
 
- clearTool.addEventListener('click', async () => {
-  if (confirm('Blot all ink drawings on this page?')) {
-   strokes = [];
+ btnRedo.addEventListener('click', async () => {
+  const currentStrokes = folios[activeFolioIndex]?.strokes;
+  if (redoStack.length && currentStrokes) {
+   currentStrokes.push(redoStack.pop());
+   redraw();
+   await saveState();
+  }
+ });
+
+ btnClear.addEventListener('click', async () => {
+  if (confirm(`Clear all ink drawings on Folio ${folios[activeFolioIndex].title}?`)) {
+   folios[activeFolioIndex].strokes = [];
    redoStack = [];
    redraw();
-   await savePageInk();
+   await saveState();
   }
+ });
+
+ // Download Notes as PNG
+ btnDownload.addEventListener('click', () => {
+  const currentStrokes = folios[activeFolioIndex]?.strokes || [];
+  if (!currentStrokes.length) {
+   alert('Folio is blank. Draw some notes before downloading.');
+   return;
+  }
+  const link = document.createElement('a');
+  link.download = `HtmlArts-Folio-${folios[activeFolioIndex].title}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
  });
 
  canvas.addEventListener('pointerdown', e => {
   if (!penActive) return;
   canvas.setPointerCapture(e.pointerId);
   activeDrawing = {
-   tool: currentTool,
    color: currentColor,
    points: [point(e)]
   };
@@ -860,10 +984,12 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  const finishStroke = async () => {
   if (!activeDrawing) return;
-  strokes.push(activeDrawing);
+  if (!folios[activeFolioIndex]) folios[activeFolioIndex] = { id: activeFolioIndex, title: String(activeFolioIndex), strokes: [] };
+  folios[activeFolioIndex].strokes.push(activeDrawing);
   activeDrawing = null;
   redoStack = [];
-  await savePageInk();
+  renderFolioTabs();
+  await saveState();
  };
 
  canvas.addEventListener('pointerup', finishStroke);
@@ -871,64 +997,14 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  window.addEventListener('resize', resizeCanvas);
  window.addEventListener('load', () => {
-  updatePenState();
+  canvas.classList.add('pen-active');
   resizeCanvas();
-  loadPageInk();
+  loadState();
  });
 
- /* --- Intercept Page Navigation when ink is present --- */
- function promptSaveLayer(targetPageId) {
-  pendingPageNav = targetPageId;
-  saveModal.classList.add('open');
- }
-
- function proceedNavigation() {
-  saveModal.classList.remove('open');
-  if (pendingPageNav) {
-   const target = pendingPageNav;
-   pendingPageNav = null;
-   if (typeof window.originalShowPage === 'function') {
-    window.originalShowPage(target);
-   }
-   setTimeout(resizeCanvas, 150);
-  }
- }
-
- closeSave.onclick = () => saveModal.classList.remove('open');
-
- btnDiscard.onclick = async () => {
-  strokes = [];
-  redoStack = [];
-  redraw();
-  await savePageInk();
-  proceedNavigation();
- };
-
- btnKeep.onclick = () => {
-  proceedNavigation();
- };
-
- btnCreate.onclick = () => {
-  saveModal.classList.remove('open');
-  // Trigger Create Book modal prefilled with Page Ink Notebook
-  const titleInput = document.getElementById('newBookTitle');
-  if (titleInput) titleInput.value = 'Ink Notes ' + new Date().toLocaleDateString();
-  const createModal = document.getElementById('createModal');
-  if (createModal) createModal.classList.add('open');
- };
-
- // Wrap showPage to intercept navigation when ink exists
- const originalShow = window.showPage;
- window.originalShowPage = originalShow;
- window.showPage = function(targetId) {
-  const currentActive = document.querySelector('.page.active')?.id;
-  if (strokes.length > 0 && currentActive && currentActive !== targetId) {
-   promptSaveLayer(targetId);
-   return;
-  }
-  originalShow(targetId);
-  setTimeout(resizeCanvas, 120);
- };
+ document.querySelectorAll('[data-page], [data-go], .brand').forEach(el => {
+  el.addEventListener('click', () => setTimeout(resizeCanvas, 120));
+ });
 })();
 </script>
 
