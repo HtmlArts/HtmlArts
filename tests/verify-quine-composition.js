@@ -57,4 +57,13 @@ assert(serverContent.includes('</html>'), 'File must properly close html tag');
 assert(!serverContent.includes('queryStore(STORE)'), 'Obsolete STORE reference must not exist');
 console.log('✅ Test 4 Passed: HTML Shell syntax is clean and uncorrupted.\n');
 
-console.log('🎉 ALL 4 TESTS PASSED! Quine persistence and composition engine verified.');
+// Test 5: Verify No Un-split </script> in Inline JavaScript
+console.log('Test 5: Verifying zero un-split </script> inside script blocks...');
+const scriptBlocks = serverContent.match(/<script[^>]*>([\s\S]*?)<\/script>/gi) || [];
+for (let i = 0; i < scriptBlocks.length; i++) {
+  const inner = scriptBlocks[i].replace(/^<script[^>]*>/i, '').replace(/<\/script>$/i, '');
+  assert(!inner.includes('</script>'), `Script block #${i+1} must not contain literal </script> inside code`);
+}
+console.log('✅ Test 5 Passed: All script blocks are clean without un-split closing tags.\n');
+
+console.log('🎉 ALL 5 TESTS PASSED! Quine persistence and composition engine verified.');

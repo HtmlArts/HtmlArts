@@ -4,6 +4,7 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#805b3d">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="HtmlArts">
@@ -700,7 +701,7 @@
 </div>
 <!-- Transparent Drawing Layer over entire document -->
 <canvas id="pageInkCanvas" aria-label="Transparent drawing screen"></canvas>
-<div class="reader-overlay" id="readerOverlay" aria-label="HtmlArts reading workspace"><div class="reader-bar"><div><b id="readerBookTitle">Reading</b><small>HtmlArts Server · client-hosted reader</small></div><div class="reader-tools"><button class="reader-tool" id="readerDownloadBook" title="Download active book as HTML file">↓ Download as HtmlArts.html</button><button class="reader-tool" id="readerClose" title="Close reader">✕ Close</button></div></div><div class="reader-stage"><iframe id="readerFrame" title="HtmlArts Client Reader" sandbox="allow-scripts allow-forms allow-same-origin allow-popups"></iframe></div><div class="reader-status" id="readerStatus">Ready</div></div>
+<div class="reader-overlay" id="readerOverlay" aria-label="HtmlArts reading workspace"><div class="reader-bar"><div><b id="readerBookTitle">Reading</b><small>HtmlArts Server · client-hosted reader</small></div><div class="reader-tools"><button class="reader-tool" id="readerDownloadBook" title="Download active book as HTML file">↓ Download as HtmlArts.html</button><button class="reader-tool" id="readerClose" title="Close reader">✕ Close</button></div></div><div class="reader-stage"><iframe id="readerFrame" title="HtmlArts Client Reader" sandbox="allow-scripts allow-forms allow-popups"></iframe></div><div class="reader-status" id="readerStatus">Ready</div></div>
 <div class="toast" id="toast" role="status"></div>
 <script>
 
@@ -1878,13 +1879,16 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
     // Clean up any previously injected bundles or templates
     currentHtml = currentHtml.replace(/<template id="EMBEDDED_CLIENT_SOURCE">[\s\S]*?<\/template>/gi, '');
-    currentHtml = currentHtml.replace(/<script id="EMBEDDED_LIBRARY_DATA"[\s\S]*?<\/script>/gi, '');
-    currentHtml = currentHtml.replace(/<script id="LOCAL_JSON"[\s\S]*?<\/script>/gi, '');
-    currentHtml = currentHtml.replace(/<script[^>]*>\s*\/\* Self-Extracting Hydration on First Run \*\/[\s\S]*?<\/script>/gi, '');
+    currentHtml = currentHtml.replace(new RegExp('<scr' + 'ipt id="EMBEDDED_LIBRARY_DATA"[\\s\\S]*?<\\/scr' + 'ipt>', 'gi'), '');
+    currentHtml = currentHtml.replace(new RegExp('<scr' + 'ipt id="LOCAL_JSON"[\\s\\S]*?<\\/scr' + 'ipt>', 'gi'), '');
+    currentHtml = currentHtml.replace(new RegExp('<scr' + 'ipt[^>]*>\\s*\\/\\* Self-Extracting Hydration on First Run \\*\\/[\\s\\S]*?<\\/scr' + 'ipt>', 'gi'), '');
 
     // Critical: JSON-safe escaping of '<' as '\u003c' so browser HTML parser NEVER prematurely terminates the script tag
     const safePayloadJson = JSON.stringify(bundlePayload).replace(/</g, '\\u003c');
-    const payloadTag = '\n<script id="LOCAL_JSON" type="application/json">' + safePayloadJson + '</script>\n<script id="EMBEDDED_LIBRARY_DATA" type="application/json">' + safePayloadJson + '</script>\n';
+    const sClose = '</scr' + 'ipt>\n';
+    const sOpenLocal = '<scr' + 'ipt id="LOCAL_JSON" type="application/json">';
+    const sOpenEmb = '<scr' + 'ipt id="EMBEDDED_LIBRARY_DATA" type="application/json">';
+    const payloadTag = '\n' + sOpenLocal + safePayloadJson + sClose + sOpenEmb + safePayloadJson + sClose;
 
     const compiledFile = '<!DOCTYPE html>\n' + currentHtml.replace('</body>', payloadTag + '</body>');
     const blob = new Blob([compiledFile], { type: 'text/html;charset=utf-8' });
