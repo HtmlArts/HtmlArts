@@ -93,22 +93,23 @@
 .pen-dock {
   position: fixed;
   bottom: 24px;
-  right: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   z-index: 45;
   background: rgba(251, 248, 241, 0.98);
   backdrop-filter: blur(12px);
   border: 1.5px solid var(--line);
   box-shadow: 0 16px 40px rgba(58, 42, 26, 0.14);
   border-radius: 26px;
-  padding: 8px 14px;
-  display: none;
+  padding: 8px 16px;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   animation: drop .2s ease-out;
   user-select: none;
-}
-.pen-dock.show {
-  display: flex;
+  max-width: 95vw;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 .pen-dock button {
   border: 1px solid var(--line);
@@ -160,7 +161,8 @@
 .infographic-pen-modal {
   position: fixed;
   bottom: 84px;
-  right: 24px;
+  left: 50%;
+  transform: translateX(-50%);
   width: 320px;
   background: #fffdf8;
   border: 1.5px solid var(--line);
@@ -222,7 +224,7 @@
   <button data-page="studio" aria-label="Design Studio" title="Design Studio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.8-.8 4 4-.8L19.8 7.4a2.1 2.1 0 0 0-3-3L4 16.8Z"/><path d="m14.9 6.3 3 3"/></svg></button>
   <button data-page="analytics" aria-label="Analytics" title="Analytics"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5h18"/><rect x="5" y="11" width="3.5" height="9.5" rx="1"/><rect x="10.3" y="6.5" width="3.5" height="14" rx="1"/><rect x="15.6" y="3" width="3.5" height="17.5" rx="1"/></svg></button>
 </nav>
- <span class="top-spacer"></span><button class="pen-toggle-btn" id="pagePenToggle" aria-label="Toggle writing pen on page" title="Write or sketch directly on the page"><span style="font-size:14px">✎</span> <span id="penToggleText">Pen Off</span></button><label class="search"><span>⌕</span><input id="globalSearch" placeholder="Search books, templates..." aria-label="Search library"></label>
+ <span class="top-spacer"></span><label class="search"><span>⌕</span><input id="globalSearch" placeholder="Search books, templates..." aria-label="Search library"></label>
  <button class="soft-btn" id="ingestBook">＋ Ingest HTML</button>
  <div class="vault-wrap"><button class="vault-trigger" id="vaultTrigger" aria-expanded="false">Vault⌄</button><div class="vault-menu" id="vaultMenu" role="menu">
   <button data-vault="IndexDB Dashboard"><span>▤</span><span>IndexDB Dashboard<small>Local storage overview</small></span></button><button data-vault="Trends"><span>⌁</span><span>Trends<small>Reading and library activity</small></span></button><button data-vault="Workspace"><span>▣</span><span>Workspace<small>Your local working area</small></span></button><button data-vault="Assets"><span>▧</span><span>Assets<small>Images and media collection</small></span></button>
@@ -263,6 +265,21 @@
 <section class="page" id="templates"><div class="page-title"><div><div class="eyebrow">A starting point, not a limitation</div><h1>Page Templates</h1><p>Visual directions for expressive HTML pages.</p></div><button class="primary" id="createBook">＋ Create Book</button></div><div class="book-grid" id="templateGrid"></div><p class="lead" style="margin-top:18px">Choose a page style to start a new HTML book. Templates are editable after creation.</p></section>
 <section class="page" id="studio"><div class="page-title"><div><div class="eyebrow">Make a page your own</div><h1>Design Studio</h1><p>A calm space for arranging content, visuals and page structure.</p></div><button class="primary" id="studioCreate">＋ Create Book</button></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">＋</span><div><b>New composition</b><small>Start with a blank page</small></div></div><div class="feature"><span class="feature-icon">▧</span><div><b>Media placement</b><small>Arrange local images and art</small></div></div><div class="feature"><span class="feature-icon">⌘</span><div><b>Page components</b><small>Build reusable sections</small></div></div></div><p class="lead">The studio workspace is reserved for Stage 2. This foundation keeps its place in the navigation without pretending the editor is already connected.</p></section>
 <section class="page" id="analytics"><div class="page-title"><div><div class="eyebrow">Your library, at a glance</div><h1>Analytics</h1><p>Simple local-library indicators.</p></div></div><div class="feature-row" style="grid-template-columns:repeat(3,1fr)"><div class="feature"><span class="feature-icon">▤</span><div><b id="bookMetric">8</b><small>Sample catalog items</small></div></div><div class="feature"><span class="feature-icon">◷</span><div><b>Local first</b><small>No account required</small></div></div><div class="feature"><span class="feature-icon">♡</span><div><b>Private by design</b><small>Browser-based foundation</small></div></div></div><p class="lead">Detailed reading trends and IndexedDB diagnostics will be added with the Vault implementation in Stage 3.</p></section>
+
+<!-- Prompt Modal: Create New Tab/Book from Transparent Layer -->
+<div class="modal-backdrop" id="saveLayerModal" role="dialog" aria-modal="true" aria-labelledby="saveLayerTitle">
+ <div class="modal" style="max-width:440px">
+  <button class="close" id="closeSaveLayer" aria-label="Close">×</button>
+  <div class="eyebrow">Preserve Your Page Ink</div>
+  <h2 id="saveLayerTitle">Create a new book?</h2>
+  <p>You have handwritten drawings on this page. Would you like to save them into a new HTML book tab or clear the slate?</p>
+  <div class="modal-actions" style="margin-top:22px;gap:8px;flex-wrap:wrap">
+   <button class="soft-btn" id="btnDiscardLayer">Clear Slate</button>
+   <button class="soft-btn" id="btnKeepLayer">Keep on Page</button>
+   <button class="primary" id="btnCreateFromLayer">＋ Create New Book</button>
+  </div>
+ </div>
+</div>
 </main>
 <footer class="shell footer"><span>HtmlArts · A local book store of HTML books · <button class="about-link" id="aboutBtn" style="padding:0;text-decoration:underline;cursor:pointer;font-size:inherit">@About</button></span><span>Designed with a little ink and a lot of care · <a href="#home" data-go="home">Back to top ↑</a></span></footer>
 <div class="modal-backdrop" id="aboutModal" role="dialog" aria-modal="true" aria-labelledby="aboutTitle"><div class="modal"><button class="close" id="closeAbout" aria-label="Close">×</button><div class="eyebrow">A note about this place</div><h2 id="aboutTitle">Welcome to HtmlArts.</h2><p>HtmlArts is a local-first library for reading, creating and collecting self-contained HTML books. It brings books, visual page styles and a quiet writing space into one thoughtful interface.</p><div class="about-list"><div><b>Local by nature</b>Designed to work from your own files and browser.</div><div><b>Open format</b>Books remain portable HTML documents.</div><div><b>Reader first</b>Simple navigation and a distraction-light surface.</div><div><b>Made to grow</b>Creation, annotation and library tools arrive in stages.</div></div><p class="about-license">GNU AGPLv3 <span aria-hidden="true">·</span> Open-source software</p></div></div>
@@ -272,6 +289,7 @@
 <!-- Transparent Drawing Layer over entire document -->
 <canvas id="pageInkCanvas" aria-label="Transparent drawing screen"></canvas>
 <div class="pen-dock" id="pagePenToolbar" role="toolbar" aria-label="Classic Pen Station">
+ <button id="dockPenToggle" class="active" title="Toggle Writing on Page"><span>✎</span> <b id="dockPenStatus">Pen On</b></button>
  <button id="btnInfographic" title="Inspect Fountain Pen Anatomy">🖋️ Anatomy</button>
  <button id="pagePenTool" class="active" title="Vintage Fountain Pen">Nib</button>
  <button id="pageChiselTool" title="Calligraphy Italic Stub">Chisel</button>
@@ -601,9 +619,9 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  const DB_NAME = 'htmlarts-local-library', INK_STORE = 'annotations', PAGE_KEY = '__homepage_ink__';
  const canvas = document.getElementById('pageInkCanvas');
  const ctx = canvas.getContext('2d', { alpha: true });
- const toggleBtn = document.getElementById('pagePenToggle');
- const toggleText = document.getElementById('penToggleText');
  const dock = document.getElementById('pagePenToolbar');
+ const dockPenToggle = document.getElementById('dockPenToggle');
+ const dockPenStatus = document.getElementById('dockPenStatus');
  const penTool = document.getElementById('pagePenTool');
  const chiselTool = document.getElementById('pageChiselTool');
  const eraserTool = document.getElementById('pageEraserTool');
@@ -614,12 +632,20 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
  const closeInfographic = document.getElementById('closeInfographic');
  const inkDrops = document.querySelectorAll('.ink-drop');
 
- let penActive = false;
+ // Modal elements
+ const saveModal = document.getElementById('saveLayerModal');
+ const closeSave = document.getElementById('closeSaveLayer');
+ const btnDiscard = document.getElementById('btnDiscardLayer');
+ const btnKeep = document.getElementById('btnKeepLayer');
+ const btnCreate = document.getElementById('btnCreateFromLayer');
+
+ let penActive = true; // Pen active by default
  let currentTool = 'pen';
  let currentColor = '#261a12';
  let strokes = [];
  let redoStack = [];
  let activeDrawing = null;
+ let pendingPageNav = null;
 
  function resizeCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -749,23 +775,27 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   }
  }
 
- function togglePen() {
-  penActive = !penActive;
+ function updatePenState() {
   canvas.classList.toggle('pen-active', penActive);
-  toggleBtn.classList.toggle('active', penActive);
-  toggleText.textContent = penActive ? 'Pen On' : 'Pen Off';
-  dock.classList.toggle('show', penActive);
+  dockPenToggle.classList.toggle('active', penActive);
+  dockPenStatus.textContent = penActive ? 'Pen On' : 'Pen Off';
   if (!penActive) infographicCard.classList.remove('open');
-  resizeCanvas();
  }
 
- toggleBtn.addEventListener('click', togglePen);
+ dockPenToggle.addEventListener('click', () => {
+  penActive = !penActive;
+  updatePenState();
+ });
 
  function setTool(t) {
   currentTool = t;
   penTool.classList.toggle('active', t === 'pen');
   chiselTool.classList.toggle('active', t === 'chisel');
   eraserTool.classList.toggle('active', t === 'eraser');
+  if (!penActive) {
+   penActive = true;
+   updatePenState();
+  }
  }
 
  penTool.addEventListener('click', () => setTool('pen'));
@@ -778,6 +808,10 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
    drop.classList.add('active');
    currentColor = drop.dataset.color;
    if (currentTool === 'eraser') setTool('pen');
+   if (!penActive) {
+    penActive = true;
+    updatePenState();
+   }
   });
  });
 
@@ -837,13 +871,64 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
 
  window.addEventListener('resize', resizeCanvas);
  window.addEventListener('load', () => {
+  updatePenState();
   resizeCanvas();
   loadPageInk();
  });
 
- document.querySelectorAll('[data-page], [data-go], .brand').forEach(el => {
-  el.addEventListener('click', () => setTimeout(resizeCanvas, 120));
- });
+ /* --- Intercept Page Navigation when ink is present --- */
+ function promptSaveLayer(targetPageId) {
+  pendingPageNav = targetPageId;
+  saveModal.classList.add('open');
+ }
+
+ function proceedNavigation() {
+  saveModal.classList.remove('open');
+  if (pendingPageNav) {
+   const target = pendingPageNav;
+   pendingPageNav = null;
+   if (typeof window.originalShowPage === 'function') {
+    window.originalShowPage(target);
+   }
+   setTimeout(resizeCanvas, 150);
+  }
+ }
+
+ closeSave.onclick = () => saveModal.classList.remove('open');
+
+ btnDiscard.onclick = async () => {
+  strokes = [];
+  redoStack = [];
+  redraw();
+  await savePageInk();
+  proceedNavigation();
+ };
+
+ btnKeep.onclick = () => {
+  proceedNavigation();
+ };
+
+ btnCreate.onclick = () => {
+  saveModal.classList.remove('open');
+  // Trigger Create Book modal prefilled with Page Ink Notebook
+  const titleInput = document.getElementById('newBookTitle');
+  if (titleInput) titleInput.value = 'Ink Notes ' + new Date().toLocaleDateString();
+  const createModal = document.getElementById('createModal');
+  if (createModal) createModal.classList.add('open');
+ };
+
+ // Wrap showPage to intercept navigation when ink exists
+ const originalShow = window.showPage;
+ window.originalShowPage = originalShow;
+ window.showPage = function(targetId) {
+  const currentActive = document.querySelector('.page.active')?.id;
+  if (strokes.length > 0 && currentActive && currentActive !== targetId) {
+   promptSaveLayer(targetId);
+   return;
+  }
+  originalShow(targetId);
+  setTimeout(resizeCanvas, 120);
+ };
 })();
 </script>
 
