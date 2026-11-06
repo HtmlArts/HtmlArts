@@ -37,16 +37,19 @@ assert(serverContent.includes('isStructuredBook'), 'HtmlArtsServer.html must det
 assert(serverContent.includes('colorMatch'), 'HtmlArtsServer.html must extract theme-color/accent for cover rendering');
 console.log('✅ Test 3 Passed: Structured book detection preserves full HTML, CSS, and SVG fidelity.');
 
-// Test 4: Check Unified Minimalist Header & Reader Controls
-console.log('\nTest 4: Verifying Unified Master Header, Pan, Index, Back to Catalog, and Pen Station...');
+// Test 4: Check Unified Minimalist Header & Book-Level Controls
+console.log('\nTest 4: Verifying Unified Master Header, Book-Level Index, Back Icon, and Pen Station...');
 const clientContent = fs.readFileSync(clientPath, 'utf8');
-assert(clientContent.includes('id="btnBackToCatalog"'), 'Master header must have Back to Catalog button');
-assert(clientContent.includes('id="tocToggleBtn"'), 'Master header must have Index button');
-assert(clientContent.includes('id="btnPan"'), 'Master header must have Pan gesture toggle');
+assert(clientContent.includes('id="btnBackToCatalog"'), 'Master header must have Back icon button');
+assert(clientContent.includes('HtmlBook'), 'Master header left must display HtmlBook brand and book title');
+assert(clientContent.includes('id="tocToggleBtn"'), 'Must have Index button aligned at book level');
+assert(clientContent.includes('book-level-bar'), 'Must have book-level bar container');
+assert(!clientContent.includes('id="btnPan"'), 'Pan button must be removed from master header as requested');
+assert(!clientContent.includes('id="btnClose"'), 'Redundant close button must be removed from master header as requested');
 assert(clientContent.includes('id="btnPen"'), 'Master header must have Pen annotation toggle');
 assert(clientContent.includes('footer-pen-station'), 'Must incorporate main page footer-pen-station');
 assert(clientContent.includes('id="tocDrawer"'), 'Must have slide-in Table of Contents drawer');
 assert(serverContent.includes('sandbox="allow-scripts'), 'HtmlArtsServer must sandbox readerFrame with allow-scripts');
-console.log('✅ Test 4 Passed: Unified minimalist master header, Back to Catalog, Index, Pan, and Pen Station verified.');
+console.log('✅ Test 4 Passed: Back icon, <HtmlBook | Book name, Book-level Index, and Pen Station verified.');
 
 console.log('\n🎉 ALL 4 BOOKSERVER TESTS PASSED! Book-01.html is ready for manual ingestion & test.');

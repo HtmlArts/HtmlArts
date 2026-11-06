@@ -134,82 +134,132 @@ body {
   gap: 8px;
 }
 
-/* Back to Catalog Button */
-.btn-catalog {
+/* Sleek Back Icon Button */
+.btn-back-circle {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--paper-bg);
+  color: var(--brown);
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 15px;
-  border-radius: 20px;
-  background: #fffaf1;
-  border: 1px solid #d7c7ae;
-  color: var(--brown);
-  font: 800 12px var(--sans);
+  justify-content: center;
   cursor: pointer;
-  letter-spacing: .02em;
-  transition: background .18s, border-color .18s, transform .15s;
-  box-shadow: 0 2px 4px rgba(74, 53, 32, 0.04);
+  transition: all .18s ease;
+  box-shadow: 0 1px 3px rgba(74, 53, 32, 0.04);
 }
-.btn-catalog:hover {
+.btn-back-circle:hover {
   background: #f0e4ce;
   border-color: var(--brown2);
-  transform: translateY(-1px);
+  transform: translateX(-2px);
 }
-.btn-catalog:active {
-  transform: scale(0.96);
-}
-
-/* Table of Contents Index Button */
-.btn-index {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 14px;
-  border-radius: 20px;
-  background: var(--paper2);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  font: 800 12px var(--sans);
-  cursor: pointer;
-  transition: background .18s, color .18s;
-}
-.btn-index:hover {
-  background: #ede3d2;
-  color: var(--brown);
-}
-.btn-index:active {
-  transform: scale(0.96);
+.btn-back-circle:active {
+  transform: scale(0.94);
 }
 
 .header-sep {
-  width: 1px;
-  height: 20px;
-  background: var(--line);
+  color: #c9bea9;
+  font: 300 15px var(--sans);
   margin: 0 4px;
+  user-select: none;
 }
 
-.book-title-meta {
-  display: flex;
+.header-brand-title {
+  font: 800 15px var(--sans);
+  color: var(--brown);
+  letter-spacing: -.02em;
+  display: inline-flex;
   align-items: center;
-  gap: 9px;
 }
+
 #bookTitle {
-  font: 700 17px var(--serif);
+  font: 600 16px var(--serif);
   color: var(--ink);
   letter-spacing: -.02em;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: clamp(140px, 24vw, 340px);
+  max-width: clamp(140px, 35vw, 420px);
 }
-#bookBadge {
-  font: 600 10px var(--hand);
-  padding: 3px 8px;
-  border-radius: 12px;
-  background: var(--paper2);
+
+/* Book-Level Aligned Navigation Bar */
+.book-viewport-wrap {
+  position: relative;
+  max-width: 1040px;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  gap: 10px;
+}
+
+.book-level-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2px;
+  flex-shrink: 0;
+  height: 28px;
+}
+
+.btn-book-index {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 14px;
+  border-radius: 16px;
+  background: var(--paper-bg);
   border: 1px solid var(--line);
   color: var(--brown);
-  white-space: nowrap;
+  font: 800 11px var(--sans);
+  cursor: pointer;
+  letter-spacing: .02em;
+  transition: all .18s ease;
+  box-shadow: 0 1px 3px rgba(74, 53, 32, 0.05);
+}
+.btn-book-index:hover {
+  background: #ede3d2;
+  border-color: var(--brown2);
+  transform: translateY(-1px);
+}
+.btn-book-index:active {
+  transform: scale(0.96);
+}
+.btn-book-index svg {
+  width: 14px;
+  height: 14px;
+}
+
+.book-level-folio-badge {
+  font: 700 10px var(--mono);
+  padding: 3px 9px;
+  border-radius: 12px;
+  background: var(--paper-bg);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.folio-inline-index-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 12px;
+  background: var(--paper-card);
+  border: 1px solid var(--paper-border);
+  color: var(--paper-accent);
+  font: 700 11px var(--sans);
+  cursor: pointer;
+  transition: all .15s ease;
+}
+.folio-inline-index-btn:hover {
+  background: var(--paper-border);
+  color: var(--ink);
 }
 
 .header-icon-btn {
@@ -398,9 +448,9 @@ body {
 
 .book-chassis {
   position: relative;
-  max-width: 1040px;
   width: 100%;
-  height: 100%;
+  flex: 1;
+  min-height: 0;
   border-radius: 6px 16px 16px 6px;
   box-shadow: 0 32px 80px rgba(74, 53, 32, 0.16), 0 4px 18px rgba(74, 53, 32, 0.08);
   transform-style: preserve-3d;
@@ -815,44 +865,24 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
   <!-- ======================================================== -->
   <header id="siteHeader">
     <div class="header-left">
-      <!-- Prominent "← Catalog" Back Button -->
-      <button class="btn-catalog" id="btnBackToCatalog" title="Back to Library Catalog Shelf">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" style="width:14px;height:14px">
+      <!-- Sleek Back Icon Button (Replaces "Catalog" text) -->
+      <button class="btn-back-circle" id="btnBackToCatalog" title="Back to Library Catalog Shelf">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" style="width:18px;height:18px">
           <polyline points="15 18 9 12 15 6"/>
         </svg>
-        <span>Catalog</span>
       </button>
 
-      <!-- Table of Contents Chapter Index Trigger -->
-      <button class="btn-index" id="tocToggleBtn" title="Open Chapter Index (I)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:15px;height:15px">
-          <line x1="3" y1="6" x2="21" y2="6"/>
-          <line x1="3" y1="12" x2="15" y2="12"/>
-          <line x1="3" y1="18" x2="18" y2="18"/>
-        </svg>
-        <span>Index</span>
-      </button>
+      <span class="header-sep">|</span>
 
-      <div class="header-sep"></div>
+      <!-- Brand and Book Title: <HtmlBook | Book name -->
+      <span class="header-brand-title">&lt;HtmlBook</span>
 
-      <!-- Book Brand & Title -->
-      <div class="book-title-meta">
-        <span id="bookTitle">Loading Book...</span>
-        <span id="bookBadge">v2.1</span>
-      </div>
+      <span class="header-sep">|</span>
+
+      <span id="bookTitle">Loading Book...</span>
     </div>
 
     <div class="header-right">
-      <!-- Pan Gesture Toggle -->
-      <button class="header-icon-btn" id="btnPan" title="Toggle Pan & Drag Mode (H)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M18 11V6a2 2 0 0 0-4 0v5"/>
-          <path d="M14 10V4a2 2 0 0 0-4 0v7"/>
-          <path d="M10 10.5V6a2 2 0 0 0-4 0v8"/>
-          <path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-5.7-2.3L3.5 16.5a1.5 1.5 0 0 1 2.3-1.9L8 16"/>
-        </svg>
-      </button>
-
       <!-- Digital Pen Toggle (Opens Main Page Pen Station) -->
       <button class="header-icon-btn" id="btnPen" title="Toggle Handwriting Pen & Ink Station (P)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -897,16 +927,6 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
           <line x1="12" y1="15" x2="12" y2="3"/>
         </svg>
       </button>
-
-      <div class="header-sep"></div>
-
-      <!-- Close Reader Shell (Emits close event to parent) -->
-      <button class="header-icon-btn" id="btnClose" title="Close Reader (Esc)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="18" y1="6" x2="6" y2="18"/>
-          <line x1="6" y1="6" x2="18" y2="18"/>
-        </svg>
-      </button>
     </div>
   </header>
 
@@ -949,14 +969,32 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
   <!-- 3. MAIN BOOK STAGE (3D PAGINATED & CONTINUOUS MODES)     -->
   <!-- ======================================================== -->
   <main id="bookStage">
-    <div class="book-chassis" id="bookChassis">
-      <article class="page-sheet rest" id="activeBookPage">
-        <div class="gutter-crease"></div>
-        <div id="folioContentSlot" style="height:100%;display:flex;flex-direction:column">
-          <!-- Dynamic folio rendered here -->
+    <div class="book-viewport-wrap">
+      <!-- Book-Level Aligned Header Strip -->
+      <div class="book-level-bar" id="bookLevelBar">
+        <button class="btn-book-index" id="tocToggleBtn" title="Open Chapter Index (I)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <line x1="3" y1="6" x2="21" y2="6"/>
+            <line x1="3" y1="12" x2="15" y2="12"/>
+            <line x1="3" y1="18" x2="18" y2="18"/>
+          </svg>
+          <span>Index</span>
+        </button>
+
+        <div class="book-level-right">
+          <span class="book-level-folio-badge" id="bookBadge">24 Folios</span>
         </div>
-        <canvas id="pageInkCanvas"></canvas>
-      </article>
+      </div>
+
+      <div class="book-chassis" id="bookChassis">
+        <article class="page-sheet rest" id="activeBookPage">
+          <div class="gutter-crease"></div>
+          <div id="folioContentSlot" style="height:100%;display:flex;flex-direction:column">
+            <!-- Dynamic folio rendered here -->
+          </div>
+          <canvas id="pageInkCanvas"></canvas>
+        </article>
+      </div>
     </div>
 
     <!-- Floating Exit Zen Button -->
@@ -1175,6 +1213,8 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
     $('tocDrawer').classList.remove('open');
     $('tocBackdrop').classList.remove('open');
   }
+  window.openToc = openToc;
+  window.closeToc = closeToc;
 
   /* ── 3. Folio Renderer (Paginated 3D vs Continuous) ── */
   function renderFolioContent(folio, idx) {
@@ -1196,7 +1236,17 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
             <div class="folio-header-title">${escapeHtml(folio.title)}</div>
           </div>
         </div>
-        <div class="folio-header-count">${String(idx + 1).padStart(2, '0')} / ${folios.length}</div>
+        <div class="folio-header-right" style="display:flex;align-items:center;gap:12px">
+          <button class="folio-inline-index-btn" onclick="openToc()" title="Open Chapter Index (I)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:13px;height:13px">
+              <line x1="3" y1="6" x2="21" y2="6"/>
+              <line x1="3" y1="12" x2="15" y2="12"/>
+              <line x1="3" y1="18" x2="18" y2="18"/>
+            </svg>
+            <span>Index</span>
+          </button>
+          <div class="folio-header-count">${String(idx + 1).padStart(2, '0')} / ${folios.length}</div>
+        </div>
       </div>
       <div class="folio-body">
         ${folio.content}
@@ -1498,13 +1548,6 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
     link.click();
   };
 
-  // Pan Toggle
-  $('btnPan').onclick = () => {
-    isPanMode = !isPanMode;
-    $('btnPan').classList.toggle('active', isPanMode);
-    stage.classList.toggle('pan-mode', isPanMode);
-  };
-
   // Layout Mode Toggle
   $('btnMode').onclick = () => {
     if (readingMode === 'paginated') {
@@ -1552,15 +1595,6 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
     document.body.removeChild(a);
   };
 
-  // Close Reader
-  $('btnClose').onclick = () => {
-    if (isEmbedded) {
-      window.parent.postMessage({ type: 'HTMLARTS_EVENT', payload: { event: 'close' } }, '*');
-    } else {
-      window.location.href = './index.html#catalog';
-    }
-  };
-
   // Steppers
   $('btnFirstPage').onclick = () => jump(0, 'backward');
   $('btnLastPage').onclick = () => jump(folios.length - 1, 'forward');
@@ -1573,7 +1607,7 @@ body.zen-mode #btnExitZen { display: flex; align-items: center; gap: 6px; }
       if ($('tocDrawer').classList.contains('open')) closeToc();
       else if (penActive) setPenState(false);
       else if (document.body.classList.contains('zen-mode')) $('btnExitZen').click();
-      else $('btnClose').click();
+      else $('btnBackToCatalog').click();
     }
     if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') { e.preventDefault(); jump(curIndex + 1, 'forward'); }
     if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); jump(curIndex - 1, 'backward'); }
