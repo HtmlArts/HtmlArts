@@ -1056,15 +1056,42 @@ document.addEventListener('click',e=>{const c=e.target.closest('[data-book]');if
   for(const file of files){
    if(!/\.html?$/i.test(file.name)&&file.type!=='text/html')continue;
    const html=await file.text();
-   const title=file.name.replace(/\.html?$/i,'').replace(/[_-]+/g,' ');
-   // Synthesize multi-folio publication from raw HTML
-   const paginatedHtml = autoPaginateHtml(html, title);
+   let title=file.name.replace(/\.html?$/i,'').replace(/[_-]+/g,' ');
+
+   // Check if the HTML is already a self-contained, structured interactive book
+   const isStructuredBook = /class=["'][^"']*\b(stage|page|cover|book-index|folio)\b/i.test(html) || /<style[\s\S]*<\/style>/i.test(html);
+   
+   let category = 'Imported';
+   let color = '#805b3d';
+   let paginatedHtml = html;
+
+   if (isStructuredBook) {
+    // Extract title from <title> if present
+    const tm = html.match(/<title[^>]*>(.*?)<\/title>/i);
+    if (tm && tm[1]) {
+     const clean = tm[1].replace(/—.*$/,'').replace(/\(Sample.*?\)/i,'').trim();
+     if (clean) title = clean;
+    }
+    // Extract category and accent color if present
+    const catMatch = html.match(/meta\s+name=["']category["']\s+content=["']([^"']+)["']/i) || html.match(/class=["']meta["'][^>]*>[\s\S]*?<span>([^<]+)<\/span>/i);
+    if (catMatch && catMatch[1]) {
+     const cand = catMatch[1].split('/')[0].trim();
+     if (cand && cand.length < 24) category = cand;
+    }
+    const colorMatch = html.match(/name=["']theme-color["']\s+content=["']([^"']+)["']/i) || html.match(/--lime:\s*([^;]+);/i) || html.match(/--accent:\s*([^;]+);/i);
+    if (colorMatch && colorMatch[1]) color = colorMatch[1].trim();
+   } else {
+    // Synthesize multi-folio publication from raw unformatted HTML
+    paginatedHtml = autoPaginateHtml(html, title);
+   }
+
    await saveBook({
     id: id(),
     title,
-    category: 'Imported',
+    category,
     genre: 'Book',
     kind: 'import',
+    color,
     html: paginatedHtml,
     rawHtml: html,
     fileName: file.name,

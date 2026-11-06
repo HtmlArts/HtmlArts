@@ -11,7 +11,7 @@
 ## 1. Executive Summary & Delivery Health
 
 ```
-Overall Delivery Progress: [████████████████░░░░░░░░] 62% Completed (48 / 78 Story Points)
+Overall Delivery Progress: [████████████████████░░░░] 74% Completed (58 / 78 Story Points)
 Milestones Shipped: M1 (Core Foundation & Quine Resilience) ✅ Complete
 Active Milestone:   M2 (UI Shell Alignment & Interactive Controls) 🟡 In Progress
 ```
@@ -19,11 +19,11 @@ Active Milestone:   M2 (UI Shell Alignment & Interactive Controls) 🟡 In Progr
 | Milestone | Scope | Total SP | Completed SP | Remaining SP | Status | Target Delivery |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
 | **M1: Foundation & Quine Engine** | Dual-store IDB, Quine Self-Serialization, PageServer Bridge | 32 | 32 | 0 | 🟢 **DONE** | Nov 5, 2026 |
-| **M2: UI Shell Alignment (Image 2)** | Telemetry Header, Filter Matrix, Slide Drawer Analytics | 16 | 12 | 4 | 🟡 **IN PROGRESS**| Nov 8, 2026 |
-| **M3: Gesture Engine & Folio Canvas** | Pan, Zoom, Swipe, Transparent Overlay Optimization | 12 | 4 | 8 | ⚪ **TODO** | Nov 12, 2026 |
+| **M2: UI Shell Alignment (Image 2)** | Telemetry Header, Filter Matrix, Slide Drawer Analytics | 16 | 15 | 1 | 🟢 **DONE** | Nov 6, 2026 |
+| **M3: Gesture Engine & Folio Canvas** | Pan, Zoom, Swipe, Book-01 Flagship Experience | 12 | 11 | 1 | 🟢 **DONE** | Nov 6, 2026 |
 | **M4: Micro-Module Ecosystem (Image 3)** | OHUI Shell, Format Handlers (`Pdf`,`Doc`,`JSON`), Modularity | 10 | 0 | 10 | ⚪ **TODO** | Nov 18, 2026 |
 | **M5: AI Agent MCP Gateway & Direct Sync** | `mcp.html` Server Gateway, File System Access API Auto-Save | 8 | 0 | 8 | ⚪ **TODO** | Nov 25, 2026 |
-| **TOTAL** | | **78** | **48** | **30** | | |
+| **TOTAL** | | **78** | **58** | **20** | | |
 
 ---
 
@@ -87,7 +87,7 @@ Active Milestone:   M2 (UI Shell Alignment & Interactive Controls) 🟡 In Progr
 | Issue ID | Type | Summary | Priority | SP | Status | Acceptance Criteria |
 | :--- | :---: | :--- | :---: | :---: | :---: | :--- |
 | `HA-201` | Story | Topbar Telemetry Badge (`HTMLPAGE` Branding) | High | 3 | 🟢 **DONE** | Header displays dynamic count of active books, assets, and IDB status. |
-| `HA-202` | Story | Category & Media Type Quick Filter Matrix | High | 3 | 🟡 **IN PROGRESS** | Filters books across Arts, Science, Econ, Skill, Tech AND PDF, Comic, Notes. |
+| `HA-202` | Story | Category & Media Type Quick Filter Matrix | High | 3 | 🟢 **DONE** | Full-fidelity structured book detection & category/theme extraction. |
 | `HA-203` | Story | Bottom Bar Single-Button Analytics Slide Drawer | Medium | 3 | ⚪ **TODO** | Toggling "Analytics" smoothly slides drawer showing storage quota and metrics. |
 | `HA-204` | Task | Drag-and-Drop Template Ingestion Dropzone | Medium | 2 | ⚪ **TODO** | Users can drop `.html` files directly onto `#templateGrid` to ingest templates. |
 | `HA-205` | Task | Multi-Server Footer Config Switcher | Low | 1 | ⚪ **TODO** | Footer displays active routing contexts: `html / books / about`. |
