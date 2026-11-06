@@ -40,3 +40,7 @@ node_modules/
 .env.local
 .env.*.local
 *.local
+
+# Local PRDs and Architecture Docs (Kept locally on disk, not in git)
+HtmlArtsSoftwareBusinessPRD.md
+software-composition-and-html-type-ingestion.md
