@@ -37,11 +37,15 @@ assert(serverContent.includes('isStructuredBook'), 'HtmlArtsServer.html must det
 assert(serverContent.includes('colorMatch'), 'HtmlArtsServer.html must extract theme-color/accent for cover rendering');
 console.log('✅ Test 3 Passed: Structured book detection preserves full HTML, CSS, and SVG fidelity.');
 
-// Test 4: Check HtmlArtsClient.html bookFrame sandbox configuration
-console.log('\nTest 4: Verifying HtmlArtsClient.html iframe sandbox permissions...');
+// Test 4: Check Unified Minimalist Header & Reader Controls
+console.log('\nTest 4: Verifying Unified Master Header, Pan, Index, and TOC Drawer...');
 const clientContent = fs.readFileSync(clientPath, 'utf8');
-assert(clientContent.includes('sandbox="allow-scripts'), 'bookFrame must allow scripts for interactive books');
-assert(!clientContent.includes('allow-scripts allow-same-origin'), 'Must NOT combine allow-scripts and allow-same-origin (avoids sandbox escape warning)');
-console.log('✅ Test 4 Passed: Clean script execution sandbox verified without escape warnings.');
+assert(clientContent.includes('id="tocToggleBtn"'), 'Master header must have Index button');
+assert(clientContent.includes('id="btnPan"'), 'Master header must have Pan gesture toggle');
+assert(clientContent.includes('id="btnPen"'), 'Master header must have Pen annotation toggle');
+assert(clientContent.includes('id="tocDrawer"'), 'Must have slide-in Table of Contents drawer');
+assert(serverContent.includes('sandbox="allow-scripts'), 'HtmlArtsServer must sandbox readerFrame with allow-scripts');
+assert(!serverContent.includes('allow-scripts allow-same-origin'), 'Must avoid duplicate sandbox escape combination');
+console.log('✅ Test 4 Passed: Unified minimalist master header, Index, Pan, and TOC drawer verified.');
 
 console.log('\n🎉 ALL 4 BOOKSERVER TESTS PASSED! Book-01.html is ready for manual ingestion & test.');

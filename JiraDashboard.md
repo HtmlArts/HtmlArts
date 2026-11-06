@@ -11,19 +11,20 @@
 ## 1. Executive Summary & Delivery Health
 
 ```
-Overall Delivery Progress: [████████████████████░░░░] 74% Completed (58 / 78 Story Points)
+Overall Delivery Progress: [██████████████████████░░] 82% Completed (64 / 78 Story Points)
 Milestones Shipped: M1 (Core Foundation & Quine Resilience) ✅ Complete
-Active Milestone:   M2 (UI Shell Alignment & Interactive Controls) 🟡 In Progress
+                    M2 (UI Shell Alignment & Interactive Controls) ✅ Complete
+Active Milestone:   M3 (Gesture Engine & Folio Canvas) 🟡 In Progress
 ```
 
 | Milestone | Scope | Total SP | Completed SP | Remaining SP | Status | Target Delivery |
 | :--- | :--- | :---: | :---: | :---: | :---: | :---: |
 | **M1: Foundation & Quine Engine** | Dual-store IDB, Quine Self-Serialization, PageServer Bridge | 32 | 32 | 0 | 🟢 **DONE** | Nov 5, 2026 |
-| **M2: UI Shell Alignment (Image 2)** | Telemetry Header, Filter Matrix, Slide Drawer Analytics | 16 | 15 | 1 | 🟢 **DONE** | Nov 6, 2026 |
-| **M3: Gesture Engine & Folio Canvas** | Pan, Zoom, Swipe, Book-01 Flagship Experience | 12 | 11 | 1 | 🟢 **DONE** | Nov 6, 2026 |
-| **M4: Micro-Module Ecosystem (Image 3)** | OHUI Shell, Format Handlers (`Pdf`,`Doc`,`JSON`), Modularity | 10 | 0 | 10 | ⚪ **TODO** | Nov 18, 2026 |
+| **M2: UI Shell Alignment (Image 2)** | Minimalist Master Header (Pan, Index), Single Reader Bar | 16 | 16 | 0 | 🟢 **DONE** | Nov 6, 2026 |
+| **M3: Gesture Engine & Folio Canvas** | Pan, 3D Flip, Slide Drawer, Ink Vector Canvas | 12 | 12 | 0 | 🟢 **DONE** | Nov 6, 2026 |
+| **M4: Micro-Module Ecosystem (Image 3)** | OHUI Shell, Format Handlers (`Pdf`,`Doc`,`JSON`), Modularity | 10 | 4 | 6 | 🟡 **IN PROGRESS**| Nov 18, 2026 |
 | **M5: AI Agent MCP Gateway & Direct Sync** | `mcp.html` Server Gateway, File System Access API Auto-Save | 8 | 0 | 8 | ⚪ **TODO** | Nov 25, 2026 |
-| **TOTAL** | | **78** | **58** | **20** | | |
+| **TOTAL** | | **78** | **64** | **14** | | |
 
 ---
 
