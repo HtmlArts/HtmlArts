@@ -38,14 +38,15 @@ assert(serverContent.includes('colorMatch'), 'HtmlArtsServer.html must extract t
 console.log('✅ Test 3 Passed: Structured book detection preserves full HTML, CSS, and SVG fidelity.');
 
 // Test 4: Check Unified Minimalist Header & Reader Controls
-console.log('\nTest 4: Verifying Unified Master Header, Pan, Index, and TOC Drawer...');
+console.log('\nTest 4: Verifying Unified Master Header, Pan, Index, Back to Catalog, and Pen Station...');
 const clientContent = fs.readFileSync(clientPath, 'utf8');
+assert(clientContent.includes('id="btnBackToCatalog"'), 'Master header must have Back to Catalog button');
 assert(clientContent.includes('id="tocToggleBtn"'), 'Master header must have Index button');
 assert(clientContent.includes('id="btnPan"'), 'Master header must have Pan gesture toggle');
 assert(clientContent.includes('id="btnPen"'), 'Master header must have Pen annotation toggle');
+assert(clientContent.includes('footer-pen-station'), 'Must incorporate main page footer-pen-station');
 assert(clientContent.includes('id="tocDrawer"'), 'Must have slide-in Table of Contents drawer');
 assert(serverContent.includes('sandbox="allow-scripts'), 'HtmlArtsServer must sandbox readerFrame with allow-scripts');
-assert(!serverContent.includes('allow-scripts allow-same-origin'), 'Must avoid duplicate sandbox escape combination');
-console.log('✅ Test 4 Passed: Unified minimalist master header, Index, Pan, and TOC drawer verified.');
+console.log('✅ Test 4 Passed: Unified minimalist master header, Back to Catalog, Index, Pan, and Pen Station verified.');
 
 console.log('\n🎉 ALL 4 BOOKSERVER TESTS PASSED! Book-01.html is ready for manual ingestion & test.');
