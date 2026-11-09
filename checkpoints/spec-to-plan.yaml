@@ -1,0 +1,246 @@
+metadata:
+  generated: "2026-11-09"
+  source_spec: "PRDSpecifiction.md"
+  target_plan: "plan.md"
+
+summary:
+  total_requirements: 32
+  covered_requirements: 32
+  missing_requirements: 0
+  coverage_percentage: 100.0
+
+requirements:
+  - req_id: "REQ-001"
+    req_description: "Create and save a publication"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-4"
+      phase_name: "Persistence and library workflows"
+      items: ["2.1", "2.2", "4.1"]
+  - req_id: "REQ-002"
+    req_description: "Import supported local HTML"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3"
+      phase_name: "Unified ingestion"
+      items: ["3.1"]
+  - req_id: "REQ-003"
+    req_description: "Document identity independent of rendering"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-3"
+      phase_name: "Document contract and rendering"
+      items: ["2.1", "3.3"]
+  - req_id: "REQ-004"
+    req_description: "Preserve original source separately"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-3"
+      phase_name: "Document contract and ingestion"
+      items: ["2.1", "3.1", "3.2"]
+  - req_id: "REQ-005"
+    req_description: "Extract a usable title or fallback"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-3"
+      phase_name: "Document contract and ingestion"
+      items: ["2.1", "3.1"]
+  - req_id: "REQ-006"
+    req_description: "Report each import outcome accurately"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-5"
+      phase_name: "Ingestion and validation"
+      items: ["3.1", "5.1"]
+  - req_id: "REQ-007"
+    req_description: "Avoid partial successful imports"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-3/Phase-5"
+      phase_name: "Persistence, ingestion, and validation"
+      items: ["2.2", "3.1", "5.1"]
+  - req_id: "REQ-008"
+    req_description: "Preserve catalog and open workflow"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4"
+      phase_name: "Library workflows"
+      items: ["4.1"]
+  - req_id: "REQ-009"
+    req_description: "Separate rendering strategy from identity"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-3"
+      phase_name: "Document contract and rendering"
+      items: ["2.1", "3.3"]
+  - req_id: "REQ-010"
+    req_description: "Provide safe original content and reviewed presentation choices"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-0/Phase-3"
+      phase_name: "Decision review and rendering"
+      items: ["0.2", "3.3"]
+  - req_id: "REQ-011"
+    req_description: "Do not execute imported content by default"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-5"
+      phase_name: "Safe rendering and validation"
+      items: ["3.2", "5.1"]
+  - req_id: "REQ-012"
+    req_description: "Neutralize unsafe URLs, navigation, and forms"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-5"
+      phase_name: "Safe rendering and validation"
+      items: ["3.2", "5.1"]
+  - req_id: "REQ-013"
+    req_description: "Preserve supported benign content"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-5"
+      phase_name: "Safe rendering and validation"
+      items: ["3.2", "5.1"]
+  - req_id: "REQ-014"
+    req_description: "Retain reader navigation, TOC, and return behavior"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-4"
+      phase_name: "Rendering and reader"
+      items: ["3.3", "4.2"]
+  - req_id: "REQ-015"
+    req_description: "Explain unavailable or restricted content"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-4"
+      phase_name: "Rendering and reader feedback"
+      items: ["3.3", "4.2"]
+  - req_id: "REQ-016"
+    req_description: "Persist annotations with the correct document"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-4"
+      phase_name: "Persistence and reader"
+      items: ["2.1", "2.2", "4.2"]
+  - req_id: "REQ-017"
+    req_description: "Restore annotations on reopen"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-4"
+      phase_name: "Persistence and reader"
+      items: ["2.2", "4.2"]
+  - req_id: "REQ-018"
+    req_description: "Surface annotation persistence failures"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-4/Phase-5"
+      phase_name: "Persistence, reader, and validation"
+      items: ["2.2", "4.2", "5.1"]
+  - req_id: "REQ-019"
+    req_description: "Use a canonical persistence contract"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2"
+      phase_name: "Canonical persistence"
+      items: ["2.1", "2.2"]
+  - req_id: "REQ-020"
+    req_description: "Migrate and verify existing data before cleanup"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-0/Phase-2/Phase-5"
+      phase_name: "Migration scope and validation"
+      items: ["0.2", "2.3", "5.1"]
+  - req_id: "REQ-021"
+    req_description: "Surface migration and persistence failures"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-5"
+      phase_name: "Persistence and recovery"
+      items: ["2.2", "2.3", "5.1"]
+  - req_id: "REQ-022"
+    req_description: "Validate sender frames"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4/Phase-5"
+      phase_name: "Frame communication"
+      items: ["4.3", "5.1"]
+  - req_id: "REQ-023"
+    req_description: "Validate message type, schema, and bounds"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4/Phase-5"
+      phase_name: "Frame communication"
+      items: ["4.3", "5.1"]
+  - req_id: "REQ-024"
+    req_description: "Reject invalid messages without state mutation"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4/Phase-5"
+      phase_name: "Frame communication"
+      items: ["4.3", "5.1"]
+  - req_id: "REQ-025"
+    req_description: "Use a defined reader communication contract"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4"
+      phase_name: "Reader and shell communication"
+      items: ["4.2", "4.3"]
+  - req_id: "REQ-026"
+    req_description: "Handle opaque sandbox origins safely"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4/Phase-5"
+      phase_name: "Frame communication"
+      items: ["4.3", "5.1"]
+  - req_id: "REQ-027"
+    req_description: "Keep core workflows backend-independent"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-1/Phase-5"
+      phase_name: "Standalone foundation and offline validation"
+      items: ["1.3", "5.2"]
+  - req_id: "REQ-028"
+    req_description: "Avoid silent external dependencies"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-3/Phase-5"
+      phase_name: "Safe resources and offline validation"
+      items: ["3.2", "5.2"]
+  - req_id: "REQ-029"
+    req_description: "Apply and communicate external resource policy"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-0/Phase-3/Phase-5"
+      phase_name: "Policy, safe rendering, and validation"
+      items: ["0.2", "3.2", "5.2"]
+  - req_id: "REQ-030"
+    req_description: "Produce one self-contained HtmlArtsV1.html release artifact"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-1"
+      phase_name: "Modular application foundation"
+      items: ["1.1", "1.2", "1.3"]
+  - req_id: "REQ-031"
+    req_description: "Use IndexedDB for runtime and explicit portable file snapshots"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-2/Phase-5"
+      phase_name: "Persistence and snapshot validation"
+      items: ["2.1", "2.2", "5.1"]
+  - req_id: "REQ-032"
+    req_description: "Preserve current product colors, tone, and UI identity"
+    priority: "P1"
+    plan_mapping:
+      phase: "Phase-4/Phase-5"
+      phase_name: "Library/reader parity and acceptance"
+      items: ["4.1", "4.2", "5.3"]
+
+missing_requirements: []
+orphan_plan_items: []
+
+validation:
+  passed: true
+  errors: []
+  warnings:
+    - "Phase 0 product decisions remain open; dependent implementation steps are gated until review."
+    - "No constitution, project topology, or architecture research artifacts were found in the repository."

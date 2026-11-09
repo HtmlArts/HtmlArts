@@ -1,0 +1,64 @@
+:root {
+  --bg: #fbf8f1;
+  --paper: #fffdfa;
+  --ink: #33271f;
+  --muted: #817568;
+  --line: #e6ddd0;
+  --green: #805b3d;
+  --green-soft: #f2e7d5;
+  --blue: #526b87;
+  --blue-soft: #edf0f2;
+  --amber: #986d36;
+  --amber-soft: #f7eedf;
+  --purple: #78648a;
+  --purple-soft: #f1ecf3;
+  --red: #a45b50;
+  --red-soft: #f7ece7;
+  --shadow: 0 12px 34px rgb(51 39 31 / 7%);
+}
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.studio-bar {
+  background: rgb(251 248 241 / 98%);
+}
+
+.inspector-sidebar {
+  background: #fffdfa;
+}
+
+.preview-stage {
+  background: #f4efe6;
+}
+
+.stage-toolbar {
+  background: rgb(255 253 250 / 94%);
+  box-shadow: 0 4px 14px rgb(51 39 31 / 5%);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  background: #fbf8f1;
+}
+
+.btn:hover {
+  background: #f6f0e5;
+}
+
+.btn.primary,
+.btn.primary:hover {
+  background: #805b3d;
+  border-color: #805b3d;
+}
+
+.palette-swatch.active {
+  box-shadow: 0 0 0 2px #805b3d;
+}
+
+:focus-visible {
+  outline-color: #b88b5d;
+}

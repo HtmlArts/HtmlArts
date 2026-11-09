@@ -1,0 +1,106 @@
+batch_id: "PHASE-4"
+completed_tasks: ["T013", "T014", "T015", "T016"]
+blocked_tasks: []
+files_changed:
+  T013:
+    - file: "v1/src/library/catalogue.js"
+      change_type: "created"
+      description: "Adds local catalog filtering and safe entry rendering"
+    - file: "v1/src/core/application.js"
+      change_type: "modified"
+      description: "Connects catalog, create, import, open, and snapshot workflows"
+    - file: "v1/template.html"
+      change_type: "modified"
+      description: "Adds catalog, create, reader, and studio views"
+  T014:
+    - file: "v1/src/reader/reader-engine.js"
+      change_type: "created"
+      description: "Adds safe reader navigation and persistent notes"
+    - file: "v1/src/styles.css"
+      change_type: "modified"
+      description: "Adds responsive catalog, reader, annotation, and studio styling"
+  T015:
+    - file: "v1/src/core/frame-communication.js"
+      change_type: "created"
+      description: "Validates exact sandboxed-frame identity, origin, schema, and payload size"
+    - file: "v1/tests/frame-communication.test.mjs"
+      change_type: "created"
+      description: "Covers foreign senders, malformed/oversize payloads, and safe persistence"
+  T016:
+    - file: "v1/scripts/build.mjs"
+      change_type: "modified"
+      description: "Embeds PageServer as inert text and prevents nested script termination"
+    - file: "v1/README.md"
+      change_type: "modified"
+      description: "Documents studio embedding and export limits"
+    - file: "PRDSpecifiction.md"
+      change_type: "modified"
+      description: "Records the approved single-file studio packaging decision"
+upstream_artifacts_consumed:
+  T013:
+    - artifact: "PRDSpecifiction.md"
+      used_for: "Catalog, creation, import, and open requirements"
+    - artifact: "plan.md"
+      used_for: "Phase 4.1 acceptance scope and task traceability"
+  T014:
+    - artifact: "PRDSpecifiction.md"
+      used_for: "Reader, navigation, annotation, and outbound-link requirements"
+  T015:
+    - artifact: "PRDSpecifiction.md"
+      used_for: "Expected sender, schema, payload bounds, and opaque-origin requirements"
+  T016:
+    - artifact: "PageServer.html"
+      used_for: "Existing authoring workflow and PAGESERVER_EXPORT_BOOK message"
+    - artifact: "PRDSpecifiction.md"
+      used_for: "Approved studio-preservation and one-file packaging decisions"
+evidence_mapping:
+  T013:
+    - upstream: "PRDSpecifiction.md#REQ-001,REQ-005,REQ-008,REQ-032"
+      output: "v1/src/library/catalogue.js and v1/src/core/application.js"
+      evidence: "Catalog tests pass; create/open and studio-save browser flows succeed"
+  T014:
+    - upstream: "PRDSpecifiction.md#REQ-014,REQ-016-018,REQ-025"
+      output: "v1/src/reader/reader-engine.js"
+      evidence: "Reader browser flow confirms TOC, inert external links, and restored note"
+  T015:
+    - upstream: "PRDSpecifiction.md#REQ-022-026"
+      output: "v1/src/core/frame-communication.js"
+      evidence: "Automated tests reject unexpected senders, malformed payloads, and over-limit exports without persistence"
+  T016:
+    - upstream: "PRDSpecifiction.md#User Story 8 and REQ-022-024"
+      output: "v1/scripts/build.mjs and v1/src/core/application.js"
+      evidence: "Embedded studio exported a sanitized publication into the local catalog in-browser"
+traceability:
+  - requirement: "REQ-001,REQ-005,REQ-008,REQ-032"
+    plan_item: "4.1"
+    task: "T013"
+    files: ["v1/src/library/", "v1/src/core/application.js", "v1/template.html"]
+    status: "completed"
+  - requirement: "REQ-014,REQ-016-018,REQ-025,REQ-032"
+    plan_item: "4.2"
+    task: "T014"
+    files: ["v1/src/reader/", "v1/src/styles.css"]
+    status: "completed"
+  - requirement: "REQ-022-026"
+    plan_item: "4.3"
+    task: "T015"
+    files: ["v1/src/core/frame-communication.js", "v1/src/core/application.js"]
+    status: "completed"
+  - requirement: "REQ-022-024"
+    plan_item: "4.4"
+    task: "T016"
+    files: ["v1/scripts/build.mjs", "v1/template.html", "v1/HtmlArtsV1.html"]
+    status: "completed"
+protocol_violation: false
+errors: []
+warnings:
+  - "The 5 MiB cap applies only to studio exports; imported-file size remains unresolved pending representative-device testing."
+  - "Phase 5 browser/device matrix, comprehensive security and error-path validation, offline/accessibility checks, and 500-document performance benchmarks remain."
+test_results:
+  T013-T016:
+    command: "npm --prefix v1 test"
+    passed: 20
+    failed: 0
+    skipped: 0
+    failures: []
+    notes: "One full suite run covers the Phase 4 implementation. Root regression checks also passed: 4 book-server and 5 quine checks."

@@ -1,0 +1,115 @@
+batch_id: "B03"
+completed_tasks: ["T007", "T008", "T009"]
+blocked_tasks: []
+files_changed:
+  T007:
+    - file: "v1/src/storage/model.js"
+      change_type: "created"
+      description: "Defines the canonical document, content, annotation, and snapshot contracts."
+    - file: "v1/src/storage/document-repository.js"
+      change_type: "created"
+      description: "Implements document/content read-write and delete operations."
+    - file: "v1/src/storage/annotation-repository.js"
+      change_type: "created"
+      description: "Implements annotations linked to existing documents."
+  T008:
+    - file: "v1/src/storage/database.js"
+      change_type: "created"
+      description: "Creates a v1-specific IndexedDB database with canonical stores."
+    - file: "v1/src/storage/library-snapshot.js"
+      change_type: "created"
+      description: "Creates escaped, downloadable standalone HTML snapshots and hydrates empty runtime stores."
+    - file: "v1/src/core/application.js"
+      change_type: "modified"
+      description: "Initializes migration/snapshot hydration and exposes explicit portable snapshot download."
+    - file: "v1/template.html"
+      change_type: "modified"
+      description: "Adds versioned embedded snapshot data and portable-copy control."
+    - file: "v1/HtmlArtsV1.html"
+      change_type: "modified"
+      description: "Regenerated single-file release artifact."
+  T009:
+    - file: "v1/src/storage/legacy-migration.js"
+      change_type: "created"
+      description: "Copies legacy v2 records from the old database read-only, verifies them, and retains the source."
+    - file: "v1/tests/storage.test.mjs"
+      change_type: "created"
+      description: "Covers repositories, legacy migration, source preservation, conflicts, and snapshot round trips."
+    - file: "v1/src/storage/README.md"
+      change_type: "modified"
+      description: "Documents isolated database and quarantined legacy-rendered content."
+    - file: "v1/src/export/README.md"
+      change_type: "modified"
+      description: "Documents snapshot precedence and single-file portability."
+    - file: "plan.md"
+      change_type: "modified"
+      description: "Marks Phase 2 complete and records evidence."
+    - file: "checkpoints/tasks-to-impl.yaml"
+      change_type: "modified"
+      description: "Maps Phase 2 tasks to code and tests."
+upstream_artifacts_consumed:
+  T007:
+    - artifact: "PRDSpecifiction.md#REQ-003,REQ-004,REQ-016,REQ-019"
+      used_for: "Document identity, source/rendering separation, and annotation associations."
+  T008:
+    - artifact: "PRDSpecifiction.md#REQ-031"
+      used_for: "Runtime IndexedDB plus explicit standalone HTML snapshot."
+    - artifact: "plan.md#Phase 2"
+      used_for: "Persistence, verified hydration, and explicit failure behavior."
+  T009:
+    - artifact: "PRDSpecifiction.md#REQ-020,REQ-021"
+      used_for: "Non-destructive migration and surfacing failures."
+    - artifact: "HtmlArtsServer.html#openDB"
+      used_for: "Known current v2 legacy stores: books_meta, books_content, books, annotations."
+evidence_mapping:
+  T007:
+    - upstream: "PRDSpecifiction.md#REQ-003,REQ-004,REQ-016"
+      output: "v1/src/storage/model.js"
+      evidence: "Repository tests verify normalized documents, content separation, and annotation association."
+  T008:
+    - upstream: "PRDSpecifiction.md#REQ-031"
+      output: "v1/src/storage/library-snapshot.js"
+      evidence: "Chrome downloaded HtmlArtsV1.html; clean-profile reopen hydrated one document and its annotation."
+  T009:
+    - upstream: "PRDSpecifiction.md#REQ-020"
+      output: "v1/src/storage/legacy-migration.js"
+      evidence: "Tests verify migrated records/content/annotations and prove source stores remain intact."
+traceability:
+  - requirement: "REQ-001,REQ-003-005,REQ-016,REQ-017,REQ-019"
+    plan_item: "2.1"
+    task: "T007"
+    files: ["v1/src/storage/model.js", "v1/src/storage/document-repository.js", "v1/src/storage/annotation-repository.js"]
+    status: "completed"
+  - requirement: "REQ-001,REQ-016-019,REQ-021,REQ-031"
+    plan_item: "2.2"
+    task: "T008"
+    files: ["v1/src/storage/database.js", "v1/src/storage/library-snapshot.js", "v1/src/core/application.js"]
+    status: "completed"
+  - requirement: "REQ-020,REQ-021"
+    plan_item: "2.3"
+    task: "T009"
+    files: ["v1/src/storage/legacy-migration.js", "v1/tests/storage.test.mjs"]
+    status: "completed"
+protocol_violation: false
+errors: []
+warnings:
+  - "Phase 2 provides persistence contracts and portable snapshots; HTML import/sanitization and full catalog/reader UX remain for later phases."
+test_results:
+  T007:
+    command: "npm --prefix v1 test"
+    passed: 8
+    failed: 0
+    skipped: 0
+    failures: []
+  T008:
+    command: "npm --prefix v1 test; Chrome headless CDP snapshot download/reopen"
+    passed: 8
+    failed: 0
+    skipped: 0
+    failures: []
+  T009:
+    command: "npm --prefix v1 test"
+    passed: 8
+    failed: 0
+    skipped: 0
+    failures: []

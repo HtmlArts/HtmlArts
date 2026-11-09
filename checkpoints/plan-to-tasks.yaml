@@ -1,0 +1,99 @@
+metadata:
+  generated: "2026-11-09"
+  source_plan: "plan.md"
+  target_tasks: "plan.md (inline task breakdown)"
+
+summary:
+  total_plan_items: 19
+  covered_plan_items: 19
+  missing_plan_items: 0
+  coverage_percentage: 100.0
+  total_tasks_generated: 19
+  orphan_tasks: 0
+
+phases:
+  - phase_id: "Phase-0"
+    phase_name: "Baseline and isolation"
+    items:
+      - item_id: "0.1"
+        description: "Establish isolated workspace"
+        tasks: [{task_id: "T001", description: "Establish v1 directory boundary"}]
+      - item_id: "0.2"
+        description: "Review PRD and settle release decisions"
+        tasks: [{task_id: "T002", description: "Resolve open product decisions"}]
+      - item_id: "0.3"
+        description: "Capture current behavior baseline"
+        tasks: [{task_id: "T003", description: "Record workflows and baseline tests"}]
+  - phase_id: "Phase-1"
+    phase_name: "Modular application foundation"
+    items:
+      - item_id: "1.1"
+        description: "Select runtime and build approach"
+        tasks: [{task_id: "T004", description: "Choose toolchain against approved constraints"}]
+      - item_id: "1.2"
+        description: "Create source structure and build contract"
+        tasks: [{task_id: "T005", description: "Create modular source structure"}]
+      - item_id: "1.3"
+        description: "Build and smoke-test minimal shell"
+        tasks: [{task_id: "T006", description: "Build and test standalone shell"}]
+  - phase_id: "Phase-2"
+    phase_name: "Canonical document and persistence foundation"
+    items:
+      - item_id: "2.1"
+        description: "Establish document and annotation contracts"
+        tasks: [{task_id: "T007", description: "Define v1 document and annotation contracts"}]
+      - item_id: "2.2"
+        description: "Implement canonical persistence and failure reporting"
+        tasks: [{task_id: "T008", description: "Implement local persistence"}]
+      - item_id: "2.3"
+        description: "Plan and validate existing-data migration"
+        tasks: [{task_id: "T009", description: "Implement and verify migration"}]
+  - phase_id: "Phase-3"
+    phase_name: "Unified ingestion and safe rendering"
+    items:
+      - item_id: "3.1"
+        description: "Implement document ingestion"
+        tasks: [{task_id: "T010", description: "Implement HTML import"}]
+      - item_id: "3.2"
+        description: "Implement safe reading representation"
+        tasks: [{task_id: "T011", description: "Implement safe-content policy"}]
+      - item_id: "3.3"
+        description: "Add rendering strategies"
+        tasks: [{task_id: "T012", description: "Implement rendering selection"}]
+  - phase_id: "Phase-4"
+    phase_name: "Library, reader, annotations, and frame integration"
+    items:
+      - item_id: "4.1"
+        description: "Library and create/open workflows"
+        tasks: [{task_id: "T013", description: "Implement v1 catalog and create/open"}]
+      - item_id: "4.2"
+        description: "Reader and annotation workflows"
+        tasks: [{task_id: "T014", description: "Implement navigation and annotations"}]
+      - item_id: "4.3"
+        description: "Validate shell/frame communication"
+        tasks: [{task_id: "T015", description: "Implement validated message contract"}]
+      - item_id: "4.4"
+        description: "Preserve approved studio workflow"
+        tasks: [{task_id: "T016", description: "Integrate validated studio export"}]
+  - phase_id: "Phase-5"
+    phase_name: "Quality gates and release"
+    items:
+      - item_id: "5.1"
+        description: "End-to-end and security validation"
+        tasks: [{task_id: "T017", description: "Run browser-level validation"}]
+      - item_id: "5.2"
+        description: "Offline, accessibility, and performance validation"
+        tasks: [{task_id: "T018", description: "Validate offline/accessibility/performance"}]
+      - item_id: "5.3"
+        description: "Release and deployment decision"
+        tasks: [{task_id: "T019", description: "Obtain release approval"}]
+
+missing_plan_items: []
+orphan_tasks: []
+upstream_trace: []
+
+validation:
+  passed: true
+  errors: []
+  warnings:
+    - "Task execution is gated on completion of Phase 0 review decisions."

@@ -1,0 +1,9 @@
+# HTML ingestion
+
+`importHtmlFile(database, file, options)` is the single local HTML import entry point. It validates and reads an `.html` or `.htm` file, parses it in an inert `<template>` so parsing does not load external resources, extracts metadata, sanitizes a separate reading representation, selects a rendering strategy, and atomically inserts the document and content into IndexedDB. The original source is retained verbatim as text. Failures are raised as `HtmlImportError` values with a stable `code` and actionable `message`; a successful result includes a user-facing `message` and any safety restrictions applied.
+
+The sanitizer uses DOMPurify for HTML structure and CSS Tree for CSS parsing. Scripts, event handlers, forms, embedded active content, SVG/MathML, and unsafe URLs are removed. Stylesheets and inline styles are parsed; imports, external URLs, and unsafe CSS functions are removed while safe declarations remain. Only embedded raster data images are retained. External links are stored as inert `data-htmlarts-external-href` values for the reader to handle after explicit user confirmation. Source-supplied `data-htmlarts-*` attributes are removed before HtmlArts adds its own link metadata.
+
+Structured-folio presentation is selected only for a `.stage` container directly in the body or inside the top-level `main`, made entirely of at least two uniquely identified `article.page[data-name]` folios. Other documents use `SAFE_ORIGINAL`; styles, class names, or generic page-like markup do not change document identity or trigger pagination.
+
+Imported HTML files are limited to 5 MiB. Files larger than the cap are rejected before their contents are read, with a user-visible error; inputs are never silently truncated. The selected cap was exercised on the available Chrome host with plain-text HTML files of 1, 5, and 10 MiB. These measurements do not guarantee performance for complex documents or lower-memory devices.
