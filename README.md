@@ -1,77 +1,36 @@
-# HtmlArts 🎨📖
+# HtmlArts
 
-> **A local-first, zero-install HTMLBook platform and creative reading environment.**  
-> Built as self-contained HTML pages using a Server–Client layered architecture, standard browser sandboxing (`<iframe>`), and asynchronous IndexedDB storage.
+HtmlArts is a local-first HTML publication library for reading, writing, annotating, and organizing personal books and notes. The application is built from modular source in [`v1/`](./v1/) and distributed as the standalone [`v1/HtmlArtsV1.html`](./v1/HtmlArtsV1.html) file.
 
----
+## Run the standalone application
 
-## 🏛️ Architectural Overview
+Open `v1/HtmlArtsV1.html` in a modern browser. Your library is stored locally in that browser; use the in-app portable snapshot action to export a copy containing your saved publications and annotations.
 
-HtmlArts follows **Convention over Configuration** where file naming defines structural roles:
+The root `index.html` forwards to the standalone application for GitHub Pages. No account or server-side database is required.
 
-```
-HtmlArts/
-├── HtmlArtsServer.html      # Core Server / Orchestrator (UI shell, Dual-Store DB, Ingestion)
-├── HtmlArtsClient.html      # Core Client / Sandboxed Reader (Canvas ink, gestures, postMessage)
-├── PageServer.html          # Specialized Micro-Server (Field Guide & Flat PDF/HTML Architecture)
-├── index.html               # GitHub Pages Root Entrypoint (mirrors HtmlArtsServer.html)
-├── manifest.webmanifest     # Web App Manifest for native PWA installation (HtmlLib.app)
-├── sw.js                    # Service Worker for 100% offline-first application caching
-├── wrapper-kit/             # Android APK (HtmlLib.apk) & Desktop native wrapper source
-│   ├── android/             # AndroidManifest.xml, MainActivity.java (WebView hardware accel)
-│   └── desktop/             # Linux, macOS, and Windows standalone launcher scripts
-├── HtmlLib-Native-Kit.zip   # Downloadable native package archive
-├── HtmlArts.html            # Legacy pilot monolith (Stage 1-3 baseline reference)
-├── LICENSE                  # GNU Affero General Public License v3.0 (GNU AGPLv3)
-├── .editorconfig            # Code style & formatting rules
-├── .gitattributes           # LF normalization & binary asset mappings
-└── .gitignore               # Ignore rules for OS, IDE, and build caches
+## Develop and validate
+
+Requirements: Node.js 18+ and npm. From the repository root:
+
+```sh
+npm --prefix v1 ci
+npm --prefix v1 test
 ```
 
-### 1. Ingestion Model & Dynamic Micro-Servers
-- **Server ingests Client**: `HtmlArtsServer.html` acts as the host shell and dynamically renders `HtmlArtsClient.html` in a sandboxed `<iframe>`.
-- **Dynamic Capability Acquisition**: Rather than bloating the server with all layout algorithms, `HtmlArtsServer.html` ingests specialized micro-servers (such as `PageServer.html` for technical architecture sheets and A4 print engines) on demand.
-- **Client never consumes itself**: `HtmlArtsClient.html` is a leaf node focused exclusively on reader rendering, ink annotation, and touch gestures. Zero IndexedDB access in the client.
+The test command builds the standalone artifact, runs unit tests, and runs Playwright browser tests. System Google Chrome is used by default; `CHROME_EXECUTABLE` may point to a compatible local Chromium executable.
 
-### 2. High-Scale Dual-Store Persistence (500+ Books, <30ms Latency)
-All persistent storage runs through an asynchronous, dual-store interface over browser IndexedDB:
-- Database: `htmlarts-local-library` (v2)
-  - Store `books_meta`: Lightweight metadata (`id`, `title`, `category`, `genre`, `template`, `updatedAt`, `sizeBytes`). Read time for 500 books is **<15ms**, keeping catalog boot instantaneous and memory under 30MB.
-  - Store `books_content`: Heavy HTML payloads and raw source documents (`id`, `html`, `rawHtml`). Fetched on demand when opening a book in **<3ms**.
-  - Store `annotations`: Serialized ink strokes linked to specific `bookId`s.
-- Database: `htmlarts-assets-v1`
-  - Store `assets`: Binary blobs for local images, media, and attachments.
+To build without running tests:
 
-### 3. Dual-Runtime Distribution
-HtmlArts provides one-click options to run anywhere:
-1. **Browser Runtime (`HTMLARTSAPP.html`)**:
-   - Single-file zero-dependency super-bundle containing all 500 books, embedded client reader, and self-extracting IndexedDB bootstrapper.
-   - Openable by double-clicking in Chrome, Safari, Firefox, or Edge completely offline.
-2. **Native App & Mobile APK (`HtmlLib.app` / `HtmlLib.apk`)**:
-   - **PWA 1-Click Install**: Install directly to Desktop or Android home screen with no URL bar.
-   - **Android APK Kit**: Preconfigured Android WebView project ready to compile with `./gradlew assembleRelease` into `HtmlLib.apk`.
-   - **Desktop Launchers**: Native launcher scripts for macOS, Linux, and Windows.
-
----
-
-## 🚀 Getting Started
-
-No node modules, build steps, or compilers required.
-
-### Run locally via any HTTP server:
-```bash
-# Using Python
-python3 -m http.server 8080
-
-# Or open in your browser
-# Server Entrypoint: http://localhost:8080/HtmlArtsServer.html
-# Standalone Client: http://localhost:8080/HtmlArtsClient.html
+```sh
+npm --prefix v1 run build
 ```
 
-Or simply **double click** `HtmlArtsServer.html` to open directly from your file system.
+Edit modular files under `v1/src/`; do not edit the generated `v1/HtmlArtsV1.html` directly. Product requirements and release evidence are in [`PRDSpecifiction.md`](./PRDSpecifiction.md), [`plan.md`](./plan.md), and [`v1/runtime-validation-report.md`](./v1/runtime-validation-report.md).
 
----
+## Privacy and safety
 
-## 📜 License
+The application is local-first. Imported HTML is treated as untrusted content, sanitized before storage, and never runs as an application plugin. See [`v1/README.md`](./v1/README.md) for architecture and product boundaries.
 
-Licensed under the [GNU Affero General Public License v3.0 (GNU AGPLv3)](LICENSE).
+## License
+
+Licensed under the [GNU Affero General Public License v3.0](./LICENSE).

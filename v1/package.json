@@ -1,0 +1,23 @@
+{
+  "name": "htmlarts-v1",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Modular source and single-file build for the HtmlArtsV1.html release",
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "npm run build && node --test tests/*.test.mjs && npm run test:e2e",
+    "test:e2e": "node --test tests/e2e/*.test.mjs",
+    "benchmark": "node tests/performance/benchmark.mjs"
+  },
+  "dependencies": {
+    "css-tree": "^3.1.0",
+    "dompurify": "^3.2.6"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0",
+    "fake-indexeddb": "^6.2.8",
+    "jsdom": "^26.1.0",
+    "playwright": "1.56.1"
+  }
+}

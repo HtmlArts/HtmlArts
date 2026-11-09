@@ -1,0 +1,636 @@
+metadata:
+  generated: "2026-11-09"
+  source_tasks: "plan.md"
+  last_updated: "2026-11-09"
+
+summary:
+  total_tasks: 19
+  completed_tasks: 18
+  in_progress_tasks: 0
+  pending_tasks: 1
+  completion_percentage: 94.7
+
+tasks:
+  - task_id: "T001"
+    description: "Establish isolated v1 directory boundary"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/README.md"
+          changes:
+            - change_type: "created"
+              description: "Documents the v1 rebuild boundary and root-app preservation"
+    verification:
+      build_passed: true
+      test_results:
+        command: "git status --short --branch"
+        passed: 1
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Branch rearchitecture/v1; root application files remain in place."
+    upstream_trace:
+      plan_item: "0.1"
+      requirements: ["NFR-008", "NFR-009"]
+      full_trace: "NFR-008,NFR-009 -> Phase-0.1 -> T001 -> v1/README.md"
+  - task_id: "T002"
+    description: "Record product-owner architecture and release decisions"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "PRDSpecifiction.md"
+          changes:
+            - change_type: "modified"
+              description: "Records single-file release, dual persistence, and visual identity decisions"
+    verification:
+      build_passed: true
+      test_results:
+        command: "PRD review and consistency check"
+        passed: 1
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Remaining environment and policy details are explicitly provisional."
+    upstream_trace:
+      plan_item: "0.2"
+      requirements: ["REQ-030", "REQ-031", "REQ-032"]
+      full_trace: "REQ-030,REQ-031,REQ-032 -> Phase-0.2 -> T002 -> PRDSpecifiction.md"
+  - task_id: "T003"
+    description: "Capture current behavior and test baseline"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/PHASE-0-BASELINE.md"
+          changes:
+            - change_type: "created"
+              description: "Records existing workflows and source-test limitations"
+    verification:
+      build_passed: true
+      test_results:
+        command: "node tests/verify-book-server.js; node tests/verify-quine-composition.js"
+        passed: 9
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Existing suites passed; they are source-content checks, not runtime security tests."
+    upstream_trace:
+      plan_item: "0.3"
+      requirements: ["REQ-008", "REQ-014", "REQ-016", "REQ-017", "REQ-018", "NFR-009"]
+      full_trace: "REQ-008,REQ-014,REQ-016..018,NFR-009 -> Phase-0.3 -> T003 -> v1/PHASE-0-BASELINE.md"
+  - task_id: "T004"
+    description: "Choose single-file modular build toolchain"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/package.json"
+          changes:
+            - change_type: "created"
+              description: "Adds build/test scripts and esbuild development dependency"
+        - file: "v1/package-lock.json"
+          changes:
+            - change_type: "created"
+              description: "Locks reproducible build dependency versions"
+        - file: "v1/scripts/build.mjs"
+          changes:
+            - change_type: "created"
+              description: "Assembles inline JS/CSS bundles into the standalone HTML release"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 2
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "esbuild and Node.js assembly emit a single HtmlArtsV1.html."
+    upstream_trace:
+      plan_item: "1.1"
+      requirements: ["REQ-030", "NFR-006", "NFR-008", "NFR-009"]
+      full_trace: "REQ-030,NFR-006,008,009 -> Phase-1.1 -> T004 -> v1/package.json,v1/scripts/build.mjs"
+  - task_id: "T005"
+    description: "Create modular source structure and build contract"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/"
+          changes:
+            - change_type: "created"
+              description: "Establishes core, ingestion, storage, reader, library, export, and styles boundaries"
+        - file: "v1/template.html"
+          changes:
+            - change_type: "created"
+              description: "Defines the standalone HTML shell and inline bundle placeholders"
+        - file: "v1/.gitignore"
+          changes:
+            - change_type: "created"
+              description: "Ignores local npm dependencies and logs"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 2
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Runtime assets are inlined; source folders remain modular."
+    upstream_trace:
+      plan_item: "1.2"
+      requirements: ["REQ-030", "NFR-008", "NFR-009"]
+      full_trace: "REQ-030,NFR-008,009 -> Phase-1.2 -> T005 -> v1/src/,v1/template.html"
+  - task_id: "T006"
+    description: "Build and smoke-test standalone shell"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/HtmlArtsV1.html"
+          changes:
+            - change_type: "created"
+              description: "Generated self-contained standalone HTML release artifact"
+        - file: "v1/tests/build.test.mjs"
+          changes:
+            - change_type: "created"
+              description: "Tests single-file structure and existing product palette"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test; google-chrome --headless --no-sandbox --disable-gpu --disable-dev-shm-usage --dump-dom file://.../v1/HtmlArtsV1.html"
+        passed: 3
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Two Node tests passed; headless Chrome opened the file and showed the initialized workspace status."
+    upstream_trace:
+      plan_item: "1.3"
+      requirements: ["REQ-027", "REQ-030", "NFR-006", "NFR-008"]
+      full_trace: "REQ-027,REQ-030,NFR-006,008 -> Phase-1.3 -> T006 -> v1/HtmlArtsV1.html"
+  - task_id: "T007"
+    description: "Define v1 document, content, and annotation contracts"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/storage/model.js"
+          changes:
+            - change_type: "created"
+              description: "Defines normalized document, content, annotation, and snapshot schemas"
+        - file: "v1/src/storage/document-repository.js"
+          changes:
+            - change_type: "created"
+              description: "Defines document/content repository operations"
+        - file: "v1/src/storage/annotation-repository.js"
+          changes:
+            - change_type: "created"
+              description: "Defines document-associated annotation operations"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 8
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Contract tests cover validation and document/annotation association."
+    upstream_trace:
+      plan_item: "2.1"
+      requirements: ["REQ-001", "REQ-003", "REQ-004", "REQ-005", "REQ-016", "REQ-017", "REQ-019"]
+      full_trace: "REQ-001,003-005,016,017,019 -> Phase-2.1 -> T007 -> v1/src/storage/model.js"
+  - task_id: "T008"
+    description: "Implement runtime IndexedDB and portable file snapshots"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/storage/database.js"
+          changes:
+            - change_type: "created"
+              description: "Creates an isolated v1 database without changing the legacy root-app database"
+        - file: "v1/src/storage/library-snapshot.js"
+          changes:
+            - change_type: "created"
+              description: "Serializes, validates, hydrates, and downloads portable HTML snapshots"
+        - file: "v1/src/core/application.js"
+          changes:
+            - change_type: "modified"
+              description: "Initializes local persistence and exposes snapshot download with clear status"
+        - file: "v1/HtmlArtsV1.html"
+          changes:
+            - change_type: "modified"
+              description: "Regenerated single-file release with snapshot bootstrap"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test; Chrome headless snapshot round-trip"
+        passed: 8
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Chrome downloaded the single-file snapshot and a clean profile restored one document and its annotation."
+    upstream_trace:
+      plan_item: "2.2"
+      requirements: ["REQ-001", "REQ-016", "REQ-017", "REQ-018", "REQ-019", "REQ-021", "REQ-031"]
+      full_trace: "REQ-001,016-019,021,031 -> Phase-2.2 -> T008 -> v1/src/storage/"
+  - task_id: "T009"
+    description: "Migrate and verify the existing local database without deleting its source"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/storage/legacy-migration.js"
+          changes:
+            - change_type: "created"
+              description: "Reads legacy v2 stores read-only, copies canonical records, verifies content, and retains the source"
+        - file: "v1/tests/storage.test.mjs"
+          changes:
+            - change_type: "created"
+              description: "Tests migration fidelity, source retention, orphan rejection, and ID collision safety"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 8
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Legacy records, annotations, and content were verified; failed/conflicting migration leaves legacy data intact."
+    upstream_trace:
+      plan_item: "2.3"
+      requirements: ["REQ-020", "REQ-021"]
+      full_trace: "REQ-020,REQ-021 -> Phase-2.3 -> T009 -> v1/src/storage/legacy-migration.js"
+  - task_id: "T010"
+    description: "Validate and import local HTML documents"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/ingestion/html-parser.js"
+          changes:
+            - change_type: "created"
+              description: "Validates supported HTML files, reads source text, and reports parse/read errors"
+        - file: "v1/src/ingestion/metadata-extractor.js"
+          changes:
+            - change_type: "created"
+              description: "Extracts title with filename fallback plus description, author, language, and source filename"
+        - file: "v1/src/ingestion/document-importer.js"
+          changes:
+            - change_type: "created"
+              description: "Creates a document identity, preserves original source, and reports accurate import outcomes"
+        - file: "v1/src/storage/document-repository.js"
+          changes:
+            - change_type: "modified"
+              description: "Adds atomic insert semantics that reject identity collisions without overwriting existing documents"
+        - file: "v1/tests/ingestion.test.mjs"
+          changes:
+            - change_type: "created"
+              description: "Tests import, metadata fallback, failed inputs, and duplicate identity behavior"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 14
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Document metadata/content are persisted together; invalid or failed inputs leave no partial catalog entry."
+    upstream_trace:
+      plan_item: "3.1"
+      requirements: ["REQ-002", "REQ-003", "REQ-004", "REQ-005", "REQ-006", "REQ-007", "REQ-008"]
+      full_trace: "REQ-002-008 -> Phase-3.1 -> T010 -> v1/src/ingestion/,v1/src/storage/document-repository.js"
+  - task_id: "T011"
+    description: "Sanitize untrusted HTML and CSS for safe reading"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/ingestion/html-sanitizer.js"
+          changes:
+            - change_type: "created"
+              description: "Removes active HTML behavior and keeps outbound navigation inert for explicit confirmation"
+        - file: "v1/src/ingestion/css-sanitizer.js"
+          changes:
+            - change_type: "created"
+              description: "Parses CSS and removes external imports, URL-bearing declarations, and unsafe CSS functions"
+        - file: "v1/package.json"
+          changes:
+            - change_type: "modified"
+              description: "Adds DOMPurify/CSS Tree runtime dependencies and jsdom test dependency"
+        - file: "v1/package-lock.json"
+          changes:
+            - change_type: "modified"
+              description: "Locks sanitizer, CSS parser, and test dependencies"
+        - file: "v1/tests/ingestion.test.mjs"
+          changes:
+            - change_type: "modified"
+              description: "Covers scripts, event handlers, forms, outbound links, remote resources, CSS, and benign content"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 14
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "DOMPurify and CSS Tree sanitize content; remote assets are blocked and safe text/styles remain."
+    upstream_trace:
+      plan_item: "3.2"
+      requirements: ["REQ-004", "REQ-011", "REQ-012", "REQ-013", "REQ-028", "REQ-029"]
+      full_trace: "REQ-004,011-013,028,029 -> Phase-3.2 -> T011 -> v1/src/ingestion/html-sanitizer.js"
+  - task_id: "T012"
+    description: "Select rendering strategy without changing document identity"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/ingestion/rendering-strategy.js"
+          changes:
+            - change_type: "created"
+              description: "Selects explicit structured folios or safe-original fallback"
+        - file: "v1/src/storage/model.js"
+          changes:
+            - change_type: "modified"
+              description: "Persists extracted authoring metadata independently from document rendering strategy"
+        - file: "v1/src/ingestion/README.md"
+          changes:
+            - change_type: "modified"
+              description: "Documents confirmed import, resource, link, and rendering policies"
+        - file: "PRDSpecifiction.md"
+          changes:
+            - change_type: "modified"
+              description: "Records the product owner's confirmed Phase 3 decisions and deferred size cap"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 14
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Only the explicit supported folio structure selects STRUCTURED_FOLIOS; all other content uses SAFE_ORIGINAL."
+    upstream_trace:
+      plan_item: "3.3"
+      requirements: ["REQ-003", "REQ-009", "REQ-010", "REQ-014", "REQ-015"]
+      full_trace: "REQ-003,009,010,014,015 -> Phase-3.3 -> T012 -> v1/src/ingestion/rendering-strategy.js"
+
+  - task_id: "T013"
+    description: "Implement v1 catalog and create/open workflows"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/library/catalogue.js"
+          changes:
+            - change_type: "created"
+              description: "Filters local metadata and safely renders catalog entries"
+        - file: "v1/src/core/application.js"
+          changes:
+            - change_type: "modified"
+              description: "Connects create, import, open, search, and snapshot actions to local storage"
+        - file: "v1/template.html"
+          changes:
+            - change_type: "modified"
+              description: "Adds catalog, create, reader, and studio application views"
+        - file: "v1/tests/library-reader.test.mjs"
+          changes:
+            - change_type: "created"
+              description: "Covers catalog filtering, text-safe titles, notes, and reader errors"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 20
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Catalog creation/import/open and studio-save flows were exercised in the browser."
+    upstream_trace:
+      plan_item: "4.1"
+      requirements: ["REQ-001", "REQ-005", "REQ-008", "REQ-032"]
+      full_trace: "REQ-001,005,008,032 -> Phase-4.1 -> T013 -> v1/src/library/,v1/src/core/application.js"
+  - task_id: "T014"
+    description: "Implement reader navigation and annotations"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/reader/reader-engine.js"
+          changes:
+            - change_type: "created"
+              description: "Implements safe reading, TOC/navigation, outbound-link confirmation, and note persistence"
+        - file: "v1/src/reader/README.md"
+          changes:
+            - change_type: "modified"
+              description: "Documents reader security and interaction boundaries"
+        - file: "v1/src/styles.css"
+          changes:
+            - change_type: "modified"
+              description: "Adds responsive catalog, reader, annotation, and studio layouts"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 20
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Browser checks confirmed heading navigation, inert outbound links, confirmation before navigation, and note restore after reopening."
+    upstream_trace:
+      plan_item: "4.2"
+      requirements: ["REQ-014", "REQ-016", "REQ-017", "REQ-018", "REQ-025", "REQ-032"]
+      full_trace: "REQ-014,016-018,025,032 -> Phase-4.2 -> T014 -> v1/src/reader/"
+  - task_id: "T015"
+    description: "Implement validated shell/frame messaging"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/src/core/frame-communication.js"
+          changes:
+            - change_type: "created"
+              description: "Checks expected opaque-origin frame identity and validates bounded studio payloads"
+        - file: "v1/src/core/application.js"
+          changes:
+            - change_type: "modified"
+              description: "Rejects foreign/malformed frame messages without persisting or reporting success"
+        - file: "v1/tests/frame-communication.test.mjs"
+          changes:
+            - change_type: "created"
+              description: "Covers sender/origin checks, malformed and over-limit payloads, and no-mutation rejection"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 20
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "The studio's opaque origin is never treated as sufficient authentication; exact frame identity and origin are both checked."
+    upstream_trace:
+      plan_item: "4.3"
+      requirements: ["REQ-022", "REQ-023", "REQ-024", "REQ-025", "REQ-026"]
+      full_trace: "REQ-022-026 -> Phase-4.3 -> T015 -> v1/src/core/frame-communication.js,v1/src/core/application.js"
+  - task_id: "T016"
+    description: "Integrate validated studio export"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/scripts/build.mjs"
+          changes:
+            - change_type: "modified"
+              description: "Embeds the PageServer studio as inert text and safely escapes nested script closing tags"
+        - file: "v1/template.html"
+          changes:
+            - change_type: "modified"
+              description: "Adds the sandboxed Design Studio view to the standalone application"
+        - file: "v1/README.md"
+          changes:
+            - change_type: "modified"
+              description: "Documents embedding, offline font policy, and the 5 MiB studio-export limit"
+        - file: "PRDSpecifiction.md"
+          changes:
+            - change_type: "modified"
+              description: "Records the approved single-file studio embedding decision"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 20
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "The integrated studio exported to the catalog in-browser; the publication opened with executable scripts removed."
+    upstream_trace:
+      plan_item: "4.4"
+      requirements: ["REQ-022", "REQ-023", "REQ-024"]
+      full_trace: "REQ-022-024 -> Phase-4.4 -> T016 -> v1/scripts/build.mjs,v1/src/core/application.js"
+
+  - task_id: "T017"
+    description: "Run browser-level user journey and security validation"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/tests/e2e/"
+          changes:
+            - change_type: "created"
+              description: "Adds six Playwright journeys for create/read, failures, migration, import safety, folios, and studio messaging"
+        - file: "v1/package.json"
+          changes:
+            - change_type: "modified"
+              description: "Adds a reproducible browser-test command and Node 18-compatible Playwright dependency"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 test"
+        passed: 26
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Six isolated Chromium browser journeys passed, including rejected sender/no mutation, migration/source retention, annotation failure reporting, script blocking, and outbound-link confirmation."
+    upstream_trace:
+      plan_item: "5.1"
+      requirements: ["REQ-006", "REQ-007", "REQ-011", "REQ-012", "REQ-018", "REQ-020", "REQ-022-026"]
+      full_trace: "REQ-006,007,011,012,018,020,022-026 -> Phase-5.1 -> T017 -> v1/tests/e2e/"
+  - task_id: "T018"
+    description: "Validate offline, accessibility, and performance"
+    status: "completed"
+    implementation:
+      files_changed:
+        - file: "v1/tests/performance/benchmark.mjs"
+          changes:
+            - change_type: "created"
+              description: "Seeds 500 browser-local documents and measures catalog/search/reader performance at three sizes"
+        - file: "v1/README.md"
+          changes:
+            - change_type: "modified"
+              description: "Documents test and benchmark commands and Chrome prerequisite"
+        - file: "plan.md"
+          changes:
+            - change_type: "modified"
+              description: "Records the approved reference host, browser scope, test evidence, and measured results"
+    verification:
+      build_passed: true
+      test_results:
+        command: "npm --prefix v1 run benchmark"
+        passed: 1
+        failed: 0
+        skipped: 0
+        failures: []
+      notes: "Offline import/read, keyboard navigation/focus, and 320px layout passed. 500-document benchmark completed; medians are recorded in plan.md and v1/runtime-validation-report.md."
+    upstream_trace:
+      plan_item: "5.2"
+      requirements: ["REQ-027", "REQ-028", "REQ-029", "NFR-005", "NFR-006", "NFR-007"]
+      full_trace: "REQ-027-029,NFR-005-007 -> Phase-5.2 -> T018 -> v1/tests/e2e/,v1/tests/performance/benchmark.mjs"
+
+pending_tasks:
+  - task_id: "T019"
+    description: "Obtain explicit release approval"
+    blocked_by: ["T017", "T018"]
+    priority: "P1"
+
+untracked_changes: []
+traceability_chain:
+  - chain_id: "TRACE-PHASE-1"
+    requirement: "REQ-030"
+    plan_phase: "Phase-1"
+    plan_item: "1.1-1.3"
+    tasks: ["T004", "T005", "T006"]
+    files:
+      - "v1/package.json"
+      - "v1/scripts/build.mjs"
+      - "v1/src/"
+      - "v1/template.html"
+      - "v1/HtmlArtsV1.html"
+    status: "complete"
+  - chain_id: "TRACE-PHASE-2"
+    requirement: "REQ-001,REQ-003-005,REQ-016-021,REQ-031"
+    plan_phase: "Phase-2"
+    plan_item: "2.1-2.3"
+    tasks: ["T007", "T008", "T009"]
+    files:
+      - "v1/src/storage/model.js"
+      - "v1/src/storage/database.js"
+      - "v1/src/storage/document-repository.js"
+      - "v1/src/storage/annotation-repository.js"
+      - "v1/src/storage/library-snapshot.js"
+      - "v1/src/storage/legacy-migration.js"
+    status: "complete"
+  - chain_id: "TRACE-PHASE-3"
+    requirement: "REQ-002-015,REQ-028,REQ-029"
+    plan_phase: "Phase-3"
+    plan_item: "3.1-3.3"
+    tasks: ["T010", "T011", "T012"]
+    files:
+      - "v1/src/ingestion/"
+      - "v1/package.json"
+      - "v1/package-lock.json"
+      - "v1/src/storage/model.js"
+      - "v1/src/storage/document-repository.js"
+      - "v1/tests/ingestion.test.mjs"
+      - "PRDSpecifiction.md"
+    status: "complete"
+  - chain_id: "TRACE-PHASE-4"
+    requirement: "REQ-001,REQ-005,REQ-008,REQ-014,REQ-016-018,REQ-022-026,REQ-032"
+    plan_phase: "Phase-4"
+    plan_item: "4.1-4.4"
+    tasks: ["T013", "T014", "T015", "T016"]
+    files:
+      - "v1/src/library/"
+      - "v1/src/reader/"
+      - "v1/src/core/application.js"
+      - "v1/src/core/frame-communication.js"
+      - "v1/scripts/build.mjs"
+      - "v1/template.html"
+      - "v1/tests/"
+      - "v1/HtmlArtsV1.html"
+      - "PRDSpecifiction.md"
+    status: "complete"
+  - chain_id: "TRACE-PHASE-5"
+    requirement: "REQ-006,REQ-007,REQ-011,REQ-012,REQ-018,REQ-020,REQ-022-029,NFR-001-007"
+    plan_phase: "Phase-5"
+    plan_item: "5.1-5.2"
+    tasks: ["T017", "T018"]
+    files:
+      - "v1/tests/e2e/"
+      - "v1/tests/performance/benchmark.mjs"
+      - "v1/package.json"
+      - "v1/README.md"
+      - "v1/runtime-validation-report.md"
+      - "plan.md"
+    status: "complete"
+
+validation:
+  passed: true
+  errors: []
+  warnings:
+    - "Numeric import-size cap remains a release gate pending representative-device testing."
+    - "Firefox/Safari coverage, full assistive-technology review, and explicit release approval remain outstanding."
+  blocking_issues: []

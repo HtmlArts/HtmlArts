@@ -1,0 +1,146 @@
+batch_id: "B04"
+completed_tasks: ["T010", "T011", "T012"]
+blocked_tasks: []
+files_changed:
+  T010:
+    - file: "v1/src/ingestion/html-parser.js"
+      change_type: "created"
+      description: "Validates supported HTML files, reads their source, and reports actionable input errors."
+    - file: "v1/src/ingestion/metadata-extractor.js"
+      change_type: "created"
+      description: "Extracts publication metadata with a filename and generic title fallback."
+    - file: "v1/src/ingestion/document-importer.js"
+      change_type: "created"
+      description: "Persists a distinct document and source/safe content atomically and returns import feedback."
+    - file: "v1/src/storage/document-repository.js"
+      change_type: "modified"
+      description: "Adds non-overwriting insert semantics for imported documents."
+    - file: "v1/src/storage/model.js"
+      change_type: "modified"
+      description: "Stores extracted description, author, language, and source filename metadata."
+    - file: "v1/tests/ingestion.test.mjs"
+      change_type: "created"
+      description: "Covers import validation, metadata, persistence, and failure outcomes."
+  T011:
+    - file: "v1/src/ingestion/html-sanitizer.js"
+      change_type: "created"
+      description: "Removes active content and makes external links inert until explicit confirmation."
+    - file: "v1/src/ingestion/css-sanitizer.js"
+      change_type: "created"
+      description: "Parses CSS and removes external resources and unsafe constructs while retaining safe rules."
+    - file: "v1/package.json"
+      change_type: "modified"
+      description: "Adds DOMPurify and CSS Tree at runtime and jsdom for tests."
+    - file: "v1/package-lock.json"
+      change_type: "modified"
+      description: "Locks the new sanitizer/parser dependencies."
+    - file: "v1/tests/ingestion.test.mjs"
+      change_type: "modified"
+      description: "Exercises malicious HTML/CSS and confirms benign content remains readable."
+  T012:
+    - file: "v1/src/ingestion/rendering-strategy.js"
+      change_type: "created"
+      description: "Selects explicit structured folios or safe-original presentation without changing identity."
+    - file: "v1/src/ingestion/README.md"
+      change_type: "modified"
+      description: "Documents the ingestion contract and confirmed security/rendering behavior."
+    - file: "v1/README.md"
+      change_type: "modified"
+      description: "Updates project status for confirmed policies and remaining release gates."
+    - file: "PRDSpecifiction.md"
+      change_type: "modified"
+      description: "Records confirmed resource/link/rendering behavior and the deferred numeric size cap."
+    - file: "plan.md"
+      change_type: "modified"
+      description: "Marks Phase 3 complete and records its implementation evidence."
+    - file: "checkpoints/tasks-to-impl.yaml"
+      change_type: "modified"
+      description: "Maps T010-T012 to requirements, implementation, and test evidence."
+    - file: "v1/PHASE-3-BATCH-REPORT.yaml"
+      change_type: "created"
+      description: "Records the Phase 3 batch outcome."
+upstream_artifacts_consumed:
+  T010:
+    - artifact: "PRDSpecifiction.md#REQ-002-008"
+      used_for: "Supported local import, document identity, metadata fallback, and no partial success."
+    - artifact: "plan.md#Phase 3.1"
+      used_for: "Local HTML validation and atomic import task boundary."
+    - artifact: "v1/src/storage/model.js"
+      used_for: "Canonical document and content contracts."
+  T011:
+    - artifact: "PRDSpecifiction.md#REQ-011-013,REQ-028,REQ-029"
+      used_for: "Safe-by-default HTML/CSS, blocked remote resources, and confirmed outbound-link policy."
+    - artifact: "PRDSpecifiction.md#Confirmed implementation decisions"
+      used_for: "No automatic remote resource loading and explicit link confirmation."
+  T012:
+    - artifact: "PRDSpecifiction.md#REQ-003,REQ-009,REQ-010"
+      used_for: "Rendering selection remains independent from document identity/source."
+    - artifact: "Book-01.html#stage/pages"
+      used_for: "Evidence for the legacy structured-folio marker supported by the initial detector."
+evidence_mapping:
+  T010:
+    - upstream: "PRDSpecifiction.md#REQ-002-008"
+      output: "v1/src/ingestion/document-importer.js"
+      evidence: "Ingestion tests verify metadata/source separation, atomic persistence, fallback titles, and failure outcomes."
+  T011:
+    - upstream: "PRDSpecifiction.md#REQ-011-013,REQ-028,REQ-029"
+      output: "v1/src/ingestion/html-sanitizer.js"
+      evidence: "Tests verify removal of scripts, handlers, forms, SVG, remote assets, unsafe CSS, and outbound href activation."
+  T012:
+    - upstream: "PRDSpecifiction.md#REQ-003,REQ-009,REQ-010"
+      output: "v1/src/ingestion/rendering-strategy.js"
+      evidence: "Tests verify explicit legacy folios select STRUCTURED_FOLIOS and ordinary styled content selects SAFE_ORIGINAL."
+traceability:
+  - requirement: "REQ-002-008"
+    plan_item: "3.1"
+    task: "T010"
+    files: ["v1/src/ingestion/", "v1/src/storage/document-repository.js", "v1/src/storage/model.js"]
+    status: "completed"
+  - requirement: "REQ-004,REQ-011-013,REQ-028,REQ-029"
+    plan_item: "3.2"
+    task: "T011"
+    files: ["v1/src/ingestion/html-sanitizer.js", "v1/src/ingestion/css-sanitizer.js"]
+    status: "completed"
+  - requirement: "REQ-003,REQ-009,REQ-010,REQ-014,REQ-015"
+    plan_item: "3.3"
+    task: "T012"
+    files: ["v1/src/ingestion/rendering-strategy.js", "v1/src/ingestion/README.md"]
+    status: "completed"
+protocol_violation: false
+errors: []
+warnings:
+  - severity: "MEDIUM"
+    message: "Numeric import-size cap is deferred by product decision; establish and document it using representative-device testing before release. Inputs are not silently truncated."
+  - severity: "LOW"
+    message: "Catalog/reader UI wiring and real-browser import journey/security validation remain in Phases 4 and 5."
+test_results:
+  T010:
+    command: "npm --prefix v1 test"
+    passed: 14
+    failed: 0
+    skipped: 0
+    failures: []
+  T011:
+    command: "npm --prefix v1 test"
+    passed: 14
+    failed: 0
+    skipped: 0
+    failures: []
+  T012:
+    command: "npm --prefix v1 test"
+    passed: 14
+    failed: 0
+    skipped: 0
+    failures: []
+  root_regression:
+    command: "node tests/verify-book-server.js; node tests/verify-quine-composition.js"
+    passed: 9
+    failed: 0
+    skipped: 0
+    failures: []
+  browser_smoke:
+    command: "Open v1/HtmlArtsV1.html in integrated browser"
+    passed: 1
+    failed: 0
+    skipped: 0
+    failures: []

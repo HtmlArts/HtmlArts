@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#fbf8f1">
+    <meta name="description" content="HtmlArts local reading workspace">
+    <title>HtmlArts</title>
+    <style>/*__HTMLARTS_INLINE_CSS__*/</style>
+  </head>
+  <body>
+    <main class="app-shell" data-catalog-view>
+      <header class="topbar">
+        <a class="brand" href="#" data-home-link aria-label="HtmlArts home">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M4.5 7.5c4.1-1.3 8-.5 11.5 2.2 3.5-2.7 7.4-3.5 11.5-2.2v16c-4.1-1.2-8-.4-11.5 2.3-3.5-2.7-7.4-3.5-11.5-2.3z"/><path d="M16 9.7v16"/></svg>
+          </span>
+          <span class="brand-name brand-underline">HtmlArts</span>
+        </a>
+        <nav class="main-nav" aria-label="Main navigation">
+          <button type="button" class="icon-button" data-nav-page="catalogue" aria-label="Your Space" title="Your Space">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg>
+          </button>
+          <button type="button" class="icon-button" data-nav-page="templates" aria-label="Page Templates" title="Page Templates">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3.5" width="8" height="7" rx="1.3"/><rect x="13" y="3.5" width="8" height="17" rx="1.3"/><rect x="3" y="12.5" width="8" height="8" rx="1.3"/></svg>
+          </button>
+          <button type="button" class="icon-button" data-home-studio aria-label="Design Studio" title="Design Studio">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 16.8-.8 4 4-.8L19.8 7.4a2.1 2.1 0 0 0-3-3L4 16.8Z"/><path d="m14.9 6.3 3 3"/></svg>
+          </button>
+          <button type="button" class="icon-button" data-home-library aria-label="Your library" title="Your library">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20.5h18"/><rect x="5" y="11" width="3.5" height="9.5" rx="1"/><rect x="10.3" y="6.5" width="3.5" height="14" rx="1"/><rect x="15.6" y="3" width="3.5" height="17.5" rx="1"/></svg>
+          </button>
+        </nav>
+        <span class="top-spacer"></span>
+        <label class="global-search">
+          <span aria-hidden="true">⌕</span>
+          <input type="search" placeholder="Search books, templates..." aria-label="Search library" data-catalogue-search>
+        </label>
+        <div class="header-actions">
+          <button type="button" class="button button-quiet" data-import-action>＋ Import HTML</button>
+          <button type="button" class="button button-quiet" data-refresh-action>⟳ Refresh &amp; Save</button>
+          <button type="button" data-app-action>⬇ Export App</button>
+          <div class="vault-wrap">
+            <button type="button" class="vault-trigger" data-vault-trigger aria-haspopup="menu" aria-controls="htmlarts-vault-menu" aria-expanded="false">Vault⌄</button>
+            <div class="vault-menu" id="htmlarts-vault-menu" data-vault-menu role="menu">
+              <button type="button" role="menuitem" data-vault-create>▤ <span>New publication<small>Create a local book</small></span></button>
+              <button type="button" role="menuitem" data-vault-studio>✎ <span>Design Studio<small>Compose pages and parts</small></span></button>
+              <button type="button" role="menuitem" data-about-open>ⓘ <span>About HtmlArts<small>A note about this place</small></span></button>
+            </div>
+          </div>
+          <input type="file" accept=".html,.htm,text/html,application/xhtml+xml" data-import-input hidden>
+          <input type="file" accept=".json,application/json" data-metadata-input hidden>
+        </div>
+      </header>
+      <section class="home-page" data-page-view="home" aria-labelledby="app-heading">
+        <div class="hero">
+          <div class="hero-copy">
+            <p class="eyebrow">A little library made with care</p>
+            <h1 id="app-heading" data-app-title>Create, read, design and <em>publish</em> beautiful HTML books.</h1>
+            <p class="lead">A local home for interactive books, thoughtful notes, visual stories and creative learning. Your library stays close, simple and yours.</p>
+            <div class="hero-actions">
+              <button type="button" class="button button-quiet" data-browse-catalog>Browse Catalog&nbsp; ↗</button>
+              <button type="button" data-app-action>⬇ Download HtmlArtsV1.html</button>
+            </div>
+            <p class="status" data-app-status role="status" aria-live="polite">Starting your local workspace…</p>
+          </div>
+          <div class="hero-art">
+            <svg viewBox="0 0 650 340" role="img" aria-label="Hand drawn open book with a mountain landscape">
+              <defs><linearGradient id="hero-page" x2="0" y2="1"><stop stop-color="#fff9e9"/><stop offset="1" stop-color="#ead9bd"/></linearGradient></defs>
+              <path d="M62 275 Q180 245 270 275 T590 268" fill="none" stroke="#d9c8a9" stroke-width="3" stroke-linecap="round"/>
+              <path d="M105 264 Q190 232 300 270 Q410 231 540 260 L530 292 Q410 268 300 299 Q185 268 105 292Z" fill="#e8d7bd" opacity=".55"/>
+              <path d="M110 84 Q210 57 305 111 L305 276 Q207 225 110 253Z" fill="url(#hero-page)" stroke="#76563b" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M305 111 Q410 57 536 84 L536 253 Q414 225 305 276Z" fill="#fffaf0" stroke="#76563b" stroke-width="4" stroke-linejoin="round"/>
+              <path d="M305 111 Q300 196 305 276" fill="none" stroke="#b58e62" stroke-width="3"/>
+              <path d="M137 207 L191 144 L224 181 L254 133 L292 205Z" fill="#a9a58b" stroke="#6f6a56" stroke-width="2"/>
+              <path d="M159 180 L191 144 L207 164 L191 158 L177 173Z M224 181 L254 133 L272 163 L254 149 L242 169Z" fill="#f8f0dc"/>
+              <path d="M139 210 Q201 193 292 212" fill="none" stroke="#7d987f" stroke-width="9"/>
+              <circle cx="255" cy="112" r="22" fill="#e8bc65"/>
+              <path d="M340 130 Q422 109 504 126 M340 155 Q424 133 504 150 M340 180 Q424 158 504 175 M340 205 Q424 183 504 200 M340 230 Q424 208 504 225" stroke="#cbb99e" stroke-width="3" stroke-linecap="round" fill="none"/>
+              <path d="M70 250 Q38 210 66 168 Q80 145 96 129 M82 197 Q48 190 48 165 M81 219 Q111 195 111 173" fill="none" stroke="#8c9b75" stroke-width="4" stroke-linecap="round"/>
+              <path d="M558 258 Q594 212 574 164 M575 210 Q608 199 612 170 M571 230 Q545 214 544 190" fill="none" stroke="#8c9b75" stroke-width="4" stroke-linecap="round"/>
+              <path d="M540 278 Q568 263 595 278" stroke="#8b6747" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M556 268 L592 92 Q594 83 601 87 L610 91 Q616 94 611 102 L575 278Z" fill="#b88753" stroke="#76563b" stroke-width="3"/>
+              <path d="M592 91 L602 62 Q605 54 611 62 L617 70 L611 94" fill="#d6b27c" stroke="#76563b" stroke-width="2"/>
+              <path d="M574 278 L560 296 L580 287Z" fill="#76563b"/>
+              <path d="M95 287 Q115 267 126 248 M95 287 Q76 274 72 255 M95 287 Q99 263 92 245" fill="none" stroke="#8c9b75" stroke-width="3" stroke-linecap="round"/>
+            </svg>
+            <p class="scribble">made for curious minds ↗</p>
+          </div>
+        </div>
+        <div class="feature-row" aria-label="HtmlArts features">
+          <button type="button" class="feature" data-home-create><span class="feature-icon">▤</span><span><b>HTML Book Creator</b><small>Build rich, interactive books</small></span></button>
+          <button type="button" class="feature" data-home-templates><span class="feature-icon">✿</span><span><b>Page Art Templates</b><small>20+ visual page styles</small></span></button>
+          <button type="button" class="feature" data-home-library><span class="feature-icon">✎</span><span><b>Write &amp; Annotate</b><small>Pen, highlights and notes</small></span></button>
+          <button type="button" class="feature" data-home-studio><span class="feature-icon">▱</span><span><b>Design Studio</b><small>Compose pages and parts</small></span></button>
+          <button type="button" class="feature" data-vault-open><span class="feature-icon">▣</span><span><b>Vault</b><small>Local library · snapshots · studio</small></span></button>
+        </div>
+        <section class="home-featured" aria-labelledby="featured-heading">
+          <div class="section-heading">
+            <h2 id="featured-heading">Featured Books</h2>
+            <span class="heading-rule"></span>
+            <button type="button" class="text-link" data-browse-catalog>View all&nbsp; →</button>
+          </div>
+          <p class="featured-empty" data-featured-empty>Your saved publications will appear here. Create or import your first book to begin.</p>
+          <ul class="featured-grid" data-featured-list aria-label="Featured publications"></ul>
+        </section>
+        <div class="home-about">
+          <button type="button" class="about-link" data-about-open>@About</button>
+          <span>A small independent library for beautiful HTML books.</span>
+        </div>
+      </section>
+      <section class="catalog-page" data-page-view="catalogue" hidden aria-labelledby="catalogue-heading">
+        <div class="catalog-heading">
+          <div class="catalog-heading-copy">
+            <p class="eyebrow">Your books, notes, and ideas</p>
+            <h1 id="catalogue-heading">Your Space</h1>
+            <p class="catalog-subtitle">A personal library to read, shape, and keep.</p>
+          </div>
+          <div class="category-basket" aria-label="Browse by category">
+            <svg class="basket-outline" viewBox="0 0 360 205" aria-hidden="true">
+              <path d="M34 75 Q180 57 326 75 L316 171 Q180 189 44 171Z"/>
+              <path d="M57 77 C63 12 297 12 303 77"/>
+              <path d="M45 99 Q180 83 318 99 M47 147 Q180 163 316 147"/>
+            </svg>
+            <button type="button" data-category-filter="Education" aria-label="Filter Education" title="Education">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m2 8 10-5 10 5-10 5L2 8Z"/><path d="M6 10v6c3 2 9 2 12 0v-6M22 8v7"/></svg>
+            </button>
+            <button type="button" data-category-filter="Society" aria-label="Filter Society" title="Society">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20v-2a6 6 0 0 1 12 0v2M15 15a5 5 0 0 1 6 5"/></svg>
+            </button>
+            <button type="button" data-category-filter="Technology" aria-label="Filter Technology" title="Technology">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="13" rx="1.5"/><path d="M8 21h8m-4-4v4"/></svg>
+            </button>
+            <button type="button" data-category-filter="Design" aria-label="Filter Design" title="Design">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18h1.2a2 2 0 0 0 1.6-3.2l-.4-.5a1.8 1.8 0 0 1 1.4-2.9H18a3 3 0 0 0 3-3A8.4 8.4 0 0 0 12 3Z"/><circle cx="7.5" cy="10" r="1"/><circle cx="11" cy="7" r="1"/><circle cx="16" cy="8" r="1"/></svg>
+            </button>
+            <button type="button" data-category-filter="Media" aria-label="Filter Media" title="Media">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="15" rx="2"/><path d="m10 9 5 3-5 3V9ZM3 9h18"/></svg>
+            </button>
+            <button type="button" data-category-filter="Science" aria-label="Filter Science" title="Science">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="12" rx="9" ry="3.5"/><ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="9" ry="3.5" transform="rotate(120 12 12)"/><circle cx="12" cy="12" r="1.5"/></svg>
+            </button>
+          </div>
+        </div>
+        <div class="space-actions" role="group" aria-label="Manage your space">
+          <button type="button" data-space-create>＋ New book or note</button>
+          <button type="button" class="button button-quiet" data-import-action>＋ Import HTML</button>
+          <button type="button" class="button button-quiet" data-app-action>↓ Save library file</button>
+          <button type="button" class="button button-quiet" data-export-metadata>Export details</button>
+          <button type="button" class="button button-quiet" data-import-metadata>Import details</button>
+        </div>
+        <div class="catalog-toolbar">
+          <div class="catalog-filters" role="group" aria-label="Filter publications by type">
+            <button type="button" class="filter-chip active" data-type-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="filter-chip" data-type-filter="book" aria-pressed="false">Books</button>
+            <button type="button" class="filter-chip" data-type-filter="comic" aria-pressed="false">Comics</button>
+            <button type="button" class="filter-chip" data-type-filter="note" aria-pressed="false">Notes</button>
+            <button type="button" class="filter-chip" data-type-filter="magazine" aria-pressed="false">Magazines</button>
+          </div>
+          <p class="catalog-count" data-catalogue-count aria-live="polite"></p>
+        </div>
+        <p class="catalogue-empty" data-catalogue-empty>Your Space is ready for its first book or note.</p>
+        <ul class="document-grid" data-catalogue-list aria-label="Your books and notes"></ul>
+      </section>
+      <section class="templates-page" data-page-view="templates" hidden aria-labelledby="templates-heading">
+        <div class="templates-heading">
+          <div>
+            <p class="eyebrow">A starting point, not a limitation</p>
+            <h1 id="templates-heading">Page Templates</h1>
+            <p>Visual directions for expressive HTML pages.</p>
+          </div>
+          <div class="templates-actions">
+            <button type="button" class="button button-quiet" data-import-action>＋ Import Template</button>
+            <button type="button" data-template-create>＋ Create Book</button>
+          </div>
+        </div>
+        <div class="template-grid" data-template-grid aria-label="Page art templates"></div>
+        <p class="template-hint">Choose a page style to start a new HTML book. Your choice is saved with the publication.</p>
+      </section>
+      <section class="create-panel" data-create-panel hidden aria-labelledby="create-heading">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">A new beginning</p>
+            <h2 id="create-heading">Create a publication</h2>
+          </div>
+          <button type="button" class="button button-quiet" data-cancel-create>Cancel</button>
+        </div>
+        <form data-create-form>
+          <label for="publication-title">Title</label>
+          <input id="publication-title" name="title" maxlength="160" required>
+          <label for="publication-genre">What are you creating?</label>
+          <select id="publication-genre" name="genre">
+            <option>Book</option>
+            <option>Note</option>
+            <option>Comic</option>
+            <option>Magazine</option>
+          </select>
+          <label for="publication-category">Category</label>
+          <input id="publication-category" name="category" maxlength="80" value="Personal">
+          <label for="publication-template">Starting style</label>
+          <select id="publication-template" name="template">
+            <option>Editorial</option>
+            <option>Swiss Grid</option>
+            <option>Botanical</option>
+            <option>Geometric</option>
+            <option>Comic</option>
+            <option>Watercolour</option>
+          </select>
+          <label for="publication-content">Your first thoughts</label>
+          <textarea id="publication-content" name="content" rows="8" required></textarea>
+          <button type="submit">Save publication</button>
+        </form>
+      </section>
+      <dialog class="document-edit-dialog" data-document-edit-dialog aria-labelledby="document-edit-heading">
+        <form data-document-edit-form>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Your Space</p>
+              <h2 id="document-edit-heading">Edit details</h2>
+            </div>
+            <button type="button" class="button button-quiet" data-document-edit-cancel aria-label="Close edit details">×</button>
+          </div>
+          <input type="hidden" name="id">
+          <label for="edit-document-title">Title</label>
+          <input id="edit-document-title" name="title" maxlength="160" required>
+          <label for="edit-document-author">Author</label>
+          <input id="edit-document-author" name="author" maxlength="160">
+          <label for="edit-document-category">Category</label>
+          <input id="edit-document-category" name="category" maxlength="80">
+          <label for="edit-document-genre">Type</label>
+          <select id="edit-document-genre" name="genre">
+            <option>Book</option>
+            <option>Note</option>
+            <option>Comic</option>
+            <option>Magazine</option>
+          </select>
+          <label for="edit-document-description">Description</label>
+          <textarea id="edit-document-description" name="description" rows="3" maxlength="1000"></textarea>
+          <div class="dialog-actions">
+            <button type="button" class="button button-quiet" data-document-edit-cancel>Cancel</button>
+            <button type="submit">Save details</button>
+          </div>
+        </form>
+      </dialog>
+      <dialog class="document-edit-dialog" data-metadata-import-dialog aria-labelledby="metadata-import-heading">
+        <form data-metadata-import-form>
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Metadata exchange</p>
+              <h2 id="metadata-import-heading">Import library details</h2>
+            </div>
+            <button type="button" class="button button-quiet" data-metadata-import-cancel aria-label="Close metadata import">×</button>
+          </div>
+          <p>Merge updates matching books and notes while keeping all local content. Replace removes local items not in this file. Replace is available only when every imported item already has local content.</p>
+          <label for="metadata-import-mode">How should details be applied?</label>
+          <select id="metadata-import-mode" name="mode">
+            <option value="merge">Merge (recommended)</option>
+            <option value="replace">Replace library details</option>
+          </select>
+          <div class="dialog-actions">
+            <button type="button" class="button button-quiet" data-metadata-import-cancel>Cancel</button>
+            <button type="submit">Continue</button>
+          </div>
+        </form>
+      </dialog>
+      <footer class="home-footer">
+        <span>HtmlArts · A local book store of HTML books · <button type="button" data-about-open>@About</button></span>
+        <span>Designed with a little ink and a lot of care · <button type="button" data-home-top>Back to top ↑</button></span>
+      </footer>
+    </main>
+    <section class="about-backdrop" data-about-modal hidden aria-labelledby="about-title" role="dialog" aria-modal="true">
+      <div class="about-modal">
+        <button type="button" class="about-close" data-about-close aria-label="Close About HtmlArts">×</button>
+        <p class="eyebrow">A note about this place</p>
+        <h2 id="about-title">Welcome to HtmlArts.</h2>
+        <p>HtmlArts is a local-first library for reading, creating and collecting self-contained HTML books. It brings books, visual page styles and a quiet writing space into one thoughtful interface.</p>
+        <div class="about-list">
+          <div><b>Local by nature</b>Designed to work from your own files and browser.</div>
+          <div><b>Open format</b>Books remain portable HTML documents.</div>
+          <div><b>Reader first</b>Simple navigation and a distraction-light surface.</div>
+          <div><b>Made to grow</b>Creation, annotation and library tools arrive in stages.</div>
+        </div>
+        <p class="about-license">GNU AGPLv3 <span aria-hidden="true">·</span> Open-source software</p>
+      </div>
+    </section>
+    <section class="studio-shell" data-studio-view hidden aria-labelledby="studio-heading">
+      <header class="studio-header">
+        <button type="button" class="button button-quiet" data-studio-back>← Library</button>
+        <h1 id="studio-heading">Design Studio</h1>
+        <span class="studio-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M4.5 7.5c4.1-1.3 8-.5 11.5 2.2 3.5-2.7 7.4-3.5 11.5-2.2v16c-4.1-1.2-8-.4-11.5 2.3-3.5-2.7-7.4-3.5-11.5-2.3z"/><path d="M16 9.7v16"/></svg>
+          </span>
+          <span class="brand-underline">HtmlArts</span>
+        </span>
+        <p data-studio-status role="status" aria-live="polite"></p>
+      </header>
+      <iframe
+        title="HtmlArts Design Studio"
+        sandbox="allow-scripts allow-forms allow-modals allow-downloads"
+        data-studio-frame
+      ></iframe>
+    </section>
+    <section class="reader-shell" data-reader-view hidden aria-labelledby="reader-heading">
+      <header class="reader-header">
+        <button type="button" class="button button-quiet" data-reader-back>← Library</button>
+        <p class="reader-brand">
+          <span class="brand-mark" aria-hidden="true">
+            <svg viewBox="0 0 32 32"><path d="M4.5 7.5c4.1-1.3 8-.5 11.5 2.2 3.5-2.7 7.4-3.5 11.5-2.2v16c-4.1-1.2-8-.4-11.5 2.3-3.5-2.7-7.4-3.5-11.5-2.3z"/><path d="M16 9.7v16"/></svg>
+          </span>
+          <span class="reader-brand-name brand-underline">HtmlArts</span>
+          <span class="reader-brand-context">Reader</span>
+        </p>
+        <div class="reader-navigation">
+          <button type="button" class="button button-quiet" data-reader-previous aria-label="Previous section">←</button>
+          <span data-reader-position aria-live="polite"></span>
+          <button type="button" class="button button-quiet" data-reader-next aria-label="Next section">→</button>
+          <button type="button" class="button button-quiet" data-reader-contents>Contents</button>
+        </div>
+      </header>
+      <div class="reader-layout">
+        <aside class="reader-sidebar" data-reader-sidebar>
+          <h2 id="reader-heading" data-reader-title></h2>
+          <nav aria-label="Table of contents">
+            <h3>Contents</h3>
+            <ol data-reader-toc></ol>
+          </nav>
+          <section class="annotation-panel" aria-labelledby="annotation-heading">
+            <h3 id="annotation-heading">Reading notes</h3>
+            <form data-note-form>
+              <label for="reader-note">Add a note</label>
+              <textarea id="reader-note" name="note" rows="3" required maxlength="2000"></textarea>
+              <button type="submit">Save note</button>
+            </form>
+            <p class="note-status" data-note-status role="status" aria-live="polite"></p>
+            <ol class="note-list" data-note-list></ol>
+          </section>
+        </aside>
+        <main class="reader-page">
+          <div class="reader-frame-wrap">
+            <iframe title="Publication content" sandbox="allow-same-origin" data-reader-frame></iframe>
+            <canvas class="reader-ink" data-reader-ink aria-label="Drawing layer for this folio"></canvas>
+          </div>
+          <p class="reader-status" data-reader-status role="status" aria-live="polite"></p>
+        </main>
+      </div>
+      <div class="reader-pen-panel" data-reader-pen-panel role="toolbar" aria-label="Folio pen tools">
+        <div class="pen-folios"><span>Folios:</span><output data-pen-folio aria-live="polite">1 / 1</output></div>
+        <button type="button" class="pen-tool" data-pen-tool="pen" aria-pressed="false">✎ <span>Nib</span></button>
+        <button type="button" class="pen-tool" data-pen-tool="eraser" aria-pressed="false" aria-label="Eraser">⌫</button>
+        <button type="button" class="pen-tool" data-pen-tool="highlight" aria-pressed="false">▧ <span>Highlight</span></button>
+        <button type="button" class="pen-tool" data-apply-highlight disabled>Add highlight</button>
+        <div class="pen-colors" role="group" aria-label="Pen color">
+          <button type="button" class="pen-color" data-pen-color="#33271f" aria-label="Ink black" title="Ink black"></button>
+          <button type="button" class="pen-color" data-pen-color="#795234" aria-label="Walnut brown" title="Walnut brown"></button>
+          <button type="button" class="pen-color selected" data-pen-color="#b35c43" aria-label="Terracotta" title="Terracotta"></button>
+          <button type="button" class="pen-color" data-pen-color="#637b68" aria-label="Sage green" title="Sage green"></button>
+          <button type="button" class="pen-color" data-pen-color="#40566c" aria-label="Slate blue" title="Slate blue"></button>
+        </div>
+        <button type="button" class="pen-tool" data-pen-undo aria-label="Undo stroke" title="Undo">↶</button>
+        <button type="button" class="pen-tool" data-pen-redo aria-label="Redo stroke" title="Redo">↷</button>
+        <button type="button" class="pen-tool" data-pen-clear>Clear</button>
+        <button type="button" class="pen-tool pen-download" data-pen-download>↓ <span>Download</span></button>
+      </div>
+    </section>
+    <template id="htmlarts-studio-source"><!--__HTMLARTS_STUDIO_SOURCE__--></template>
+    <script id="htmlarts-snapshot" type="application/json">{"schema":"htmlarts-library-snapshot","version":1,"createdAt":"1970-01-01T00:00:00.000Z","documents":[],"contents":[],"annotations":[]}</script>
+    <script>/*__HTMLARTS_INLINE_JS__*/</script>
+  </body>
+</html>
