@@ -87,7 +87,7 @@ export async function mountApplication(document) {
       snapshotWarning = ` The embedded file snapshot could not be read: ${error.message}`;
       console.error("HtmlArts embedded snapshot could not be read; keeping the runtime library.", error);
     }
-    status.textContent = `${startupMessage(migration.status, hydrationStatus, documentCount)}${snapshotWarning}`;
+    status.textContent = `${startupMessage(migration, hydrationStatus, documentCount)}${snapshotWarning}`;
   } catch (error) {
     status.textContent = `Your local library could not be opened: ${error.message}`;
     for (const snapshotAction of snapshotActions) snapshotAction.disabled = true;
@@ -702,15 +702,20 @@ function errorMessage(error) {
   return error instanceof Error ? error.message : "The catalog could not be refreshed.";
 }
 
-function startupMessage(migrationStatus, hydrationStatus, documentCount) {
+function startupMessage(migration, hydrationStatus, documentCount) {
+  let message;
   if (hydrationStatus === "hydrated" && documentCount > 0) {
-    return `Restored ${documentCount} document(s) from this HtmlArts file.`;
+    message = `Restored ${documentCount} document(s) from this HtmlArts file.`;
+  } else if (migration.status === "migrated") {
+    message = `Migrated ${documentCount} document(s) from your existing HtmlArts library.`;
+  } else if (hydrationStatus === "existing-runtime-library") {
+    message = `Your local library is ready · ${documentCount} document(s). Newer browser data was kept.`;
+  } else {
+    message = `Your local reading workspace is ready · ${documentCount} document(s).`;
   }
-  if (migrationStatus === "migrated") {
-    return `Migrated ${documentCount} document(s) from your existing HtmlArts library.`;
+
+  if (migration.retainedLegacyRecordCount > 0) {
+    message += " A separate legacy folio workspace record was preserved in the previous HtmlArts database; this v1 library does not display that workspace data.";
   }
-  if (hydrationStatus === "existing-runtime-library") {
-    return `Your local library is ready · ${documentCount} document(s). Newer browser data was kept.`;
-  }
-  return `Your local reading workspace is ready · ${documentCount} document(s).`;
+  return message;
 }

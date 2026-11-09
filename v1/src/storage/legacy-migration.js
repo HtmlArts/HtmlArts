@@ -8,11 +8,16 @@ import {
 import { listDocuments } from "./document-repository.js";
 
 const MIGRATION_ID = "legacy-htmlarts-db-v2";
+const LEGACY_FOLIO_STATE_ID = "__folio_notes_state__";
 
 export async function migrateLegacyDatabase(targetDatabase, indexedDBApi = globalThis.indexedDB) {
   const previousState = await readMigrationState(targetDatabase);
   if (previousState?.status === "complete") {
-    return { status: "already-migrated", documentCount: previousState.documentCount };
+    return {
+      status: "already-migrated",
+      documentCount: previousState.documentCount,
+      retainedLegacyRecordCount: previousState.retainedLegacyRecordCount ?? 0,
+    };
   }
 
   const legacyDatabase = await openLegacyDatabase(indexedDBApi);
@@ -32,14 +37,20 @@ export async function migrateLegacyDatabase(targetDatabase, indexedDBApi = globa
         id: MIGRATION_ID,
         status: "complete",
         documentCount: records.documents.length,
+        retainedLegacyRecordCount: records.retainedLegacyRecordCount,
         completedAt: new Date().toISOString(),
       });
-      return { status: "migrated", documentCount: records.documents.length };
+      return migrationResult("migrated", records);
     }
 
     if (records.documents.length === 0 && records.annotations.length === 0) {
-      await markMigration(targetDatabase, { id: MIGRATION_ID, status: "complete", documentCount: 0 });
-      return { status: "empty-legacy-database", documentCount: 0 };
+      await markMigration(targetDatabase, {
+        id: MIGRATION_ID,
+        status: "complete",
+        documentCount: 0,
+        retainedLegacyRecordCount: records.retainedLegacyRecordCount,
+      });
+      return migrationResult("empty-legacy-database", records);
     }
 
     await copyRecords(targetDatabase, records);
@@ -48,9 +59,10 @@ export async function migrateLegacyDatabase(targetDatabase, indexedDBApi = globa
       id: MIGRATION_ID,
       status: "complete",
       documentCount: records.documents.length,
+      retainedLegacyRecordCount: records.retainedLegacyRecordCount,
       completedAt: new Date().toISOString(),
     });
-    return { status: "migrated", documentCount: records.documents.length };
+    return migrationResult("migrated", records);
   } finally {
     legacyDatabase.close();
   }
@@ -130,7 +142,12 @@ async function readLegacyRecords(database) {
   const documents = [...documentsById.values()];
   const documentIds = new Set(documents.map((document) => document.id));
   const annotations = [];
+  let retainedLegacyRecordCount = 0;
   for (const record of values.get("annotations") ?? []) {
+    if (record?.bookId === LEGACY_FOLIO_STATE_ID) {
+      retainedLegacyRecordCount += 1;
+      continue;
+    }
     if (typeof record?.bookId !== "string" || !documentIds.has(record.bookId)) {
       throw new Error("Legacy migration found annotations without a matching document; source data was preserved.");
     }
@@ -147,6 +164,15 @@ async function readLegacyRecords(database) {
     documents,
     contents: [...contentsById.values()].filter((content) => documentIds.has(content.documentId)),
     annotations,
+    retainedLegacyRecordCount,
+  };
+}
+
+function migrationResult(status, records) {
+  return {
+    status,
+    documentCount: records.documents.length,
+    retainedLegacyRecordCount: records.retainedLegacyRecordCount,
   };
 }
 

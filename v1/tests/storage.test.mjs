@@ -111,7 +111,11 @@ test("legacy v2 migration copies records and leaves legacy stores intact", async
   const database = await openDatabase(indexedDB);
   try {
     const result = await migrateLegacyDatabase(database, indexedDB);
-    assert.deepEqual(result, { status: "migrated", documentCount: 1 });
+    assert.deepEqual(result, {
+      status: "migrated",
+      documentCount: 1,
+      retainedLegacyRecordCount: 0,
+    });
     assert.equal((await getDocument(database, "legacy-1")).title, "Migrated book");
     assert.equal(
       (await getDocumentContent(database, "legacy-1")).originalHtml,
@@ -126,6 +130,7 @@ test("legacy v2 migration copies records and leaves legacy stores intact", async
     assert.deepEqual(await migrateLegacyDatabase(database, indexedDB), {
       status: "already-migrated",
       documentCount: 1,
+      retainedLegacyRecordCount: 0,
     });
 
     const legacy = await openExistingDatabase(indexedDB);
@@ -136,6 +141,51 @@ test("legacy v2 migration copies records and leaves legacy stores intact", async
       await transactionResult(read);
       assert.equal(legacyDocs.length, 1);
       assert.equal(legacyAnnotations.length, 1);
+    } finally {
+      legacy.close();
+    }
+  } finally {
+    database.close();
+  }
+});
+
+test("legacy folio workspace record is retained without blocking document migration", async () => {
+  const indexedDB = new IDBFactory();
+  const folioWorkspace = {
+    bookId: "__folio_notes_state__",
+    folios: [{ title: "My notes", content: "Remember this" }],
+    activeFolioIndex: 0,
+    updatedAt: 1794182400000,
+  };
+  await seedLegacyDatabase(indexedDB, {
+    metadata: { id: "legacy-with-folios", title: "Migrated book" },
+    annotation: {
+      bookId: "legacy-with-folios",
+      strokes: [{ page: 1 }],
+    },
+    annotations: [folioWorkspace],
+  });
+
+  const database = await openDatabase(indexedDB);
+  try {
+    assert.deepEqual(await migrateLegacyDatabase(database, indexedDB), {
+      status: "migrated",
+      documentCount: 1,
+      retainedLegacyRecordCount: 1,
+    });
+    assert.equal((await getAnnotations(database, "legacy-with-folios")).strokes.length, 1);
+    assert.deepEqual(await migrateLegacyDatabase(database, indexedDB), {
+      status: "already-migrated",
+      documentCount: 1,
+      retainedLegacyRecordCount: 1,
+    });
+
+    const legacy = await openExistingDatabase(indexedDB);
+    try {
+      const transaction = legacy.transaction("annotations", "readonly");
+      const records = await requestResult(transaction.objectStore("annotations").getAll());
+      await transactionResult(transaction);
+      assert.deepEqual(records.find((record) => record.bookId === "__folio_notes_state__"), folioWorkspace);
     } finally {
       legacy.close();
     }
@@ -354,7 +404,13 @@ async function seedLegacyDatabase(indexedDB, records) {
       if (records.metadata) transaction.objectStore("books_meta").put(records.metadata);
       if (records.content) transaction.objectStore("books_content").put(records.content);
       if (records.book) transaction.objectStore("books").put(records.book);
-      if (records.annotation) transaction.objectStore("annotations").put(records.annotation);
+      const annotations = [
+        ...(records.annotation ? [records.annotation] : []),
+        ...(records.annotations ?? []),
+      ];
+      for (const annotation of annotations) {
+        transaction.objectStore("annotations").put(annotation);
+      }
       transaction.oncomplete = () => {
         database.close();
         resolve();
