@@ -715,7 +715,9 @@ function startupMessage(migration, hydrationStatus, documentCount) {
   }
 
   if (migration.retainedLegacyRecordCount > 0) {
-    message += " A separate legacy folio workspace record was preserved in the previous HtmlArts database; this v1 library does not display that workspace data.";
+    const count = migration.retainedLegacyRecordCount;
+    const recordLabel = count === 1 ? "record" : "records";
+    message += ` ${count} legacy annotation/workspace ${recordLabel} without a matching document were left in the previous HtmlArts database.`;
   }
   return message;
 }

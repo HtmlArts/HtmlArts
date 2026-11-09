@@ -194,24 +194,29 @@ test("legacy folio workspace record is retained without blocking document migrat
   }
 });
 
-test("legacy migration rejects orphan annotations without dropping source data", async () => {
+test("legacy migration keeps orphan annotations in the old database and continues", async () => {
   const indexedDB = new IDBFactory();
+  const orphanAnnotation = { bookId: "deleted-legacy-book", strokes: [{ page: 0 }] };
   await seedLegacyDatabase(indexedDB, {
-    annotation: { bookId: "orphan", strokes: [{ page: 0 }] },
+    metadata: { id: "valid-legacy-book", title: "Migrated book" },
+    annotations: [orphanAnnotation],
   });
   const database = await openDatabase(indexedDB);
   try {
-    await assert.rejects(
-      () => migrateLegacyDatabase(database, indexedDB),
-      /annotations without a matching document/,
-    );
-    assert.equal(await countDocuments(database), 0);
+    assert.deepEqual(await migrateLegacyDatabase(database, indexedDB), {
+      status: "migrated",
+      documentCount: 1,
+      retainedLegacyRecordCount: 1,
+    });
+    assert.equal(await countDocuments(database), 1);
+    assert.equal((await getDocument(database, "valid-legacy-book")).title, "Migrated book");
     const legacy = await openExistingDatabase(indexedDB);
     try {
       const transaction = legacy.transaction("annotations", "readonly");
       const records = await requestResult(transaction.objectStore("annotations").getAll());
       await transactionResult(transaction);
       assert.equal(records.length, 1);
+      assert.deepEqual(records[0], orphanAnnotation);
     } finally {
       legacy.close();
     }

@@ -10,9 +10,9 @@
 | Step | Status | Exit code | Details |
 |---|---|---:|---|
 | Startup/build | PASS | 0 | Build produced the standalone artifact; Chrome opened it via `file://` and local IndexedDB became ready |
-| Unit/build tests | PASS | 0 | `npm --prefix v1 test`: 26 checks passed |
+| Unit/build tests | PASS | 0 | `npm --prefix v1 test`: 27 checks passed |
 | Chromium E2E | PASS | 0 | 15 Playwright tests passed on Google Chrome 156.0.8078.79 |
-| Firefox E2E | PASS | 0 | 15 Playwright tests passed serially on Firefox 142.0.1 |
+| Firefox E2E | INTERMITTENT | 1 | The migration journey passed with orphan annotation fixtures; one full run had a Studio note-save UI timeout (14/15), and that test passed when rerun in isolation |
 | WebKit E2E | BLOCKED | 1 | Playwright WebKit could not launch because host libraries are missing; installing system libraries requires unavailable sudo access |
 | Legacy baseline checks | PASS | 0 | Before removing the old application, `node tests/verify-book-server.js` (4 checks) and `node tests/verify-quine-composition.js` (5 checks) passed |
 | Dependency audit | PASS | 0 | `npm audit --prefix v1`: zero vulnerabilities |
@@ -37,7 +37,7 @@ WebKit launch failure reported missing `libWPEBackend-fdo-1.0.so.1`, `libWPEWebK
 
 ## Browser Journeys
 
-All 15 Playwright E2E tests passed in Chromium and Firefox. The Firefox suite passed when run serially:
+All 15 Playwright E2E tests passed in Chromium. With the orphan-annotation regression fixture, the Firefox migration journey also passed. A full serialized Firefox rerun had one unrelated Studio note-save UI timeout (14/15); that test passed when run in isolation.
 
 1. Create a publication, save a note, navigate back, reopen, and verify persisted state.
 2. Surface IndexedDB annotation-save failure without false success.
@@ -94,7 +94,7 @@ environment:
 startup: PASS — build then open v1/HtmlArtsV1.html via file://; IndexedDB-ready status observed
 integration: PASS — 26 unit/build checks passed; npm test exit_code: 0
 e2e-chromium: PASS — 15/15 tests passed on Google Chrome 156.0.8078.79
-e2e-firefox: PASS — 15/15 tests passed on Playwright Firefox 142.0.1 with --test-concurrency=1
+e2e-firefox: INTERMITTENT — migration regression passed; full run 14/15 after Studio note-save UI timeout; isolated Studio edit test passed
 e2e-webkit: BLOCKED — exit_code: 1, browser launch failed on missing host libraries; sudo installation unavailable
 legacy-baseline-checks: PASS — exit_code: 0 before legacy source removal, passed: 9, failed: 0
 dependency-audit: PASS — exit_code: 0, vulnerabilities: 0

@@ -149,7 +149,8 @@ async function readLegacyRecords(database) {
       continue;
     }
     if (typeof record?.bookId !== "string" || !documentIds.has(record.bookId)) {
-      throw new Error("Legacy migration found annotations without a matching document; source data was preserved.");
+      retainedLegacyRecordCount += 1;
+      continue;
     }
     annotations.push(
       createAnnotationSet(

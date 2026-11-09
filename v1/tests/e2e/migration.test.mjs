@@ -39,6 +39,15 @@ test("migrate a legacy publication and annotation without deleting source data",
               strokes: [{ page: 1, points: [[0.2, 0.3]] }],
               updatedAt: Date.now(),
             });
+            transaction.objectStore("annotations").put({
+              bookId: "deleted-browser-legacy-book",
+              strokes: [{ page: 0 }],
+            });
+            transaction.objectStore("annotations").put({
+              bookId: "__folio_notes_state__",
+              folios: [{ title: "Kept legacy note" }],
+              activeFolioIndex: 0,
+            });
             transaction.oncomplete = () => {
               database.close();
               resolve();
@@ -65,7 +74,7 @@ test("migrate a legacy publication and annotation without deleting source data",
     }).waitFor();
     assert.match(
       await page.locator("[data-app-status]").innerText(),
-      /Migrated 1 document/,
+      /Migrated 1 document.*2 legacy annotation\/workspace records/,
     );
 
     const migrated = await page.evaluate(
@@ -100,25 +109,27 @@ test("migrate a legacy publication and annotation without deleting source data",
     assert.equal(migrated.content.safeHtml, "");
     assert.equal(migrated.content.legacyRenderedHtml, "<article>Legacy rendered content</article>");
     assert.equal(migrated.annotations.strokes.length, 1);
-    assert.equal(
-      await page.evaluate(
-        () =>
-          new Promise((resolve, reject) => {
-            const request = indexedDB.open("htmlarts-local-library");
-            request.onerror = () => reject(request.error);
-            request.onsuccess = () => {
-              const database = request.result;
-              const transaction = database.transaction("books_meta", "readonly");
-              const count = transaction.objectStore("books_meta").count();
-              transaction.oncomplete = () => {
-                database.close();
-                resolve(count.result);
-              };
-              transaction.onerror = () => reject(transaction.error);
+    const legacy = await page.evaluate(
+      () =>
+        new Promise((resolve, reject) => {
+          const request = indexedDB.open("htmlarts-local-library");
+          request.onerror = () => reject(request.error);
+          request.onsuccess = () => {
+            const database = request.result;
+            const transaction = database.transaction(["books_meta", "annotations"], "readonly");
+            const count = transaction.objectStore("books_meta").count();
+            const annotations = transaction.objectStore("annotations").getAll();
+            transaction.oncomplete = () => {
+              database.close();
+              resolve({ bookCount: count.result, annotations: annotations.result });
             };
-          }),
-      ),
-      1,
+            transaction.onerror = () => reject(transaction.error);
+          };
+        }),
     );
+    assert.equal(legacy.bookCount, 1);
+    assert.equal(legacy.annotations.length, 3);
+    assert(legacy.annotations.some((annotation) => annotation.bookId === "deleted-browser-legacy-book"));
+    assert(legacy.annotations.some((annotation) => annotation.bookId === "__folio_notes_state__"));
   });
 });
