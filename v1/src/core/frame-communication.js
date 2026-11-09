@@ -1,4 +1,5 @@
 export const STUDIO_EXPORT_TYPE = "PAGESERVER_EXPORT_BOOK";
+export const STUDIO_PREVIEW_TYPE = "PAGESERVER_PREVIEW_BOOK";
 export const MAX_STUDIO_HTML_BYTES = 5 * 1024 * 1024;
 const MAX_STUDIO_TEXT_FIELD_LENGTH = 160;
 
@@ -9,7 +10,12 @@ export function isExpectedFrameMessage(event, expectedFrameWindow, expectedOrigi
 }
 
 export function validateStudioExportMessage(data) {
-  if (!data || typeof data !== "object" || Array.isArray(data) || data.type !== STUDIO_EXPORT_TYPE) {
+  if (
+    !data ||
+    typeof data !== "object" ||
+    Array.isArray(data) ||
+    (data.type !== STUDIO_EXPORT_TYPE && data.type !== STUDIO_PREVIEW_TYPE)
+  ) {
     throw new TypeError("The studio message type is not supported.");
   }
   const payload = data.payload;

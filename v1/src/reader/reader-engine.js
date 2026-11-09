@@ -6,7 +6,7 @@ const PEN_COLORS = new Set(["#33271f", "#795234", "#b35c43", "#637b68", "#40566c
 export function createReaderController(
   document,
   database,
-  { windowObject = document.defaultView ?? globalThis.window } = {},
+  { windowObject = document.defaultView ?? globalThis.window, onEditStudio } = {},
 ) {
   const view = required(document, "[data-reader-view]");
   const frame = required(document, "[data-reader-frame]");
@@ -33,6 +33,21 @@ export function createReaderController(
   const redoButton = required(document, "[data-pen-redo]");
   const clearButton = required(document, "[data-pen-clear]");
   const downloadButton = required(document, "[data-pen-download]");
+
+  const studioButton = document.querySelector("[data-reader-studio]");
+  const bookmarkButton = document.querySelector("[data-reader-bookmark]");
+  const focusButton = document.querySelector("[data-reader-focus]");
+  const fontSizeButtons = document.querySelectorAll("[data-reader-fontsize]");
+  const themeButtons = document.querySelectorAll("[data-reader-theme]");
+  const sidebarTabs = document.querySelectorAll("[data-sidebar-tab]");
+  const sidebarPanes = document.querySelectorAll("[data-sidebar-pane]");
+  const bookmarkList = document.querySelector("[data-bookmark-list]");
+  const bookmarkEmpty = document.querySelector("[data-bookmark-empty]");
+  const searchForm = document.querySelector("[data-search-form]");
+  const searchInput = document.querySelector("[data-reader-search-input]");
+  const searchStatus = document.querySelector("[data-reader-search-status]");
+  const searchResults = document.querySelector("[data-reader-search-results]");
+
   let activeDocument = null;
   let activeContentHtml = "";
   let activeAnnotations = [];
@@ -45,6 +60,15 @@ export function createReaderController(
   let pendingHighlightRange = null;
   let openingSequence = 0;
   let lastFocus = null;
+
+  let currentTheme = "default";
+  let currentFontSizePercent = 100;
+  const THEME_STYLES = {
+    paper: { bg: "#fbf8f1", color: "#33271f", link: "#805b3d", line: "#e6ddd0" },
+    warm: { bg: "#f6ecd9", color: "#3a2d21", link: "#986d36", line: "#dfcca8" },
+    light: { bg: "#ffffff", color: "#1c1c1c", link: "#2b5a8f", line: "#e0e0e0" },
+    dark: { bg: "#201b17", color: "#e8ded2", link: "#c9a07a", line: "#38312b" },
+  };
 
   back.addEventListener("click", close);
   required(document, "[data-reader-contents]").addEventListener("click", () => {
@@ -82,6 +106,72 @@ export function createReaderController(
   windowObject.addEventListener("resize", resizeInkCanvas);
   updatePenControls();
 
+  if (studioButton) {
+    studioButton.addEventListener("click", () => {
+      if (!activeDocument) return;
+      const docId = activeDocument.id;
+      close();
+      onEditStudio?.(docId);
+    });
+  }
+
+  if (bookmarkButton) {
+    bookmarkButton.addEventListener("click", toggleBookmark);
+  }
+
+  if (focusButton) {
+    focusButton.addEventListener("click", () => {
+      const isFocus = view.classList.toggle("focus-mode");
+      focusButton.classList.toggle("active", isFocus);
+      focusButton.setAttribute("aria-pressed", String(isFocus));
+      focusButton.textContent = isFocus ? "⛶ Exit Focus" : "⛶ Focus";
+    });
+  }
+
+  for (const button of themeButtons) {
+    button.addEventListener("click", () => {
+      currentTheme = button.dataset.readerTheme;
+      for (const b of themeButtons) {
+        b.classList.toggle("active", b.dataset.readerTheme === currentTheme);
+      }
+      applyThemeAndFont();
+    });
+  }
+
+  for (const button of fontSizeButtons) {
+    button.addEventListener("click", () => {
+      if (button.dataset.readerFontsize === "up") {
+        currentFontSizePercent = Math.min(160, currentFontSizePercent + 15);
+      } else {
+        currentFontSizePercent = Math.max(75, currentFontSizePercent - 15);
+      }
+      applyThemeAndFont();
+    });
+  }
+
+  for (const tab of sidebarTabs) {
+    tab.addEventListener("click", () => {
+      const target = tab.dataset.sidebarTab;
+      for (const t of sidebarTabs) {
+        const selected = t === tab;
+        t.classList.toggle("active", selected);
+        t.setAttribute("aria-selected", String(selected));
+      }
+      for (const pane of sidebarPanes) {
+        pane.hidden = pane.dataset.sidebarPane !== target;
+        pane.classList.toggle("active", pane.dataset.sidebarPane === target);
+      }
+    });
+  }
+
+  if (searchForm) {
+    searchForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const query = searchInput?.value || "";
+      performSearch(query);
+    });
+  }
+
   async function open(documentRecord) {
     const sequence = ++openingSequence;
     lastFocus = document.activeElement;
@@ -114,6 +204,11 @@ export function createReaderController(
 
       activeAnnotations = annotationSet.strokes;
       renderNotes();
+      renderBookmarks();
+      updateBookmarkButton();
+      if (searchInput) searchInput.value = "";
+      if (searchStatus) searchStatus.textContent = "";
+      if (searchResults) searchResults.replaceChildren();
       activeContentHtml = content.safeHtml;
       status.textContent = "Loading safe publication content…";
       frame.srcdoc = content.safeHtml;
@@ -200,8 +295,18 @@ export function createReaderController(
 
     installExternalLinkConfirmation(frameDocument);
     frameDocument.addEventListener("selectionchange", updatePendingHighlight);
-    navigationIndex = 0;
-    jumpTo(0);
+    applyThemeAndFont();
+    renderBookmarks();
+    updateBookmarkButton();
+
+    const savedState = activeAnnotations.find(
+      (item) => item?.type === "readingState" && typeof item.page === "number",
+    );
+    const initialIndex = savedState && savedState.page >= 0 && savedState.page < navigationItems.length
+      ? savedState.page
+      : 0;
+    navigationIndex = initialIndex;
+    jumpTo(initialIndex);
     resizeInkCanvas();
     status.textContent = "";
   }
@@ -222,6 +327,177 @@ export function createReaderController(
         status.textContent = "The browser blocked the new tab. Allow pop-ups to open this link.";
       }
     });
+  }
+
+  function applyThemeAndFont() {
+    let frameDocument;
+    try {
+      frameDocument = frame.contentDocument;
+    } catch {
+      return;
+    }
+    if (!frameDocument?.head) return;
+    let style = frameDocument.getElementById("htmlarts-reader-pref-style");
+    if (!style) {
+      style = frameDocument.createElement("style");
+      style.id = "htmlarts-reader-pref-style";
+      frameDocument.head.append(style);
+    }
+    if (currentTheme === "default") {
+      if (currentFontSizePercent === 100) {
+        style.textContent = "";
+        return;
+      }
+      style.textContent = `
+        html, body {
+          font-size: ${currentFontSizePercent}% !important;
+        }
+      `;
+      return;
+    }
+    const theme = THEME_STYLES[currentTheme] || THEME_STYLES.paper;
+    style.textContent = `
+      html, body {
+        background: ${theme.bg} !important;
+        color: ${theme.color} !important;
+        font-size: ${currentFontSizePercent}% !important;
+      }
+      a { color: ${theme.link} !important; }
+      hr { border-color: ${theme.line} !important; }
+    `;
+  }
+
+  async function toggleBookmark() {
+    if (!activeDocument) return;
+    const page = navigationIndex;
+    const existingIndex = activeAnnotations.findIndex(
+      (item) => item?.type === "bookmark" && item.page === page,
+    );
+    let nextAnnotations;
+    if (existingIndex >= 0) {
+      nextAnnotations = activeAnnotations.filter((_, i) => i !== existingIndex);
+      status.textContent = "Bookmark removed.";
+    } else {
+      const item = navigationItems[navigationIndex];
+      const label = item?.label || `Page ${navigationIndex + 1}`;
+      const bookmark = {
+        type: "bookmark",
+        id: createNoteId(),
+        page,
+        label,
+        createdAt: new Date().toISOString(),
+      };
+      nextAnnotations = [...activeAnnotations, bookmark];
+      status.textContent = `Bookmarked: ${label}`;
+    }
+    try {
+      const saved = await saveAnnotations(database, activeDocument.id, nextAnnotations);
+      activeAnnotations = saved.strokes;
+      renderBookmarks();
+      updateBookmarkButton();
+    } catch (error) {
+      status.textContent = `Could not update bookmark: ${error.message}`;
+    }
+  }
+
+  function updateBookmarkButton() {
+    if (!bookmarkButton) return;
+    const isBookmarked = activeAnnotations.some(
+      (item) => item?.type === "bookmark" && item.page === navigationIndex,
+    );
+    bookmarkButton.classList.toggle("active", isBookmarked);
+    bookmarkButton.textContent = isBookmarked ? "🔖 Bookmarked" : "🔖 Bookmark";
+  }
+
+  function renderBookmarks() {
+    if (!bookmarkList) return;
+    bookmarkList.replaceChildren();
+    const bookmarks = activeAnnotations.filter((item) => item?.type === "bookmark");
+    if (bookmarkEmpty) {
+      bookmarkEmpty.hidden = bookmarks.length > 0;
+    }
+    for (const bm of bookmarks) {
+      const li = document.createElement("li");
+      li.className = "bookmark-item";
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "bookmark-jump";
+      btn.textContent = bm.label || `Page ${bm.page + 1}`;
+      btn.addEventListener("click", () => {
+        jumpTo(bm.page);
+      });
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "bookmark-remove";
+      removeBtn.setAttribute("aria-label", "Remove bookmark");
+      removeBtn.textContent = "×";
+      removeBtn.addEventListener("click", async () => {
+        const nextAnnotations = activeAnnotations.filter((item) => item?.id !== bm.id);
+        try {
+          const saved = await saveAnnotations(database, activeDocument.id, nextAnnotations);
+          activeAnnotations = saved.strokes;
+          renderBookmarks();
+          updateBookmarkButton();
+        } catch (error) {
+          status.textContent = `Could not remove bookmark: ${error.message}`;
+        }
+      });
+      li.append(btn, removeBtn);
+      bookmarkList.append(li);
+    }
+  }
+
+  function performSearch(query) {
+    if (!searchResults) return;
+    searchResults.replaceChildren();
+    const q = query.trim().toLowerCase();
+    if (!q) {
+      if (searchStatus) searchStatus.textContent = "Enter words to search in publication.";
+      return;
+    }
+    let frameDocument;
+    try {
+      frameDocument = frame.contentDocument;
+    } catch {
+      return;
+    }
+    if (!frameDocument?.body) return;
+
+    const matches = [];
+    navigationItems.forEach((item, pageIndex) => {
+      const text = item.element ? (item.element.innerText || item.element.textContent || "") : "";
+      let pos = 0;
+      while ((pos = text.toLowerCase().indexOf(q, pos)) !== -1) {
+        const start = Math.max(0, pos - 36);
+        const end = Math.min(text.length, pos + q.length + 36);
+        const snippet = (start > 0 ? "…" : "") +
+          text.slice(start, end).trim() +
+          (end < text.length ? "…" : "");
+        matches.push({ pageIndex, label: item.label, snippet });
+        pos += q.length;
+        if (matches.length >= 40) break;
+      }
+    });
+
+    if (searchStatus) {
+      searchStatus.textContent = matches.length === 0
+        ? `No occurrences found for "${query}".`
+        : `Found ${matches.length} ${matches.length === 1 ? "match" : "matches"}:`;
+    }
+
+    for (const match of matches) {
+      const li = document.createElement("li");
+      li.className = "search-item";
+      const titleEl = document.createElement("strong");
+      titleEl.textContent = match.label;
+      const snippetEl = document.createElement("p");
+      snippetEl.textContent = match.snippet;
+      li.append(titleEl, snippetEl);
+      li.addEventListener("click", () => {
+        jumpTo(match.pageIndex);
+      });
+      searchResults.append(li);
+    }
   }
 
   async function saveNote(event) {
@@ -299,8 +575,18 @@ export function createReaderController(
       item.element.scrollIntoView({ block: "start", behavior: "smooth" });
     }
     updateNavigationControls();
+    updateBookmarkButton();
     redrawInk();
     applyHighlightsForPage();
+    persistReadingPosition(index);
+  }
+
+  function persistReadingPosition(index) {
+    if (!activeDocument) return;
+    const filtered = activeAnnotations.filter((item) => item?.type !== "readingState");
+    const next = [...filtered, { type: "readingState", page: index, updatedAt: new Date().toISOString() }];
+    activeAnnotations = next;
+    saveAnnotations(database, activeDocument.id, next).catch(() => {});
   }
 
   function activateNavigationItem(index) {

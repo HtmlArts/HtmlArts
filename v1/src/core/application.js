@@ -2,6 +2,7 @@ import { APP_CONFIG } from "./configuration.js";
 import {
   isExpectedFrameMessage,
   STUDIO_EXPORT_TYPE,
+  STUDIO_PREVIEW_TYPE,
   validateStudioExportMessage,
 } from "./frame-communication.js";
 import { importHtmlFile } from "../ingestion/document-importer.js";
@@ -97,7 +98,12 @@ export async function mountApplication(document) {
     throw error;
   }
 
-  const reader = createReaderController(document, database);
+  const reader = createReaderController(document, database, {
+    windowObject: document.defaultView,
+    onEditStudio: (documentId) => {
+      void openStudio(documentId);
+    },
+  });
   const catalogView = required(document, "[data-catalog-view]");
   required(document, "[data-page-view='catalogue']");
   renderTemplateGallery(document, templateGrid);
@@ -251,8 +257,12 @@ export async function mountApplication(document) {
       console.warn("HtmlArts ignored a message from an unexpected frame or origin.");
       return;
     }
-    if (event.data?.type !== STUDIO_EXPORT_TYPE) return;
-    studioStatus.textContent = "Validating and saving the studio export…";
+    const isExport = event.data?.type === STUDIO_EXPORT_TYPE;
+    const isPreview = event.data?.type === STUDIO_PREVIEW_TYPE;
+    if (!isExport && !isPreview) return;
+    studioStatus.textContent = isPreview
+      ? "Preparing preview in Reader…"
+      : "Validating and saving the studio export…";
     try {
       const exported = validateStudioExportMessage(event.data);
       const sanitized = sanitizeHtml(exported.html, {
@@ -299,11 +309,17 @@ export async function mountApplication(document) {
       status.textContent = `${verb} "${publication.title}" ${exported.documentId ? "in" : "from Design Studio to"} your local library.${catalogueError ? ` The catalog could not be refreshed: ${errorMessage(catalogueError)}` : ""}`;
       studioStatus.textContent = "";
       studioView.hidden = true;
-      catalogView.hidden = false;
       studioEditingId = null;
-      showPage("catalogue");
       studioFrame.srcdoc = "";
-      studioAction.focus();
+
+      if (isPreview) {
+        status.textContent = `Previewing "${publication.title}" in Reader.`;
+        await reader.open(publication);
+      } else {
+        catalogView.hidden = false;
+        showPage("catalogue");
+        studioAction.focus();
+      }
     } catch (error) {
       const message = error instanceof Error ? error.message : "The studio export could not be saved.";
       status.textContent = `The studio export could not be saved: ${message}`;

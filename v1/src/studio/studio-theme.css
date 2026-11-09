@@ -1,9 +1,12 @@
 :root {
   --bg: #fbf8f1;
   --paper: #fffdfa;
+  --paper-deep: #f6f0e5;
   --ink: #33271f;
   --muted: #817568;
   --line: #e6ddd0;
+  --accent: #805b3d;
+  --accent-soft: #f2e7d5;
   --green: #805b3d;
   --green-soft: #f2e7d5;
   --blue: #526b87;
@@ -15,19 +18,45 @@
   --red: #a45b50;
   --red-soft: #f7ece7;
   --shadow: 0 12px 34px rgb(51 39 31 / 7%);
+  --sans: "Manrope", "Avenir Next", Avenir, system-ui, sans-serif;
+  --serif: "Playfair Display", Georgia, serif;
 }
 
 body {
   background: var(--paper);
   color: var(--ink);
+  font-family: var(--sans);
 }
 
 .studio-bar {
   background: rgb(251 248 241 / 98%);
+  border-bottom: 1px solid var(--line);
+}
+
+.brand-badge {
+  background: #f2e7d5;
+  color: #805b3d;
+  border: 1px solid #dfd4c2;
+  font: 800 10px var(--sans);
+  letter-spacing: 0.08em;
+  border-radius: 6px;
+}
+
+.brand-title {
+  font-family: var(--sans);
+  color: var(--ink);
 }
 
 .inspector-sidebar {
   background: #fffdfa;
+  border-right: 1px solid var(--line);
+}
+
+.panel-heading {
+  font: 800 11px var(--sans);
+  letter-spacing: 0.08em;
+  color: #805b3d;
+  border-bottom: 1px solid var(--line);
 }
 
 .preview-stage {
@@ -36,23 +65,66 @@ body {
 
 .stage-toolbar {
   background: rgb(255 253 250 / 94%);
+  border: 1px solid var(--line);
   box-shadow: 0 4px 14px rgb(51 39 31 / 5%);
+}
+
+.stage-pill {
+  color: var(--muted);
+  font-family: var(--sans);
+}
+
+.stage-pill.active {
+  background: var(--accent);
+  color: #fffaf3;
+  font-weight: 700;
+}
+
+.preview-frame-container {
+  background: #fffdfa;
+  border: 1px solid var(--line);
+  box-shadow: 0 8px 30px rgb(51 39 31 / 8%);
 }
 
 .form-field input,
 .form-field select,
 .form-field textarea {
   background: #fbf8f1;
+  border-color: var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--accent);
+  background: #fffdfa;
+  box-shadow: 0 0 0 2px rgb(128 91 61 / 15%);
+}
+
+.btn {
+  border-color: var(--line);
+  color: var(--ink);
+  background: #fffdfa;
+  font-family: var(--sans);
 }
 
 .btn:hover {
   background: #f6f0e5;
+  border-color: var(--accent);
 }
 
 .btn.primary,
 .btn.primary:hover {
   background: #805b3d;
   border-color: #805b3d;
+  color: #fffaf3;
+}
+
+.palette-swatch {
+  border-color: #fffdfa;
+  box-shadow: 0 1px 3px rgb(51 39 31 / 20%);
 }
 
 .palette-swatch.active {
